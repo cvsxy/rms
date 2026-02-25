@@ -9,11 +9,19 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get("status");
   const serverId = searchParams.get("serverId");
   const tableId = searchParams.get("tableId");
+  const from = searchParams.get("from");
+  const to = searchParams.get("to");
 
   const where: Record<string, unknown> = {};
   if (status) where.status = status;
   if (serverId) where.serverId = serverId;
   if (tableId) where.tableId = tableId;
+  if (from || to) {
+    const dateFilter: Record<string, Date> = {};
+    if (from) dateFilter.gte = new Date(from);
+    if (to) dateFilter.lte = new Date(to);
+    where.createdAt = dateFilter;
+  }
 
   const orders = await prisma.order.findMany({
     where,

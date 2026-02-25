@@ -5,7 +5,13 @@ export async function GET() {
   const categories = await prisma.menuCategory.findMany({
     where: { active: true },
     orderBy: { sortOrder: "asc" },
-    include: { items: { where: { active: true }, orderBy: { sortOrder: "asc" } } },
+    include: {
+      items: {
+        where: { active: true },
+        orderBy: { sortOrder: "asc" },
+        include: { modifiers: { where: { active: true } } },
+      },
+    },
   });
   return NextResponse.json({ data: categories });
 }

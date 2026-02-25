@@ -4,8 +4,14 @@ import { hash } from "bcryptjs";
 
 export async function GET() {
   const servers = await prisma.user.findMany({
-    where: { role: "SERVER" },
-    select: { id: true, name: true, active: true, createdAt: true },
+    where: { role: "SERVER", active: true },
+    select: {
+      id: true,
+      name: true,
+      active: true,
+      createdAt: true,
+      _count: { select: { orders: true } },
+    },
     orderBy: { name: "asc" },
   });
   return NextResponse.json({ data: servers });
