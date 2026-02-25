@@ -10,7 +10,6 @@ const intlMiddleware = createMiddleware(routing);
 
 // Routes that require authentication
 const protectedPatterns = ["/tables", "/notifications"];
-const adminPatterns = ["/admin"];
 const authPages = ["/pin-login", "/admin-login"];
 // Display routes (kitchen/bar) are accessible without auth
 
@@ -54,24 +53,27 @@ export default async function middleware(request: NextRequest) {
   }
 
   const session = await getSessionFromRequest(request);
+  const isAuthPage = authPages.some((p) => pathWithoutLocale.startsWith(p));
 
-  // If logged in and trying to access auth pages, redirect to appropriate dashboard
-  // But allow servers to access admin-login (they need to switch to admin)
-  if (session && authPages.some((p) => pathWithoutLocale.startsWith(p))) {
-    const locale = locales.find((l) => pathname.startsWith(`/${l}`)) || routing.defaultLocale;
-    // Only redirect if already the right role for the page
-    if (pathWithoutLocale.startsWith("/pin-login") && session.role === "SERVER") {
-      return NextResponse.redirect(new URL(`/${locale}/tables`, request.url));
+  // Auth pages: always accessible. Only redirect if already logged in as the matching role.
+  if (isAuthPage) {
+    if (session) {
+      const locale = locales.find((l) => pathname.startsWith(`/${l}`)) || routing.defaultLocale;
+      if (pathWithoutLocale.startsWith("/pin-login") && session.role === "SERVER") {
+        return NextResponse.redirect(new URL(`/${locale}/tables`, request.url));
+      }
+      if (pathWithoutLocale.startsWith("/admin-login") && session.role === "ADMIN") {
+        return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));
+      }
     }
-    if (pathWithoutLocale.startsWith("/admin-login") && session.role === "ADMIN") {
-      return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));
-    }
-    // Otherwise let them through (e.g. server accessing admin-login to switch accounts)
+    // Let everyone else through to auth pages
+    return response;
   }
 
-  // Check protected routes
+  // Check protected routes (excluding auth pages handled above)
   const isProtected = protectedPatterns.some((p) => pathWithoutLocale.startsWith(p));
-  const isAdmin = adminPatterns.some((p) => pathWithoutLocale.startsWith(p));
+  // /admin but NOT /admin-login (already handled above)
+  const isAdmin = pathWithoutLocale.startsWith("/admin");
 
   if ((isProtected || isAdmin) && !session) {
     const locale = locales.find((l) => pathname.startsWith(`/${l}`)) || routing.defaultLocale;
