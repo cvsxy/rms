@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── AUTHENTICATION & USERS ────────────────────────────────────
+
+enum UserRole {
+  SERVER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  pin       String?
+  email     String?  @unique
+  password  String?
+  role      UserRole @default(SERVER)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders   Order[]
+  sessions Session[]
+
+  @@index([pin])
+  @@index([role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ─── MENU ───────────────────────────────────────────────────────
+
+model MenuCategory {
+  id        String   @id @default(cuid())
+  name      String
+  nameEs    String
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items MenuItem[]
+
+  @@index([sortOrder])
+}
+
+enum ItemDestination {
+  KITCHEN
+  BAR
+}
+
+model MenuItem {
+  id            String          @id @default(cuid())
+  name          String
+  nameEs        String
+  description   String?
+  descriptionEs String?
+  price         Decimal         @db.Decimal(10, 2)
+  destination   ItemDestination
+  categoryId    String
+  active        Boolean         @default(true)
+  sortOrder     Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  category   MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  modifiers  Modifier[]
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+  @@index([destination])
+  @@index([active])
+}
+
+model Modifier {
+  id         String   @id @default(cuid())
+  name       String
+  nameEs     String
+  priceAdj   Decimal  @default(0) @db.Decimal(10, 2)
+  menuItemId String
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  menuItem      MenuItem           @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  orderItemMods OrderItemModifier[]
+
+  @@index([menuItemId])
+}
+
+// ─── TABLES ─────────────────────────────────────────────────────
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+}
+
+model RestaurantTable {
+  id        String      @id @default(cuid())
+  number    Int         @unique
+  name      String?
+  seats     Int         @default(4)
+  status    TableStatus @default(AVAILABLE)
+  active    Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  orders Order[]
+
+  @@index([status])
+  @@index([number])
+}
+
+// ─── ORDERS ─────────────────────────────────────────────────────
+
+enum OrderStatus {
+  OPEN
+  SUBMITTED
+  COMPLETED
+  CLOSED
+  CANCELLED
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  tableId   String
+  serverId  String
+  status    OrderStatus @default(OPEN)
+  notes     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  table   RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
+  server  User            @relation(fields: [serverId], references: [id], onDelete: Restrict)
+  items   OrderItem[]
+  payment Payment?
+
+  @@index([tableId])
+  @@index([serverId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum OrderItemStatus {
+  PENDING
+  SENT
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
+}
+
+model OrderItem {
+  id         String          @id @default(cuid())
+  orderId    String
+  menuItemId String
+  quantity   Int             @default(1)
+  unitPrice  Decimal         @db.Decimal(10, 2)
+  notes      String?
+  status     OrderItemStatus @default(PENDING)
+  sentAt     DateTime?
+  readyAt    DateTime?
+  servedAt   DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  order     Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem  MenuItem           @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  modifiers OrderItemModifier[]
+
+  @@index([orderId])
+  @@index([menuItemId])
+  @@index([status])
+}
+
+model OrderItemModifier {
+  id          String  @id @default(cuid())
+  orderItemId String
+  modifierId  String
+  priceAdj    Decimal @default(0) @db.Decimal(10, 2)
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  modifier  Modifier  @relation(fields: [modifierId], references: [id], onDelete: Restrict)
+
+  @@unique([orderItemId, modifierId])
+  @@index([orderItemId])
+}
+
+// ─── PAYMENTS ───────────────────────────────────────────────────
+
+enum PaymentMethod {
+  CASH
+  CARD
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  orderId   String        @unique
+  method    PaymentMethod
+  subtotal  Decimal       @db.Decimal(10, 2)
+  tax       Decimal       @db.Decimal(10, 2)
+  total     Decimal       @db.Decimal(10, 2)
+  tip       Decimal       @default(0) @db.Decimal(10, 2)
+  createdAt DateTime      @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+}

@@ -1,0 +1,114 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "noResults": "No results found",
+    "error": "An error occurred",
+    "success": "Success"
+  },
+  "auth": {
+    "enterPin": "Enter your PIN",
+    "login": "Log In",
+    "logout": "Log Out",
+    "invalidPin": "Invalid PIN. Try again.",
+    "adminLogin": "Admin Login",
+    "email": "Email",
+    "password": "Password",
+    "invalidCredentials": "Invalid email or password."
+  },
+  "tables": {
+    "title": "Tables",
+    "available": "Available",
+    "occupied": "Occupied",
+    "reserved": "Reserved",
+    "createTable": "New Table",
+    "tableNumber": "Table {number}",
+    "seats": "{count} seats",
+    "selectTable": "Select a table to start"
+  },
+  "menu": {
+    "title": "Menu",
+    "categories": "Categories",
+    "addToOrder": "Add to Order",
+    "modifiers": "Customize",
+    "price": "{price} MXN",
+    "noItems": "No items in this category",
+    "quantity": "Quantity",
+    "notes": "Special instructions",
+    "notesPlaceholder": "e.g., extra spicy, no onions..."
+  },
+  "orders": {
+    "title": "Order",
+    "addItems": "Add Items",
+    "submitOrder": "Send to Kitchen/Bar",
+    "pending": "Pending",
+    "sent": "Sent",
+    "preparing": "Preparing",
+    "ready": "Ready",
+    "served": "Served",
+    "cancelled": "Cancelled",
+    "noItems": "No items yet. Tap 'Add Items' to start.",
+    "itemAdded": "Item added to order",
+    "orderSent": "Order sent!"
+  },
+  "billing": {
+    "viewBill": "View Bill",
+    "subtotal": "Subtotal",
+    "tax": "IVA (16%)",
+    "total": "Total",
+    "tip": "Tip",
+    "payWithCash": "Cash",
+    "payWithCard": "Card",
+    "closeTable": "Close Table",
+    "confirmPayment": "Confirm Payment",
+    "paymentRecorded": "Payment recorded. Table closed."
+  },
+  "display": {
+    "kitchen": "Kitchen",
+    "bar": "Bar",
+    "markReady": "Ready",
+    "markAllReady": "All Ready",
+    "elapsed": "{minutes}m {seconds}s",
+    "newOrder": "New Order",
+    "noOrders": "No pending orders"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "itemReady": "{item} ready at {destination}",
+    "tableReady": "Table {number}: items ready",
+    "markRead": "Mark as Read",
+    "clearAll": "Clear All",
+    "noNotifications": "No notifications"
+  },
+  "reports": {
+    "title": "Reports",
+    "dailySummary": "Daily Summary",
+    "totalRevenue": "Total Revenue",
+    "orderCount": "Orders",
+    "avgOrderValue": "Avg Order Value",
+    "itemsSold": "Items Sold",
+    "filterByDate": "Filter by Date",
+    "filterByServer": "Filter by Server",
+    "cash": "Cash",
+    "card": "Card"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "manageServers": "Manage Servers",
+    "manageMenu": "Manage Menu",
+    "manageTables": "Manage Tables",
+    "reports": "Reports",
+    "addServer": "Add Server",
+    "serverName": "Server Name",
+    "serverPin": "PIN",
+    "addCategory": "Add Category",
+    "addItem": "Add Item",
+    "destination": "Destination",
+    "categoryName": "Category Name"
+  }
+}

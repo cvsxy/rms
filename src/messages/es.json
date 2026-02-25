@@ -1,0 +1,114 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "search": "Buscar",
+    "noResults": "No se encontraron resultados",
+    "error": "Ocurrió un error",
+    "success": "Éxito"
+  },
+  "auth": {
+    "enterPin": "Ingresa tu PIN",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "invalidPin": "PIN inválido. Intenta de nuevo.",
+    "adminLogin": "Acceso Administrador",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "invalidCredentials": "Correo o contraseña inválidos."
+  },
+  "tables": {
+    "title": "Mesas",
+    "available": "Disponible",
+    "occupied": "Ocupada",
+    "reserved": "Reservada",
+    "createTable": "Nueva Mesa",
+    "tableNumber": "Mesa {number}",
+    "seats": "{count} asientos",
+    "selectTable": "Selecciona una mesa para comenzar"
+  },
+  "menu": {
+    "title": "Menú",
+    "categories": "Categorías",
+    "addToOrder": "Agregar a la Orden",
+    "modifiers": "Personalizar",
+    "price": "{price} MXN",
+    "noItems": "No hay artículos en esta categoría",
+    "quantity": "Cantidad",
+    "notes": "Instrucciones especiales",
+    "notesPlaceholder": "ej., extra picante, sin cebolla..."
+  },
+  "orders": {
+    "title": "Orden",
+    "addItems": "Agregar Artículos",
+    "submitOrder": "Enviar a Cocina/Barra",
+    "pending": "Pendiente",
+    "sent": "Enviado",
+    "preparing": "Preparando",
+    "ready": "Listo",
+    "served": "Servido",
+    "cancelled": "Cancelado",
+    "noItems": "Sin artículos. Toca 'Agregar Artículos' para comenzar.",
+    "itemAdded": "Artículo agregado a la orden",
+    "orderSent": "¡Orden enviada!"
+  },
+  "billing": {
+    "viewBill": "Ver Cuenta",
+    "subtotal": "Subtotal",
+    "tax": "IVA (16%)",
+    "total": "Total",
+    "tip": "Propina",
+    "payWithCash": "Efectivo",
+    "payWithCard": "Tarjeta",
+    "closeTable": "Cerrar Mesa",
+    "confirmPayment": "Confirmar Pago",
+    "paymentRecorded": "Pago registrado. Mesa cerrada."
+  },
+  "display": {
+    "kitchen": "Cocina",
+    "bar": "Barra",
+    "markReady": "Listo",
+    "markAllReady": "Todo Listo",
+    "elapsed": "{minutes}m {seconds}s",
+    "newOrder": "Nueva Orden",
+    "noOrders": "No hay órdenes pendientes"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "itemReady": "{item} listo en {destination}",
+    "tableReady": "Mesa {number}: artículos listos",
+    "markRead": "Marcar como Leído",
+    "clearAll": "Borrar Todo",
+    "noNotifications": "Sin notificaciones"
+  },
+  "reports": {
+    "title": "Reportes",
+    "dailySummary": "Resumen Diario",
+    "totalRevenue": "Ingresos Totales",
+    "orderCount": "Órdenes",
+    "avgOrderValue": "Valor Promedio",
+    "itemsSold": "Artículos Vendidos",
+    "filterByDate": "Filtrar por Fecha",
+    "filterByServer": "Filtrar por Mesero",
+    "cash": "Efectivo",
+    "card": "Tarjeta"
+  },
+  "admin": {
+    "dashboard": "Panel",
+    "manageServers": "Gestionar Meseros",
+    "manageMenu": "Gestionar Menú",
+    "manageTables": "Gestionar Mesas",
+    "reports": "Reportes",
+    "addServer": "Agregar Mesero",
+    "serverName": "Nombre del Mesero",
+    "serverPin": "PIN",
+    "addCategory": "Agregar Categoría",
+    "addItem": "Agregar Artículo",
+    "destination": "Destino",
+    "categoryName": "Nombre de la Categoría"
+  }
+}
