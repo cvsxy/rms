@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { pusher } from "@/lib/pusher-server";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: orderId } = await params;
@@ -45,10 +46,39 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     createdItems.push(orderItem);
   }
 
-  await prisma.order.update({
+  const order = await prisma.order.update({
     where: { id: orderId },
     data: { status: "SUBMITTED" },
+    include: { table: true, server: { select: { id: true, name: true } } },
   });
+
+  // Group items by destination and trigger Pusher events
+  const kitchenItems = createdItems.filter((i) => i.menuItem.destination === "KITCHEN");
+  const barItems = createdItems.filter((i) => i.menuItem.destination === "BAR");
+
+  const orderPayload = {
+    orderId,
+    tableNumber: order.table.number,
+    tableName: order.table.name,
+    serverName: order.server.name,
+  };
+
+  try {
+    if (kitchenItems.length > 0) {
+      await pusher.trigger("private-kitchen", "new-items", {
+        ...orderPayload,
+        items: kitchenItems,
+      });
+    }
+    if (barItems.length > 0) {
+      await pusher.trigger("private-bar", "new-items", {
+        ...orderPayload,
+        items: barItems,
+      });
+    }
+  } catch {
+    // Pusher not configured yet — silently continue
+  }
 
   return NextResponse.json({ data: createdItems }, { status: 201 });
 }
