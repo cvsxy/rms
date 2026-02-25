@@ -76,8 +76,8 @@ export default function KitchenDisplayPage() {
     fetchOrders();
   }, [fetchOrders]);
 
-  usePusherChannel("private-kitchen", "new-items", handleNewItems);
-  usePusherChannel("private-kitchen", "item-status-changed", handleStatusChanged);
+  usePusherChannel("kitchen", "new-items", handleNewItems);
+  usePusherChannel("kitchen", "item-status-changed", handleStatusChanged);
 
   const getName = (item: { name: string; nameEs: string }) =>
     locale === "es" ? item.nameEs : item.name;

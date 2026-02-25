@@ -48,7 +48,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         }
       );
       // Also notify the display channel so other display screens update
-      const displayChannel = orderItem.menuItem.destination === "KITCHEN" ? "private-kitchen" : "private-bar";
+      const displayChannel = orderItem.menuItem.destination === "KITCHEN" ? "kitchen" : "bar";
       await pusher.trigger(displayChannel, "item-status-changed", {
         orderItemId: orderItem.id,
         status: "READY",

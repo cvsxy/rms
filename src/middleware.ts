@@ -56,10 +56,17 @@ export default async function middleware(request: NextRequest) {
   const session = await getSessionFromRequest(request);
 
   // If logged in and trying to access auth pages, redirect to appropriate dashboard
+  // But allow servers to access admin-login (they need to switch to admin)
   if (session && authPages.some((p) => pathWithoutLocale.startsWith(p))) {
     const locale = locales.find((l) => pathname.startsWith(`/${l}`)) || routing.defaultLocale;
-    const redirectUrl = session.role === "ADMIN" ? `/${locale}/admin` : `/${locale}/tables`;
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+    // Only redirect if already the right role for the page
+    if (pathWithoutLocale.startsWith("/pin-login") && session.role === "SERVER") {
+      return NextResponse.redirect(new URL(`/${locale}/tables`, request.url));
+    }
+    if (pathWithoutLocale.startsWith("/admin-login") && session.role === "ADMIN") {
+      return NextResponse.redirect(new URL(`/${locale}/admin`, request.url));
+    }
+    // Otherwise let them through (e.g. server accessing admin-login to switch accounts)
   }
 
   // Check protected routes

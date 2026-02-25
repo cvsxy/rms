@@ -25,8 +25,9 @@ export default function NotificationsPage() {
   useEffect(() => {
     fetch("/api/auth/session")
       .then((r) => r.json())
-      .then((data) => {
-        if (data.userId) setUserId(data.userId);
+      .then((json) => {
+        const d = json.data || json;
+        if (d.userId) setUserId(d.userId);
       })
       .catch(() => {});
   }, []);

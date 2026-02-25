@@ -65,13 +65,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   try {
     if (kitchenItems.length > 0) {
-      await pusher.trigger("private-kitchen", "new-items", {
+      await pusher.trigger("kitchen", "new-items", {
         ...orderPayload,
         items: kitchenItems,
       });
     }
     if (barItems.length > 0) {
-      await pusher.trigger("private-bar", "new-items", {
+      await pusher.trigger("bar", "new-items", {
         ...orderPayload,
         items: barItems,
       });

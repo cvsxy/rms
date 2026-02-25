@@ -69,8 +69,8 @@ export default function BarDisplayPage() {
     fetchOrders();
   }, [fetchOrders]);
 
-  usePusherChannel("private-bar", "new-items", handleNewItems);
-  usePusherChannel("private-bar", "item-status-changed", handleStatusChanged);
+  usePusherChannel("bar", "new-items", handleNewItems);
+  usePusherChannel("bar", "item-status-changed", handleStatusChanged);
 
   const getName = (item: { name: string; nameEs: string }) =>
     locale === "es" ? item.nameEs : item.name;
