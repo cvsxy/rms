@@ -54,7 +54,12 @@
     "cancelled": "Cancelled",
     "noItems": "No items yet. Tap 'Add Items' to start.",
     "itemAdded": "Item added to order",
-    "orderSent": "Order sent!"
+    "orderSent": "Order sent!",
+    "notes": "Special notes",
+    "open": "Open",
+    "submitted": "Submitted",
+    "completed": "Completed",
+    "closed": "Closed"
   },
   "billing": {
     "viewBill": "View Bill",
@@ -83,7 +88,8 @@
     "tableReady": "Table {number}: items ready",
     "markRead": "Mark as Read",
     "clearAll": "Clear All",
-    "noNotifications": "No notifications"
+    "noNotifications": "No notifications",
+    "empty": "No notifications yet"
   },
   "reports": {
     "title": "Reports",

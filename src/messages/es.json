@@ -54,7 +54,12 @@
     "cancelled": "Cancelado",
     "noItems": "Sin artículos. Toca 'Agregar Artículos' para comenzar.",
     "itemAdded": "Artículo agregado a la orden",
-    "orderSent": "¡Orden enviada!"
+    "orderSent": "¡Orden enviada!",
+    "notes": "Notas especiales",
+    "open": "Abierta",
+    "submitted": "Enviada",
+    "completed": "Completada",
+    "closed": "Cerrada"
   },
   "billing": {
     "viewBill": "Ver Cuenta",
@@ -83,7 +88,8 @@
     "tableReady": "Mesa {number}: artículos listos",
     "markRead": "Marcar como Leído",
     "clearAll": "Borrar Todo",
-    "noNotifications": "Sin notificaciones"
+    "noNotifications": "Sin notificaciones",
+    "empty": "Sin notificaciones aún"
   },
   "reports": {
     "title": "Reportes",

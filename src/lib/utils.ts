@@ -1,3 +1,8 @@
+export function formatMXN(amount: number | string): string {
+  const num = typeof amount === "string" ? parseFloat(amount) : amount;
+  return `$${num.toFixed(2)}`;
+}
+
 export function formatCurrency(amount: number | string): string {
   const num = typeof amount === "string" ? parseFloat(amount) : amount;
   return new Intl.NumberFormat("es-MX", {
