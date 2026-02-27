@@ -9,9 +9,12 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { endpoint, keys } = body;
+  // Support both flat format { endpoint, auth, p256dh } and nested { endpoint, keys: { auth, p256dh } }
+  const endpoint = body.endpoint;
+  const auth = body.auth || body.keys?.auth;
+  const p256dh = body.p256dh || body.keys?.p256dh;
 
-  if (!endpoint || !keys?.auth || !keys?.p256dh) {
+  if (!endpoint || !auth || !p256dh) {
     return NextResponse.json({ error: "Invalid subscription" }, { status: 400 });
   }
 
@@ -20,14 +23,14 @@ export async function POST(request: NextRequest) {
       userId_endpoint: { userId: session.userId, endpoint },
     },
     update: {
-      auth: keys.auth,
-      p256dh: keys.p256dh,
+      auth,
+      p256dh,
     },
     create: {
       userId: session.userId,
       endpoint,
-      auth: keys.auth,
-      p256dh: keys.p256dh,
+      auth,
+      p256dh,
     },
   });
 

@@ -142,7 +142,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
   );
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-8rem)]">
+    <div className={`flex flex-col h-[calc(100dvh-8rem)] ${cart.length > 0 ? "pb-[7.5rem]" : ""}`}>
       {/* Header */}
       <div className="px-4 pt-4 pb-2 flex items-center justify-between">
         <button
@@ -219,9 +219,9 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
         </div>
       )}
 
-      {/* Cart footer */}
+      {/* Cart footer — fixed above bottom nav */}
       {cart.length > 0 && (
-        <div className="p-4 bg-white border-t border-gray-200">
+        <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] left-0 right-0 p-4 bg-white border-t border-gray-200 z-40">
           <div className="flex items-center justify-between mb-2">
             <div className="text-sm text-gray-600 flex-1 truncate">
               {cart.map((c) => `${c.quantity}x ${c.name}${c.seatNumber ? ` (S${c.seatNumber})` : ""}`).join(", ")}
