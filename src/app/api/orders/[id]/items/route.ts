@@ -34,6 +34,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         quantity: item.quantity || 1,
         unitPrice,
         notes: item.notes || null,
+        seatNumber: item.seatNumber ?? null,
         status: "SENT",
         sentAt: new Date(),
         modifiers: modifierData.length ? { create: modifierData } : undefined,

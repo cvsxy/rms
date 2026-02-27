@@ -88,7 +88,7 @@ export default function AdminLayoutClient({
   };
 
   return (
-    <div className="flex h-[100dvh] bg-gray-100">
+    <div className="flex h-[100dvh] bg-gray-100 safe-area-top">
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-lg flex flex-col">
         <div className="p-6 border-b">

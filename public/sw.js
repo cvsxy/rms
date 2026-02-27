@@ -1,4 +1,4 @@
-const CACHE_NAME = "rms-v1";
+const CACHE_NAME = "rms-v2";
 const STATIC_ASSETS = ["/", "/es/pin-login", "/en/pin-login"];
 
 self.addEventListener("install", (event) => {
@@ -54,5 +54,50 @@ self.addEventListener("fetch", (event) => {
           return new Response("Offline", { status: 503 });
         });
       })
+  );
+});
+
+// ─── Web Push Notifications ─────────────────────────────────────
+
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  let payload;
+  try {
+    payload = event.data.json();
+  } catch {
+    payload = { title: "RMS", body: event.data.text() };
+  }
+
+  const options = {
+    body: payload.body || "",
+    icon: "/icons/icon-192.svg",
+    badge: "/icons/icon-192.svg",
+    tag: payload.tag || "rms-notification",
+    renotify: true,
+    data: payload.data || {},
+    vibrate: [200, 100, 200],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title || "RMS", options)
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  // Try to focus existing window or open new one
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      // Try to find an existing RMS window
+      for (const client of clients) {
+        if (client.url.includes("/notifications") || client.url.includes("/tables")) {
+          return client.focus();
+        }
+      }
+      // Open new window to notifications page
+      return self.clients.openWindow("/es/notifications");
+    })
   );
 });

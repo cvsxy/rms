@@ -5,6 +5,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const { status } = await request.json();
 
+  // When cancelling order, also cancel all non-terminal items
+  if (status === "CANCELLED") {
+    await prisma.orderItem.updateMany({
+      where: {
+        orderId: id,
+        status: { notIn: ["SERVED", "CANCELLED"] },
+      },
+      data: { status: "CANCELLED" },
+    });
+  }
+
   const order = await prisma.order.update({
     where: { id },
     data: { status },

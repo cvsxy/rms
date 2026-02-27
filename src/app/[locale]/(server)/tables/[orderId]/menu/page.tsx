@@ -9,7 +9,7 @@ import { SkeletonMenuItems } from "@/components/common/Skeleton";
 interface Category { id: string; name: string; nameEs: string; }
 interface Modifier { id: string; name: string; nameEs: string; priceAdj: string; }
 interface MenuItem { id: string; name: string; nameEs: string; description: string | null; descriptionEs: string | null; price: string; destination: string; categoryId: string; modifiers: Modifier[]; }
-interface CartItem { menuItemId: string; name: string; quantity: number; notes: string; modifierIds: string[]; price: number; }
+interface CartItem { menuItemId: string; name: string; quantity: number; notes: string; modifierIds: string[]; price: number; seatNumber: number | null; }
 
 export default function MenuBrowserPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
@@ -24,11 +24,13 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState("");
   const [selectedModifiers, setSelectedModifiers] = useState<string[]>([]);
+  const [seatNumber, setSeatNumber] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [tableSeats, setTableSeats] = useState(0);
 
-  useEffect(() => { fetchMenu(); }, []);
+  useEffect(() => { fetchMenu(); fetchTableSeats(); }, []);
 
   const fetchMenu = async () => {
     const [catRes, itemRes] = await Promise.all([fetch("/api/menu/categories"), fetch("/api/menu/items")]);
@@ -37,6 +39,14 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
     setCategories(cats); setItems(menuItems);
     if (cats.length > 0) setSelectedCategory(cats[0].id);
     setLoading(false);
+  };
+
+  const fetchTableSeats = async () => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`);
+      const { data } = await res.json();
+      if (data?.table?.seats) setTableSeats(data.table.seats);
+    } catch { /* ignore */ }
   };
 
   const getName = (item: { name: string; nameEs: string }) => locale === "es" ? item.nameEs : item.name;
@@ -53,7 +63,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
     return selectedCategory ? items.filter((i) => i.categoryId === selectedCategory) : items;
   }, [isSearching, searchQuery, selectedCategory, items]);
 
-  const openItemSheet = (item: MenuItem) => { setSelectedItem(item); setQuantity(1); setNotes(""); setSelectedModifiers([]); };
+  const openItemSheet = (item: MenuItem) => { setSelectedItem(item); setQuantity(1); setNotes(""); setSelectedModifiers([]); setSeatNumber(null); };
 
   // Calculate live price preview for the modal
   const modalPrice = useMemo(() => {
@@ -73,6 +83,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
       notes,
       modifierIds: selectedModifiers,
       price: modalPrice,
+      seatNumber,
     }]);
     setSelectedItem(null);
   };
@@ -84,13 +95,51 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
     setSubmitting(true);
     await fetch(`/api/orders/${orderId}/items`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: cart.map((c) => ({ menuItemId: c.menuItemId, quantity: c.quantity, notes: c.notes || undefined, modifierIds: c.modifierIds.length ? c.modifierIds : undefined })) }),
+      body: JSON.stringify({
+        items: cart.map((c) => ({
+          menuItemId: c.menuItemId,
+          quantity: c.quantity,
+          notes: c.notes || undefined,
+          modifierIds: c.modifierIds.length ? c.modifierIds : undefined,
+          seatNumber: c.seatNumber,
+        })),
+      }),
     });
     router.push(`/${locale}/tables/${orderId}`);
     router.refresh();
   };
 
   const cartTotal = cart.reduce((sum, c) => sum + c.price, 0);
+
+  const itemsGrid = (
+    <>
+      {loading ? (
+        <SkeletonMenuItems />
+      ) : filteredItems.length === 0 ? (
+        <div className="text-center text-gray-400 py-12">
+          {isSearching ? t("menu.noSearchResults") : t("menu.noItems")}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {filteredItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => openItemSheet(item)}
+              className="bg-white rounded-xl p-4 border border-gray-100 text-left active:bg-gray-50 touch-manipulation transition-colors"
+            >
+              <div className="font-medium text-gray-800 text-sm">{getName(item)}</div>
+              {getDesc(item) && <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{getDesc(item)}</div>}
+              <div className="text-sm font-bold text-blue-600 mt-2">{formatMXN(Number(item.price))}</div>
+              <div className="text-[10px] text-gray-400 mt-0.5">
+                {item.destination === "KITCHEN" ? "🍳" : "🍹"}{" "}
+                {item.destination === "KITCHEN" ? t("display.kitchen") : t("display.bar")}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div className="flex flex-col h-[calc(100dvh-8rem)]">
@@ -138,62 +187,65 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
         </div>
       </div>
 
-      {/* Category tabs (hidden when searching) */}
-      {!isSearching && (
-        <div className="px-4 pb-2 overflow-x-auto">
-          <div className="flex gap-2 min-w-max">
+      {/* Category + Items layout */}
+      {!isSearching ? (
+        <div className="flex-1 flex overflow-hidden">
+          {/* Sidebar categories (tablet+) */}
+          <div className="hidden sm:flex flex-col w-1/4 min-w-[140px] max-w-[200px] border-r border-gray-200 overflow-y-auto px-2 py-2 gap-1">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap touch-manipulation transition-colors ${
+                className={`w-full text-left px-3 py-3.5 rounded-xl text-sm font-medium touch-manipulation transition-colors ${
                   selectedCategory === cat.id
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-700 active:bg-gray-300"
+                    : "bg-white text-gray-700 active:bg-gray-100 border border-gray-100"
                 }`}
               >
                 {getName(cat)}
               </button>
             ))}
           </div>
+
+          {/* Horizontal tabs (mobile only) */}
+          <div className="sm:hidden flex-shrink-0">
+            <div className="px-4 pb-2 overflow-x-auto">
+              <div className="flex gap-2 min-w-max">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap touch-manipulation transition-colors ${
+                      selectedCategory === cat.id
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 text-gray-700 active:bg-gray-300"
+                    }`}
+                  >
+                    {getName(cat)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Items grid */}
+          <div className="flex-1 overflow-auto px-4 pb-4">
+            {itemsGrid}
+          </div>
+        </div>
+      ) : (
+        /* When searching, show full-width items grid */
+        <div className="flex-1 overflow-auto px-4 pb-4">
+          {itemsGrid}
         </div>
       )}
-
-      {/* Menu items grid */}
-      <div className="flex-1 overflow-auto px-4 pb-4">
-        {loading ? (
-          <SkeletonMenuItems />
-        ) : filteredItems.length === 0 ? (
-          <div className="text-center text-gray-400 py-12">
-            {isSearching ? t("menu.noSearchResults") : t("menu.noItems")}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {filteredItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => openItemSheet(item)}
-                className="bg-white rounded-xl p-4 border border-gray-100 text-left active:bg-gray-50 touch-manipulation transition-colors"
-              >
-                <div className="font-medium text-gray-800 text-sm">{getName(item)}</div>
-                {getDesc(item) && <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{getDesc(item)}</div>}
-                <div className="text-sm font-bold text-blue-600 mt-2">{formatMXN(Number(item.price))}</div>
-                <div className="text-[10px] text-gray-400 mt-0.5">
-                  {item.destination === "KITCHEN" ? "🍳" : "🍹"}{" "}
-                  {item.destination === "KITCHEN" ? t("display.kitchen") : t("display.bar")}
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
 
       {/* Cart footer */}
       {cart.length > 0 && (
         <div className="p-4 bg-white border-t border-gray-200">
           <div className="flex items-center justify-between mb-2">
             <div className="text-sm text-gray-600 flex-1 truncate">
-              {cart.map((c) => `${c.quantity}x ${c.name}`).join(", ")}
+              {cart.map((c) => `${c.quantity}x ${c.name}${c.seatNumber ? ` (S${c.seatNumber})` : ""}`).join(", ")}
             </div>
             <button
               onClick={clearCart}
@@ -217,7 +269,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
       {selectedItem && (
         <div className="fixed inset-0 z-50 flex items-end" onClick={() => setSelectedItem(null)}>
           <div className="absolute inset-0 bg-black/40" />
-          <div className="relative w-full bg-white rounded-t-2xl p-6 max-h-[75dvh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="relative w-full bg-white rounded-t-2xl p-6 max-h-[80dvh] overflow-auto" onClick={(e) => e.stopPropagation()}>
             {/* Close button */}
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -252,6 +304,38 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
                 +
               </button>
             </div>
+
+            {/* Seat number (optional) */}
+            {tableSeats > 0 && (
+              <div className="mb-4">
+                <span className="text-sm font-medium text-gray-700 block mb-2">{t("orders.seatNumber")}:</span>
+                <div className="flex gap-2 flex-wrap">
+                  <button
+                    onClick={() => setSeatNumber(null)}
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium touch-manipulation border transition-colors ${
+                      seatNumber === null
+                        ? "bg-blue-100 border-blue-400 text-blue-800"
+                        : "bg-white border-gray-200 text-gray-600 active:bg-gray-50"
+                    }`}
+                  >
+                    {t("orders.noSeat")}
+                  </button>
+                  {Array.from({ length: tableSeats }, (_, i) => i + 1).map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => setSeatNumber(num)}
+                      className={`w-12 h-12 rounded-lg text-sm font-medium touch-manipulation border transition-colors ${
+                        seatNumber === num
+                          ? "bg-purple-100 border-purple-400 text-purple-800"
+                          : "bg-white border-gray-200 text-gray-600 active:bg-gray-50"
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Modifiers */}
             {selectedItem.modifiers.length > 0 && (

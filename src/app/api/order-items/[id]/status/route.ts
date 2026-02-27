@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
+import { sendPushToUser } from "@/lib/webpush";
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -56,6 +57,24 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       });
     } catch {
       // Pusher not configured yet — silently continue
+    }
+
+    // Send Web Push notification (for background/closed PWA)
+    try {
+      const itemName =
+        orderItem.menuItem.nameEs || orderItem.menuItem.name;
+      await sendPushToUser(orderItem.order.server.id, {
+        title: `Mesa ${orderItem.order.table.number}`,
+        body: `${itemName} listo — ${destination}`,
+        tag: `ready-${orderItem.id}`,
+        data: {
+          orderItemId: orderItem.id,
+          orderId: orderItem.orderId,
+          tableNumber: orderItem.order.table.number,
+        },
+      });
+    } catch {
+      // Web push not configured — silently continue
     }
   }
 

@@ -44,7 +44,9 @@
     "notesPlaceholder": "ej., extra picante, sin cebolla...",
     "searchPlaceholder": "Buscar en el menú...",
     "noSearchResults": "No se encontraron artículos",
-    "clearCart": "Vaciar"
+    "clearCart": "Vaciar",
+    "seatNumber": "Asiento",
+    "noSeat": "Sin Asiento"
   },
   "orders": {
     "title": "Orden",
@@ -63,7 +65,15 @@
     "open": "Abierta",
     "submitted": "Enviada",
     "completed": "Completada",
-    "closed": "Cerrada"
+    "closed": "Cerrada",
+    "cancelOrder": "Cancelar Orden",
+    "cancelOrderConfirm": "¿Cancelar esta orden? Todos los artículos serán cancelados y la mesa quedará libre.",
+    "voidItem": "Anular",
+    "voidItemConfirm": "¿Anular este artículo? Se marcará como cancelado.",
+    "myOrders": "Mis Órdenes",
+    "noOrdersFound": "No se encontraron órdenes",
+    "itemCount": "artículos",
+    "seat": "Asiento {number}"
   },
   "billing": {
     "viewBill": "Ver Cuenta",
@@ -77,7 +87,10 @@
     "payWithCard": "Tarjeta",
     "closeTable": "Cerrar Mesa",
     "confirmPayment": "Confirmar Pago",
-    "paymentRecorded": "Pago registrado. Mesa cerrada."
+    "paymentRecorded": "Pago registrado. Mesa cerrada.",
+    "filterBySeat": "Filtrar por Asiento",
+    "allSeats": "Todos",
+    "seatSubtotal": "Subtotal del asiento"
   },
   "display": {
     "kitchen": "Cocina",
@@ -86,7 +99,8 @@
     "markAllReady": "Todo Listo",
     "elapsed": "{minutes}m {seconds}s",
     "newOrder": "Nueva Orden",
-    "noOrders": "No hay órdenes pendientes"
+    "noOrders": "No hay órdenes pendientes",
+    "allReady": "Todo Listo"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -96,7 +110,10 @@
     "clearAll": "Borrar Todo",
     "clearAllConfirm": "¿Borrar todas las notificaciones? Esta acción no se puede deshacer.",
     "noNotifications": "Sin notificaciones",
-    "empty": "Sin notificaciones aún"
+    "empty": "Sin notificaciones aún",
+    "enablePush": "Activar Notificaciones Push",
+    "pushEnabled": "Notificaciones push activadas",
+    "pushBlocked": "Notificaciones bloqueadas. Activa en Configuración."
   },
   "reports": {
     "title": "Reportes",

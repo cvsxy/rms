@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { formatMXN } from "@/lib/utils";
 import { SkeletonOrderItems } from "@/components/common/Skeleton";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 interface OrderData {
   id: string;
@@ -13,6 +14,7 @@ interface OrderData {
   server: { id: string; name: string };
   items: {
     id: string; quantity: number; unitPrice: string; notes: string | null; status: string;
+    seatNumber: number | null;
     menuItem: { name: string; nameEs: string; destination: string };
     modifiers: { modifier: { name: string; nameEs: string; priceAdj: string } }[];
   }[];
@@ -35,6 +37,10 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   const [order, setOrder] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
   const [markingServed, setMarkingServed] = useState<string | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [voidConfirmItemId, setVoidConfirmItemId] = useState<string | null>(null);
+  const [voidingItemId, setVoidingItemId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrder();
@@ -61,6 +67,35 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
     setMarkingServed(null);
   };
 
+  const handleCancelOrder = async () => {
+    setCancelling(true);
+    try {
+      await fetch(`/api/orders/${orderId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CANCELLED" }),
+      });
+      router.push(`/${locale}/tables`);
+      router.refresh();
+    } catch { /* ignore */ }
+    setCancelling(false);
+    setShowCancelConfirm(false);
+  };
+
+  const handleVoidItem = async (itemId: string) => {
+    setVoidingItemId(itemId);
+    try {
+      await fetch(`/api/order-items/${itemId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CANCELLED" }),
+      });
+      await fetchOrder();
+    } catch { /* ignore */ }
+    setVoidingItemId(null);
+    setVoidConfirmItemId(null);
+  };
+
   const getName = (item: { name: string; nameEs: string }) => locale === "es" ? item.nameEs : item.name;
 
   if (loading || !order) {
@@ -76,6 +111,7 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   }
 
   const total = order.items.filter((i) => i.status !== "CANCELLED").reduce((sum, i) => sum + Number(i.unitPrice) * i.quantity, 0);
+  const canCancel = order.status === "OPEN" || order.status === "SUBMITTED";
 
   return (
     <div className="p-4">
@@ -112,11 +148,14 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
         ) : (
           order.items.map((item) => {
             const isReady = item.status === "READY";
+            const isCancelled = item.status === "CANCELLED";
+            const isServed = item.status === "SERVED";
+            const canVoid = !isCancelled && !isServed;
             return (
               <div
                 key={item.id}
                 className={`bg-white rounded-xl p-4 border transition-all ${
-                  item.status === "CANCELLED"
+                  isCancelled
                     ? "opacity-50 border-gray-100"
                     : isReady
                     ? "border-green-300 ring-2 ring-green-100"
@@ -126,10 +165,17 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-gray-800">{item.quantity}x {getName(item.menuItem)}</span>
+                      <span className={`font-medium text-gray-800 ${isCancelled ? "line-through text-gray-400" : ""}`}>
+                        {item.quantity}x {getName(item.menuItem)}
+                      </span>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${statusColors[item.status]}`}>
                         {t(`orders.${item.status.toLowerCase()}`)}
                       </span>
+                      {item.seatNumber && (
+                        <span className="text-xs px-2 py-0.5 rounded-full font-medium border bg-purple-100 text-purple-800 border-purple-200">
+                          {t("orders.seat")} {item.seatNumber}
+                        </span>
+                      )}
                     </div>
                     {item.modifiers.length > 0 && (
                       <div className="text-xs text-gray-500 mt-1">
@@ -140,8 +186,19 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
                       <div className="text-xs text-gray-400 mt-1 italic">{item.notes}</div>
                     )}
                   </div>
-                  <div className="text-sm font-medium text-gray-700 ml-3 whitespace-nowrap">
-                    {formatMXN(Number(item.unitPrice) * item.quantity)}
+                  <div className="flex items-center gap-2 ml-3">
+                    {canVoid && (
+                      <button
+                        onClick={() => setVoidConfirmItemId(item.id)}
+                        disabled={voidingItemId === item.id}
+                        className="text-xs text-red-500 font-medium px-2 py-1.5 rounded-lg active:bg-red-50 touch-manipulation border border-red-200"
+                      >
+                        {voidingItemId === item.id ? "..." : t("orders.voidItem")}
+                      </button>
+                    )}
+                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                      {formatMXN(Number(item.unitPrice) * item.quantity)}
+                    </span>
                   </div>
                 </div>
                 {/* Mark Served button for READY items */}
@@ -188,6 +245,41 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
           </button>
         )}
       </div>
+
+      {/* Cancel order button */}
+      {canCancel && (
+        <button
+          onClick={() => setShowCancelConfirm(true)}
+          disabled={cancelling}
+          className="w-full h-12 rounded-xl border-2 border-red-300 text-red-600 font-semibold active:bg-red-50 touch-manipulation transition-colors mt-3 disabled:opacity-50"
+        >
+          {t("orders.cancelOrder")}
+        </button>
+      )}
+
+      {/* Cancel order confirmation */}
+      <ConfirmModal
+        open={showCancelConfirm}
+        title={t("orders.cancelOrder")}
+        message={t("orders.cancelOrderConfirm")}
+        confirmLabel={t("orders.cancelOrder")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        onConfirm={handleCancelOrder}
+        onCancel={() => setShowCancelConfirm(false)}
+      />
+
+      {/* Void item confirmation */}
+      <ConfirmModal
+        open={!!voidConfirmItemId}
+        title={t("orders.voidItem")}
+        message={t("orders.voidItemConfirm")}
+        confirmLabel={t("orders.voidItem")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        onConfirm={() => voidConfirmItemId && handleVoidItem(voidConfirmItemId)}
+        onCancel={() => setVoidConfirmItemId(null)}
+      />
     </div>
   );
 }

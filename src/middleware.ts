@@ -9,7 +9,7 @@ const COOKIE_NAME = "rms-session";
 const intlMiddleware = createMiddleware(routing);
 
 // Routes that require authentication
-const protectedPatterns = ["/tables", "/notifications"];
+const protectedPatterns = ["/tables", "/notifications", "/my-orders"];
 const authPages = ["/pin-login", "/admin-login"];
 // Display routes (kitchen/bar) are accessible without auth
 

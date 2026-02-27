@@ -44,7 +44,9 @@
     "notesPlaceholder": "e.g., extra spicy, no onions...",
     "searchPlaceholder": "Search menu...",
     "noSearchResults": "No items found",
-    "clearCart": "Clear"
+    "clearCart": "Clear",
+    "seatNumber": "Seat",
+    "noSeat": "No Seat"
   },
   "orders": {
     "title": "Order",
@@ -63,7 +65,15 @@
     "open": "Open",
     "submitted": "Submitted",
     "completed": "Completed",
-    "closed": "Closed"
+    "closed": "Closed",
+    "cancelOrder": "Cancel Order",
+    "cancelOrderConfirm": "Cancel this order? All items will be cancelled and the table will be freed.",
+    "voidItem": "Void",
+    "voidItemConfirm": "Void this item? It will be marked as cancelled.",
+    "myOrders": "My Orders",
+    "noOrdersFound": "No orders found",
+    "itemCount": "items",
+    "seat": "Seat {number}"
   },
   "billing": {
     "viewBill": "View Bill",
@@ -77,7 +87,10 @@
     "payWithCard": "Card",
     "closeTable": "Close Table",
     "confirmPayment": "Confirm Payment",
-    "paymentRecorded": "Payment recorded. Table closed."
+    "paymentRecorded": "Payment recorded. Table closed.",
+    "filterBySeat": "Filter by Seat",
+    "allSeats": "All",
+    "seatSubtotal": "Seat subtotal"
   },
   "display": {
     "kitchen": "Kitchen",
@@ -86,7 +99,8 @@
     "markAllReady": "All Ready",
     "elapsed": "{minutes}m {seconds}s",
     "newOrder": "New Order",
-    "noOrders": "No pending orders"
+    "noOrders": "No pending orders",
+    "allReady": "All Ready"
   },
   "notifications": {
     "title": "Notifications",
@@ -96,7 +110,10 @@
     "clearAll": "Clear All",
     "clearAllConfirm": "Clear all notifications? This cannot be undone.",
     "noNotifications": "No notifications",
-    "empty": "No notifications yet"
+    "empty": "No notifications yet",
+    "enablePush": "Enable Push Notifications",
+    "pushEnabled": "Push notifications enabled",
+    "pushBlocked": "Notifications blocked. Enable in Settings."
   },
   "reports": {
     "title": "Reports",

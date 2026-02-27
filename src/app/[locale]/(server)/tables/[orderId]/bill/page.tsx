@@ -8,7 +8,7 @@ import { SkeletonOrderItems } from "@/components/common/Skeleton";
 
 interface OrderData {
   id: string; table: { number: number };
-  items: { id: string; quantity: number; unitPrice: string; status: string; menuItem: { name: string; nameEs: string }; modifiers: { modifier: { name: string; nameEs: string }; priceAdj: string }[]; }[];
+  items: { id: string; quantity: number; unitPrice: string; status: string; seatNumber: number | null; menuItem: { name: string; nameEs: string }; modifiers: { modifier: { name: string; nameEs: string }; priceAdj: string }[]; }[];
 }
 
 type TipPreset = "10" | "15" | "20" | "none" | "custom";
@@ -23,6 +23,7 @@ export default function BillPage({ params }: { params: Promise<{ orderId: string
   const [tipPreset, setTipPreset] = useState<TipPreset>("none");
   const [showConfirm, setShowConfirm] = useState<"CASH" | "CARD" | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [filterSeat, setFilterSeat] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/orders/${orderId}`)
@@ -42,7 +43,10 @@ export default function BillPage({ params }: { params: Promise<{ orderId: string
 
   const getName = (item: { name: string; nameEs: string }) => locale === "es" ? item.nameEs : item.name;
   const activeItems = order.items.filter((i) => i.status !== "CANCELLED");
+  const seatNumbers = [...new Set(activeItems.map((i) => i.seatNumber).filter(Boolean))] as number[];
+  const displayItems = filterSeat !== null ? activeItems.filter((i) => i.seatNumber === filterSeat) : activeItems;
   const subtotal = activeItems.reduce((sum, i) => sum + Number(i.unitPrice) * i.quantity, 0);
+  const displaySubtotal = displayItems.reduce((sum, i) => sum + Number(i.unitPrice) * i.quantity, 0);
   const tax = subtotal * 0.16;
   const total = subtotal + tax + tip;
 
@@ -89,13 +93,49 @@ export default function BillPage({ params }: { params: Promise<{ orderId: string
         {t("tables.tableNumber", { number: order.table.number })} — {t("billing.viewBill")}
       </h2>
 
+      {/* Seat filter */}
+      {seatNumbers.length > 0 && (
+        <div className="mb-4">
+          <p className="text-sm font-medium text-gray-700 mb-2">{t("billing.filterBySeat")}</p>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setFilterSeat(null)}
+              className={`px-3 py-2 rounded-lg text-sm font-medium touch-manipulation border transition-colors ${
+                filterSeat === null ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-200"
+              }`}
+            >
+              {t("billing.allSeats")}
+            </button>
+            {seatNumbers.sort((a, b) => a - b).map((num) => (
+              <button
+                key={num}
+                onClick={() => setFilterSeat(num)}
+                className={`px-3 py-2 rounded-lg text-sm font-medium touch-manipulation border transition-colors ${
+                  filterSeat === num ? "bg-purple-600 text-white border-purple-600" : "bg-white text-gray-700 border-gray-200"
+                }`}
+              >
+                {t("orders.seat")} {num}
+              </button>
+            ))}
+          </div>
+          {filterSeat !== null && (
+            <p className="text-xs text-gray-500 mt-1">{t("billing.seatFilterNote")}</p>
+          )}
+        </div>
+      )}
+
       {/* Items list */}
       <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 mb-4">
-        {activeItems.map((item) => (
+        {displayItems.map((item) => (
           <div key={item.id} className="p-4 flex justify-between">
             <div>
               <div className="text-sm font-medium text-gray-800">
                 {item.quantity}x {getName(item.menuItem)}
+                {item.seatNumber && (
+                  <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium">
+                    S{item.seatNumber}
+                  </span>
+                )}
               </div>
               {item.modifiers.length > 0 && (
                 <div className="text-xs text-gray-400 mt-0.5">
@@ -146,6 +186,12 @@ export default function BillPage({ params }: { params: Promise<{ orderId: string
 
       {/* Bill summary */}
       <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3 mb-6">
+        {filterSeat !== null && (
+          <div className="flex justify-between text-sm text-purple-600 font-medium">
+            <span>{t("orders.seat")} {filterSeat}</span>
+            <span>{formatMXN(displaySubtotal)}</span>
+          </div>
+        )}
         <div className="flex justify-between text-sm text-gray-600">
           <span>{t("billing.subtotal")}</span>
           <span>{formatMXN(subtotal)}</span>
