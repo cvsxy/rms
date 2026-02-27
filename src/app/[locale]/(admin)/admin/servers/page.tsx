@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import { SkeletonRow } from "@/components/common/Skeleton";
 
 interface Server {
   id: string;
@@ -19,6 +21,7 @@ export default function ManageServersPage() {
   const [formPin, setFormPin] = useState("");
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   async function fetchServers() {
     const res = await fetch("/api/servers");
@@ -58,9 +61,10 @@ export default function ManageServersPage() {
     setSaving(false);
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm(t("common.confirm") + "?")) return;
-    await fetch(`/api/servers/${id}`, { method: "DELETE" });
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    await fetch(`/api/servers/${deleteTarget}`, { method: "DELETE" });
+    setDeleteTarget(null);
     fetchServers();
   }
 
@@ -73,8 +77,16 @@ export default function ManageServersPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">{t("common.loading")}</p>
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+          <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+        </div>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -195,7 +207,7 @@ export default function ManageServersPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(server.id)}
+                      onClick={() => setDeleteTarget(server.id)}
                       className="text-sm text-red-600 hover:text-red-800 font-medium"
                     >
                       {t("common.delete")}
@@ -207,6 +219,17 @@ export default function ManageServersPage() {
           </table>
         )}
       </div>
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title={t("common.confirm")}
+        message={t("common.areYouSure")}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

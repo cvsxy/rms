@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { formatMXN } from "@/lib/utils";
+import { SkeletonOrderItems } from "@/components/common/Skeleton";
 
 interface OrderData {
   id: string;
@@ -18,9 +19,12 @@ interface OrderData {
 }
 
 const statusColors: Record<string, string> = {
-  PENDING: "bg-gray-200 text-gray-700", SENT: "bg-blue-200 text-blue-800",
-  PREPARING: "bg-yellow-200 text-yellow-800", READY: "bg-green-200 text-green-800",
-  SERVED: "bg-gray-100 text-gray-500", CANCELLED: "bg-red-200 text-red-800",
+  PENDING: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  SENT: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  PREPARING: "bg-blue-100 text-blue-800 border-blue-200",
+  READY: "bg-green-100 text-green-800 border-green-200",
+  SERVED: "bg-gray-100 text-gray-500 border-gray-200",
+  CANCELLED: "bg-red-100 text-red-800 border-red-200",
 };
 
 export default function OrderViewPage({ params }: { params: Promise<{ orderId: string }> }) {
@@ -30,6 +34,7 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   const router = useRouter();
   const [order, setOrder] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [markingServed, setMarkingServed] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrder();
@@ -43,48 +48,144 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
     setLoading(false);
   };
 
-  if (loading || !order) return <div className="flex items-center justify-center h-64"><div className="text-gray-400 text-lg">{t("common.loading")}</div></div>;
+  const handleMarkServed = async (itemId: string) => {
+    setMarkingServed(itemId);
+    try {
+      await fetch(`/api/order-items/${itemId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "SERVED" }),
+      });
+      await fetchOrder();
+    } catch { /* ignore */ }
+    setMarkingServed(null);
+  };
 
   const getName = (item: { name: string; nameEs: string }) => locale === "es" ? item.nameEs : item.name;
+
+  if (loading || !order) {
+    return (
+      <div className="p-4">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-10 w-20 bg-gray-200 rounded-lg animate-pulse" />
+          <div className="h-7 w-32 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <SkeletonOrderItems />
+      </div>
+    );
+  }
+
   const total = order.items.filter((i) => i.status !== "CANCELLED").reduce((sum, i) => sum + Number(i.unitPrice) * i.quantity, 0);
 
   return (
     <div className="p-4">
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <button onClick={() => router.push(`/${locale}/tables`)} className="text-blue-600 text-sm mb-1 touch-manipulation">← {t("common.back")}</button>
-          <h2 className="text-xl font-bold text-gray-800">{t("tables.tableNumber", { number: order.table.number })}</h2>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.push(`/${locale}/tables`)}
+            className="h-10 px-3 flex items-center gap-1 text-blue-600 font-medium rounded-lg active:bg-blue-50 touch-manipulation transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {t("common.back")}
+          </button>
+          <h2 className="text-xl font-bold text-gray-800">
+            {t("tables.tableNumber", { number: order.table.number })}
+          </h2>
         </div>
-        <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColors[order.status] || "bg-gray-200"}`}>
+        <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${statusColors[order.status] || "bg-gray-200"}`}>
           {t(`orders.${order.status.toLowerCase()}`)}
         </span>
       </div>
+
+      {/* Items list */}
       <div className="space-y-2 mb-4">
         {order.items.length === 0 ? (
-          <div className="text-center text-gray-400 py-8">{t("orders.noItems")}</div>
-        ) : order.items.map((item) => (
-          <div key={item.id} className={`bg-white rounded-xl p-3 border border-gray-100 ${item.status === "CANCELLED" ? "opacity-50" : ""}`}>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-gray-800">{item.quantity}× {getName(item.menuItem)}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${statusColors[item.status]}`}>{t(`orders.${item.status.toLowerCase()}`)}</span>
-                </div>
-                {item.modifiers.length > 0 && <div className="text-xs text-gray-500 mt-0.5">{item.modifiers.map((m) => getName(m.modifier)).join(", ")}</div>}
-                {item.notes && <div className="text-xs text-gray-400 mt-0.5 italic">{item.notes}</div>}
-              </div>
-              <div className="text-sm font-medium text-gray-700 ml-2">{formatMXN(Number(item.unitPrice) * item.quantity)}</div>
-            </div>
+          <div className="text-center text-gray-400 py-12">
+            <svg className="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p>{t("orders.noItems")}</p>
           </div>
-        ))}
+        ) : (
+          order.items.map((item) => {
+            const isReady = item.status === "READY";
+            return (
+              <div
+                key={item.id}
+                className={`bg-white rounded-xl p-4 border transition-all ${
+                  item.status === "CANCELLED"
+                    ? "opacity-50 border-gray-100"
+                    : isReady
+                    ? "border-green-300 ring-2 ring-green-100"
+                    : "border-gray-100"
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-gray-800">{item.quantity}x {getName(item.menuItem)}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${statusColors[item.status]}`}>
+                        {t(`orders.${item.status.toLowerCase()}`)}
+                      </span>
+                    </div>
+                    {item.modifiers.length > 0 && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        {item.modifiers.map((m) => getName(m.modifier)).join(", ")}
+                      </div>
+                    )}
+                    {item.notes && (
+                      <div className="text-xs text-gray-400 mt-1 italic">{item.notes}</div>
+                    )}
+                  </div>
+                  <div className="text-sm font-medium text-gray-700 ml-3 whitespace-nowrap">
+                    {formatMXN(Number(item.unitPrice) * item.quantity)}
+                  </div>
+                </div>
+                {/* Mark Served button for READY items */}
+                {isReady && (
+                  <button
+                    onClick={() => handleMarkServed(item.id)}
+                    disabled={markingServed === item.id}
+                    className="mt-3 w-full h-10 rounded-lg bg-green-600 text-white text-sm font-semibold active:bg-green-700 touch-manipulation transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {markingServed === item.id ? "..." : t("orders.served")}
+                  </button>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
+
+      {/* Subtotal */}
       <div className="bg-white rounded-xl p-4 border border-gray-200 mb-4">
-        <div className="flex justify-between text-lg font-bold text-gray-800"><span>Subtotal</span><span>{formatMXN(total)}</span></div>
+        <div className="flex justify-between text-lg font-bold text-gray-800">
+          <span>{t("billing.subtotal")}</span>
+          <span>{formatMXN(total)}</span>
+        </div>
       </div>
+
+      {/* Action buttons */}
       <div className="flex gap-3">
-        <button onClick={() => router.push(`/${locale}/tables/${orderId}/menu`)} className="flex-1 h-14 rounded-xl bg-blue-600 text-white font-semibold active:bg-blue-700 touch-manipulation">{t("orders.addItems")}</button>
+        <button
+          onClick={() => router.push(`/${locale}/tables/${orderId}/menu`)}
+          className="flex-1 h-14 rounded-xl bg-blue-600 text-white font-semibold active:bg-blue-700 touch-manipulation transition-colors"
+        >
+          {t("orders.addItems")}
+        </button>
         {order.items.length > 0 && (
-          <button onClick={() => router.push(`/${locale}/tables/${orderId}/bill`)} className="flex-1 h-14 rounded-xl bg-gray-800 text-white font-semibold active:bg-gray-900 touch-manipulation">{t("billing.viewBill")}</button>
+          <button
+            onClick={() => router.push(`/${locale}/tables/${orderId}/bill`)}
+            className="flex-1 h-14 rounded-xl bg-gray-800 text-white font-semibold active:bg-gray-900 touch-manipulation transition-colors"
+          >
+            {t("billing.viewBill")}
+          </button>
         )}
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { usePusherChannel } from "@/hooks/usePusher";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 interface Notification {
   id: string;
@@ -15,11 +16,38 @@ interface Notification {
   read: boolean;
 }
 
+const STORAGE_KEY = "rms-notifications";
+
+function loadNotifications(): Notification[] {
+  try {
+    const stored = sessionStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch { /* ignore */ }
+  return [];
+}
+
+function saveNotifications(notifications: Notification[]) {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
+  } catch { /* ignore */ }
+}
+
 export default function NotificationsPage() {
   const t = useTranslations();
   const locale = useLocale();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  // Load from sessionStorage on mount
+  useEffect(() => {
+    setNotifications(loadNotifications());
+  }, []);
+
+  // Save to sessionStorage whenever notifications change
+  useEffect(() => {
+    saveNotifications(notifications);
+  }, [notifications]);
 
   // Get current user ID for Pusher channel
   useEffect(() => {
@@ -41,19 +69,21 @@ export default function NotificationsPage() {
       tableNumber: number;
       tableName: string | null;
     };
-    setNotifications((prev) => [
-      {
-        id: d.orderItemId + "-" + Date.now(),
-        itemName: d.itemName,
-        itemNameEs: d.itemNameEs,
-        destination: d.destination,
-        tableNumber: d.tableNumber,
-        tableName: d.tableName,
-        timestamp: Date.now(),
-        read: false,
-      },
-      ...prev,
-    ]);
+    const newNotification: Notification = {
+      id: d.orderItemId + "-" + Date.now(),
+      itemName: d.itemName,
+      itemNameEs: d.itemNameEs,
+      destination: d.destination,
+      tableNumber: d.tableNumber,
+      tableName: d.tableName,
+      timestamp: Date.now(),
+      read: false,
+    };
+    setNotifications((prev) => {
+      const updated = [newNotification, ...prev];
+      saveNotifications(updated);
+      return updated;
+    });
 
     // Play notification sound
     try {
@@ -79,6 +109,7 @@ export default function NotificationsPage() {
 
   function clearAll() {
     setNotifications([]);
+    setShowClearConfirm(false);
   }
 
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -98,15 +129,15 @@ export default function NotificationsPage() {
             {t("notifications.title")}
           </h2>
           {unreadCount > 0 && (
-            <span className="bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+            <span className="bg-red-500 text-white text-xs font-bold rounded-full min-w-[24px] h-6 flex items-center justify-center px-1.5">
               {unreadCount}
             </span>
           )}
         </div>
         {notifications.length > 0 && (
           <button
-            onClick={clearAll}
-            className="text-sm text-gray-500 hover:text-gray-700"
+            onClick={() => setShowClearConfirm(true)}
+            className="h-10 px-4 text-sm text-gray-500 font-medium rounded-lg active:bg-gray-100 touch-manipulation transition-colors"
           >
             {t("notifications.clearAll")}
           </button>
@@ -115,11 +146,9 @@ export default function NotificationsPage() {
 
       {notifications.length === 0 ? (
         <div className="text-center py-16">
-          <div className="text-6xl mb-4">
-            <svg className="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </div>
+          <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
           <p className="text-gray-400 text-lg">{t("notifications.empty")}</p>
           {!userId && (
             <p className="text-gray-300 text-sm mt-2">
@@ -154,14 +183,14 @@ export default function NotificationsPage() {
                     {n.tableName && ` (${n.tableName})`}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 ml-4">
+                <div className="flex items-center gap-2 ml-4">
                   <span className="text-xs text-gray-400">
                     {formatTime(n.timestamp)}
                   </span>
                   {!n.read && (
                     <button
                       onClick={() => markRead(n.id)}
-                      className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
+                      className="h-9 px-3 text-xs text-blue-600 font-medium rounded-lg active:bg-blue-50 touch-manipulation whitespace-nowrap transition-colors"
                     >
                       {t("notifications.markRead")}
                     </button>
@@ -172,6 +201,17 @@ export default function NotificationsPage() {
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        open={showClearConfirm}
+        title={t("notifications.clearAll")}
+        message={t("notifications.clearAllConfirm")}
+        confirmLabel={t("notifications.clearAll")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        onConfirm={clearAll}
+        onCancel={() => setShowClearConfirm(false)}
+      />
     </div>
   );
 }

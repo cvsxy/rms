@@ -9,7 +9,8 @@
     "search": "Search",
     "noResults": "No results found",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "areYouSure": "Are you sure? This action cannot be undone."
   },
   "auth": {
     "enterPin": "Enter your PIN",
@@ -40,7 +41,10 @@
     "noItems": "No items in this category",
     "quantity": "Quantity",
     "notes": "Special instructions",
-    "notesPlaceholder": "e.g., extra spicy, no onions..."
+    "notesPlaceholder": "e.g., extra spicy, no onions...",
+    "searchPlaceholder": "Search menu...",
+    "noSearchResults": "No items found",
+    "clearCart": "Clear"
   },
   "orders": {
     "title": "Order",
@@ -67,6 +71,8 @@
     "tax": "IVA (16%)",
     "total": "Total",
     "tip": "Tip",
+    "noTip": "No Tip",
+    "customTip": "Custom",
     "payWithCash": "Cash",
     "payWithCard": "Card",
     "closeTable": "Close Table",
@@ -86,8 +92,9 @@
     "title": "Notifications",
     "itemReady": "{item} ready at {destination}",
     "tableReady": "Table {number}: items ready",
-    "markRead": "Mark as Read",
+    "markRead": "Read",
     "clearAll": "Clear All",
+    "clearAllConfirm": "Clear all notifications? This cannot be undone.",
     "noNotifications": "No notifications",
     "empty": "No notifications yet"
   },
@@ -101,7 +108,8 @@
     "filterByDate": "Filter by Date",
     "filterByServer": "Filter by Server",
     "cash": "Cash",
-    "card": "Card"
+    "card": "Card",
+    "exportCsv": "Export CSV"
   },
   "admin": {
     "dashboard": "Dashboard",

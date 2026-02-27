@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { SkeletonStatCards } from "@/components/common/Skeleton";
 
 interface DailySummary {
   totalRevenue: number;
@@ -19,6 +20,14 @@ interface ServerStat {
   revenue: number;
 }
 
+interface OrderForExport {
+  id: string;
+  createdAt: string;
+  table: { number: number };
+  server: { name: string };
+  payment?: { subtotal: string; tax: string; tip: string; total: string; method: string };
+}
+
 export default function ReportsPage() {
   const t = useTranslations();
   const [date, setDate] = useState(() => {
@@ -28,11 +37,11 @@ export default function ReportsPage() {
   const [summary, setSummary] = useState<DailySummary | null>(null);
   const [serverStats, setServerStats] = useState<ServerStat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [rawOrders, setRawOrders] = useState<OrderForExport[]>([]);
 
   async function fetchReports() {
     setLoading(true);
 
-    // Fetch all orders for selected date with payments
     const startDate = new Date(date + "T00:00:00");
     const endDate = new Date(date + "T23:59:59");
 
@@ -49,7 +58,8 @@ export default function ReportsPage() {
       const orders = ordersJson.data || ordersJson;
       const servers = serversJson.data || serversJson;
 
-      // Calculate summary
+      setRawOrders(orders);
+
       let totalRevenue = 0;
       let cashTotal = 0;
       let cardTotal = 0;
@@ -59,18 +69,15 @@ export default function ReportsPage() {
         { name: string; orderCount: number; revenue: number }
       > = {};
 
-      // Initialize server stats
       for (const s of servers) {
         serverMap[s.id] = { name: s.name, orderCount: 0, revenue: 0 };
       }
 
       for (const order of orders) {
-        // Count items
         if (order.items) {
           itemsSold += order.items.length;
         }
 
-        // Payment data
         if (order.payment) {
           const payTotal = Number(order.payment.total);
           totalRevenue += payTotal;
@@ -78,7 +85,6 @@ export default function ReportsPage() {
           if (order.payment.method === "CASH") cashTotal += payTotal;
           else cardTotal += payTotal;
 
-          // Server stats
           if (serverMap[order.serverId]) {
             serverMap[order.serverId].orderCount++;
             serverMap[order.serverId].revenue += payTotal;
@@ -110,6 +116,32 @@ export default function ReportsPage() {
     fetchReports();
   }, [date]);
 
+  function exportCSV() {
+    const headers = ["Date", "Order #", "Table", "Server", "Subtotal", "IVA", "Tip", "Total", "Method"];
+    const rows = rawOrders
+      .filter((o) => o.payment)
+      .map((o) => [
+        new Date(o.createdAt).toLocaleDateString("es-MX"),
+        o.id.slice(0, 8),
+        o.table.number.toString(),
+        o.server.name,
+        Number(o.payment!.subtotal).toFixed(2),
+        Number(o.payment!.tax).toFixed(2),
+        Number(o.payment!.tip).toFixed(2),
+        Number(o.payment!.total).toFixed(2),
+        o.payment!.method,
+      ]);
+
+    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `rms-report-${date}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -126,13 +158,22 @@ export default function ReportsPage() {
             onChange={(e) => setDate(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
           />
+          {!loading && summary && summary.orderCount > 0 && (
+            <button
+              onClick={exportCSV}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              {t("reports.exportCsv")}
+            </button>
+          )}
         </div>
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-500">{t("common.loading")}</p>
-        </div>
+        <SkeletonStatCards />
       ) : summary ? (
         <>
           {/* Summary cards */}

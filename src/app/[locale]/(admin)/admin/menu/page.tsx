@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 interface Modifier {
   id: string;
@@ -56,6 +57,7 @@ export default function ManageMenuPage() {
   >([]);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ type: "cat" | "item"; id: string } | null>(null);
 
   async function fetchCategories() {
     const res = await fetch("/api/menu/categories");
@@ -114,7 +116,6 @@ export default function ManageMenuPage() {
   }
 
   async function deleteCat(id: string) {
-    if (!confirm(t("common.confirm") + "?")) return;
     await fetch(`/api/menu/categories/${id}`, { method: "DELETE" });
     fetchCategories();
   }
@@ -188,9 +189,15 @@ export default function ManageMenuPage() {
   }
 
   async function deleteItem(id: string) {
-    if (!confirm(t("common.confirm") + "?")) return;
     await fetch(`/api/menu/items/${id}`, { method: "DELETE" });
     fetchCategories();
+  }
+
+  async function handleDeleteConfirm() {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === "cat") await deleteCat(deleteTarget.id);
+    else await deleteItem(deleteTarget.id);
+    setDeleteTarget(null);
   }
 
   function addModifier() {
@@ -269,7 +276,7 @@ export default function ManageMenuPage() {
               Edit Category
             </button>
             <button
-              onClick={() => deleteCat(activeCategory.id)}
+              onClick={() => setDeleteTarget({ type: "cat", id: activeCategory.id })}
               className="text-sm text-red-600 hover:text-red-800 font-medium"
             >
               Delete Category
@@ -352,7 +359,7 @@ export default function ManageMenuPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => deleteItem(item.id)}
+                      onClick={() => setDeleteTarget({ type: "item", id: item.id })}
                       className="text-sm text-red-600 hover:text-red-800 font-medium"
                     >
                       {t("common.delete")}
@@ -597,6 +604,17 @@ export default function ManageMenuPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title={t("common.confirm")}
+        message={t("common.areYouSure")}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

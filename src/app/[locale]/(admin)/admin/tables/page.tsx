@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import { SkeletonCard } from "@/components/common/Skeleton";
 
 interface Table {
   id: string;
@@ -22,6 +24,7 @@ export default function ManageTablesPage() {
   const [formSeats, setFormSeats] = useState("4");
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   async function fetchTables() {
     const res = await fetch("/api/tables");
@@ -64,9 +67,10 @@ export default function ManageTablesPage() {
     setSaving(false);
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm(t("common.confirm") + "?")) return;
-    await fetch(`/api/tables/${id}`, { method: "DELETE" });
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    await fetch(`/api/tables/${deleteTarget}`, { method: "DELETE" });
+    setDeleteTarget(null);
     fetchTables();
   }
 
@@ -86,8 +90,16 @@ export default function ManageTablesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">{t("common.loading")}</p>
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+          <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} className="h-40" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -217,7 +229,7 @@ export default function ManageTablesPage() {
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(table.id)}
+                onClick={() => setDeleteTarget(table.id)}
                 className="flex-1 text-sm text-red-600 hover:text-red-800 font-medium py-2 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
               >
                 {t("common.delete")}
@@ -226,6 +238,17 @@ export default function ManageTablesPage() {
           </div>
         ))}
       </div>
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title={t("common.confirm")}
+        message={t("common.areYouSure")}
+        confirmLabel={t("common.delete")}
+        cancelLabel={t("common.cancel")}
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

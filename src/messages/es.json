@@ -9,7 +9,8 @@
     "search": "Buscar",
     "noResults": "No se encontraron resultados",
     "error": "Ocurrió un error",
-    "success": "Éxito"
+    "success": "Éxito",
+    "areYouSure": "¿Estás seguro? Esta acción no se puede deshacer."
   },
   "auth": {
     "enterPin": "Ingresa tu PIN",
@@ -40,7 +41,10 @@
     "noItems": "No hay artículos en esta categoría",
     "quantity": "Cantidad",
     "notes": "Instrucciones especiales",
-    "notesPlaceholder": "ej., extra picante, sin cebolla..."
+    "notesPlaceholder": "ej., extra picante, sin cebolla...",
+    "searchPlaceholder": "Buscar en el menú...",
+    "noSearchResults": "No se encontraron artículos",
+    "clearCart": "Vaciar"
   },
   "orders": {
     "title": "Orden",
@@ -67,6 +71,8 @@
     "tax": "IVA (16%)",
     "total": "Total",
     "tip": "Propina",
+    "noTip": "Sin propina",
+    "customTip": "Otra",
     "payWithCash": "Efectivo",
     "payWithCard": "Tarjeta",
     "closeTable": "Cerrar Mesa",
@@ -86,8 +92,9 @@
     "title": "Notificaciones",
     "itemReady": "{item} listo en {destination}",
     "tableReady": "Mesa {number}: artículos listos",
-    "markRead": "Marcar como Leído",
+    "markRead": "Leído",
     "clearAll": "Borrar Todo",
+    "clearAllConfirm": "¿Borrar todas las notificaciones? Esta acción no se puede deshacer.",
     "noNotifications": "Sin notificaciones",
     "empty": "Sin notificaciones aún"
   },
@@ -101,7 +108,8 @@
     "filterByDate": "Filtrar por Fecha",
     "filterByServer": "Filtrar por Mesero",
     "cash": "Efectivo",
-    "card": "Tarjeta"
+    "card": "Tarjeta",
+    "exportCsv": "Exportar CSV"
   },
   "admin": {
     "dashboard": "Panel",
