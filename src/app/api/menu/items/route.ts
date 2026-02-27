@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     include: {
       category: true,
       modifiers: { where: { active: true } },
+      ingredients: { include: { ingredient: true } },
     },
   });
   return NextResponse.json({ data: items });

@@ -11,6 +11,19 @@ interface Modifier {
   priceAdj: number;
 }
 
+interface IngredientOption {
+  id: string;
+  name: string;
+  nameEs: string;
+  unit: string;
+}
+
+interface MenuItemIngredient {
+  ingredientId: string;
+  quantity: number;
+  ingredient: IngredientOption;
+}
+
 interface MenuItem {
   id: string;
   name: string;
@@ -21,6 +34,7 @@ interface MenuItem {
   destination: "KITCHEN" | "BAR";
   isActive: boolean;
   modifiers: Modifier[];
+  ingredients?: MenuItemIngredient[];
 }
 
 interface Category {
@@ -29,6 +43,13 @@ interface Category {
   nameEs: string;
   sortOrder: number;
   items: MenuItem[];
+}
+
+interface ItemIngredientRow {
+  ingredientId: string;
+  ingredientName: string;
+  unit: string;
+  quantity: string;
 }
 
 export default function ManageMenuPage() {
@@ -55,9 +76,13 @@ export default function ManageMenuPage() {
   const [itemModifiers, setItemModifiers] = useState<
     { name: string; nameEs: string; priceAdj: string }[]
   >([]);
+  const [itemIngredients, setItemIngredients] = useState<ItemIngredientRow[]>([]);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ type: "cat" | "item"; id: string } | null>(null);
+
+  // Available ingredients from inventory
+  const [availableIngredients, setAvailableIngredients] = useState<IngredientOption[]>([]);
 
   async function fetchCategories() {
     const res = await fetch("/api/menu/categories");
@@ -70,8 +95,19 @@ export default function ManageMenuPage() {
     setLoading(false);
   }
 
+  async function fetchIngredients() {
+    try {
+      const res = await fetch("/api/inventory");
+      if (res.ok) {
+        const json = await res.json();
+        setAvailableIngredients(json.data || []);
+      }
+    } catch { /* ignore */ }
+  }
+
   useEffect(() => {
     fetchCategories();
+    fetchIngredients();
   }, []);
 
   // Category CRUD
@@ -144,6 +180,12 @@ export default function ManageMenuPage() {
         nameEs: m.nameEs,
         priceAdj: parseFloat(m.priceAdj) || 0,
       })),
+      ingredients: itemIngredients
+        .filter((i) => i.ingredientId && parseFloat(i.quantity) > 0)
+        .map((i) => ({
+          ingredientId: i.ingredientId,
+          quantity: parseFloat(i.quantity),
+        })),
     };
 
     const res = await fetch(url, {
@@ -167,6 +209,7 @@ export default function ManageMenuPage() {
     setItemPrice("");
     setItemDest("KITCHEN");
     setItemModifiers([]);
+    setItemIngredients([]);
     setEditingItemId(null);
   }
 
@@ -183,6 +226,14 @@ export default function ManageMenuPage() {
         name: m.name,
         nameEs: m.nameEs,
         priceAdj: String(m.priceAdj),
+      }))
+    );
+    setItemIngredients(
+      (item.ingredients || []).map((ing) => ({
+        ingredientId: ing.ingredientId,
+        ingredientName: ing.ingredient.name,
+        unit: ing.ingredient.unit,
+        quantity: String(ing.quantity),
       }))
     );
     setShowItemForm(true);
@@ -217,6 +268,37 @@ export default function ManageMenuPage() {
     updated[idx] = { ...updated[idx], [field]: value };
     setItemModifiers(updated);
   }
+
+  // Ingredient helpers
+  function addIngredientRow() {
+    setItemIngredients([...itemIngredients, { ingredientId: "", ingredientName: "", unit: "", quantity: "" }]);
+  }
+
+  function removeIngredientRow(idx: number) {
+    setItemIngredients(itemIngredients.filter((_, i) => i !== idx));
+  }
+
+  function updateIngredientRow(idx: number, ingredientId: string) {
+    const ing = availableIngredients.find((a) => a.id === ingredientId);
+    if (!ing) return;
+    const updated = [...itemIngredients];
+    updated[idx] = {
+      ingredientId: ing.id,
+      ingredientName: ing.name,
+      unit: ing.unit,
+      quantity: updated[idx].quantity,
+    };
+    setItemIngredients(updated);
+  }
+
+  function updateIngredientQuantity(idx: number, quantity: string) {
+    const updated = [...itemIngredients];
+    updated[idx] = { ...updated[idx], quantity };
+    setItemIngredients(updated);
+  }
+
+  // Filter out already-selected ingredients from dropdown
+  const selectedIngredientIds = new Set(itemIngredients.map((i) => i.ingredientId));
 
   const activeCategory = categories.find((c) => c.id === activeTab);
 
@@ -346,6 +428,18 @@ export default function ManageMenuPage() {
                             {mod.name}
                             {Number(mod.priceAdj) > 0 &&
                               ` (+$${Number(mod.priceAdj).toFixed(2)})`}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {item.ingredients && item.ingredients.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {item.ingredients.map((ing) => (
+                          <span
+                            key={ing.ingredientId}
+                            className="px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-xs"
+                          >
+                            {ing.ingredient.name} ({Number(ing.quantity)}{ing.ingredient.unit})
                           </span>
                         ))}
                       </div>
@@ -576,6 +670,64 @@ export default function ManageMenuPage() {
                     <button
                       type="button"
                       onClick={() => removeModifier(idx)}
+                      className="text-red-500 hover:text-red-700 text-lg px-1"
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Ingredients per Serving */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t("menu.ingredientsPerServing")}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addIngredientRow}
+                    className="text-sm text-emerald-600 hover:text-emerald-800 font-medium"
+                  >
+                    + {t("menu.addIngredient")}
+                  </button>
+                </div>
+                {itemIngredients.length === 0 && (
+                  <p className="text-xs text-gray-400 mb-2">{t("menu.noIngredientsLinked")}</p>
+                )}
+                {itemIngredients.map((row, idx) => (
+                  <div key={idx} className="flex gap-2 mb-2 items-center">
+                    <select
+                      value={row.ingredientId}
+                      onChange={(e) => updateIngredientRow(idx, e.target.value)}
+                      required
+                      className="flex-1 px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900"
+                    >
+                      <option value="">{t("menu.selectIngredient")}</option>
+                      {availableIngredients
+                        .filter((a) => a.id === row.ingredientId || !selectedIngredientIds.has(a.id))
+                        .map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.name} ({a.unit})
+                          </option>
+                        ))}
+                    </select>
+                    <input
+                      type="number"
+                      placeholder={t("inventory.quantityPerServing")}
+                      value={row.quantity}
+                      onChange={(e) => updateIngredientQuantity(idx, e.target.value)}
+                      required
+                      min="0.001"
+                      step="0.001"
+                      className="w-24 px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900"
+                    />
+                    {row.unit && (
+                      <span className="text-xs text-gray-500 w-8">{row.unit}</span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeIngredientRow(idx)}
                       className="text-red-500 hover:text-red-700 text-lg px-1"
                     >
                       x

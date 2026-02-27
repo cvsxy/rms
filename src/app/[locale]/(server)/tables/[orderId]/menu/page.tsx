@@ -8,7 +8,8 @@ import { SkeletonMenuItems } from "@/components/common/Skeleton";
 
 interface Category { id: string; name: string; nameEs: string; }
 interface Modifier { id: string; name: string; nameEs: string; priceAdj: string; }
-interface MenuItem { id: string; name: string; nameEs: string; description: string | null; descriptionEs: string | null; price: string; destination: string; categoryId: string; modifiers: Modifier[]; }
+interface IngredientInfo { ingredient: { name: string; nameEs: string; unit: string }; quantity: number; }
+interface MenuItem { id: string; name: string; nameEs: string; description: string | null; descriptionEs: string | null; price: string; destination: string; categoryId: string; modifiers: Modifier[]; ingredients?: IngredientInfo[]; }
 interface CartItem { menuItemId: string; name: string; quantity: number; notes: string; modifierIds: string[]; price: number; seatNumber: number | null; }
 
 export default function MenuBrowserPage({ params }: { params: Promise<{ orderId: string }> }) {
@@ -29,6 +30,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [tableSeats, setTableSeats] = useState(0);
+  const [showIngredients, setShowIngredients] = useState(false);
 
   useEffect(() => { fetchMenu(); fetchTableSeats(); }, []);
 
@@ -63,7 +65,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
     return selectedCategory ? items.filter((i) => i.categoryId === selectedCategory) : items;
   }, [isSearching, searchQuery, selectedCategory, items]);
 
-  const openItemSheet = (item: MenuItem) => { setSelectedItem(item); setQuantity(1); setNotes(""); setSelectedModifiers([]); setSeatNumber(null); };
+  const openItemSheet = (item: MenuItem) => { setSelectedItem(item); setQuantity(1); setNotes(""); setSelectedModifiers([]); setSeatNumber(null); setShowIngredients(false); };
 
   // Calculate live price preview for the modal
   const modalPrice = useMemo(() => {
@@ -341,6 +343,32 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Ingredients info (collapsible) */}
+            {selectedItem.ingredients && selectedItem.ingredients.length > 0 && (
+              <div className="mb-4">
+                <button
+                  type="button"
+                  onClick={() => setShowIngredients(!showIngredients)}
+                  className="flex items-center gap-2 text-sm font-medium text-emerald-700 active:text-emerald-900 touch-manipulation"
+                >
+                  <svg className={`w-4 h-4 transition-transform ${showIngredients ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  {t("menu.whatsInThis")}
+                </button>
+                {showIngredients && (
+                  <div className="mt-2 bg-emerald-50 rounded-lg p-3 space-y-1">
+                    {selectedItem.ingredients.map((ing, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-sm">
+                        <span className="text-gray-700">{getName(ing.ingredient)}</span>
+                        <span className="text-gray-500 text-xs">{Number(ing.quantity)}{ing.ingredient.unit}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

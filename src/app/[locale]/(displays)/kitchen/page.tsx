@@ -4,6 +4,13 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePusherChannel } from "@/hooks/usePusher";
 
+interface IngredientInfo {
+  name: string;
+  nameEs: string;
+  unit: string;
+  quantity: number;
+}
+
 interface DisplayItem {
   id: string;
   quantity: number;
@@ -12,6 +19,7 @@ interface DisplayItem {
   sentAt: string;
   readyAt: string | null;
   seatNumber: number | null;
+  menuItemId: string;
   menuItem: { name: string; nameEs: string; destination: string };
   modifiers: { modifier: { name: string; nameEs: string } }[];
 }
@@ -30,6 +38,29 @@ export default function KitchenDisplayPage() {
   const [collapsedOrders, setCollapsedOrders] = useState<Set<string>>(new Set());
   const [, setTick] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [ingredientMap, setIngredientMap] = useState<Record<string, IngredientInfo[]>>({});
+
+  const fetchIngredientMap = useCallback(async () => {
+    try {
+      const res = await fetch("/api/menu/categories");
+      if (!res.ok) return;
+      const { data } = await res.json();
+      const map: Record<string, IngredientInfo[]> = {};
+      for (const cat of data) {
+        for (const item of cat.items || []) {
+          if (item.ingredients && item.ingredients.length > 0) {
+            map[item.id] = item.ingredients.map((ing: { quantity: number; ingredient: { name: string; nameEs: string; unit: string } }) => ({
+              name: ing.ingredient.name,
+              nameEs: ing.ingredient.nameEs,
+              unit: ing.ingredient.unit,
+              quantity: Number(ing.quantity),
+            }));
+          }
+        }
+      }
+      setIngredientMap(map);
+    } catch { /* ignore */ }
+  }, []);
 
   const fetchOrders = useCallback(async () => {
     const res = await fetch("/api/orders?status=SUBMITTED");
@@ -51,22 +82,24 @@ export default function KitchenDisplayPage() {
 
   useEffect(() => {
     fetchOrders();
+    fetchIngredientMap();
     const pollInterval = setInterval(fetchOrders, 5000);
     const tickInterval = setInterval(() => setTick((t) => t + 1), 1000);
     return () => {
       clearInterval(pollInterval);
       clearInterval(tickInterval);
     };
-  }, [fetchOrders]);
+  }, [fetchOrders, fetchIngredientMap]);
 
   const handleNewItems = useCallback(() => {
     fetchOrders();
+    fetchIngredientMap();
     try {
       if (!audioRef.current) audioRef.current = new Audio("/chime.mp3");
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(() => {});
     } catch { /* No audio */ }
-  }, [fetchOrders]);
+  }, [fetchOrders, fetchIngredientMap]);
 
   const handleStatusChanged = useCallback(() => { fetchOrders(); }, [fetchOrders]);
 
@@ -207,41 +240,49 @@ export default function KitchenDisplayPage() {
                   <>
                     {/* Items list */}
                     <div className="space-y-3 mb-4">
-                      {order.items.map((item) => (
-                        <div key={item.id} className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <div className="text-base">
-                              <span className="font-bold text-lg">{item.quantity}x</span>{" "}
-                              {item.seatNumber && (
-                                <span className="text-xs bg-purple-600 text-white px-1.5 py-0.5 rounded mr-1 font-medium">
-                                  S{item.seatNumber}
-                                </span>
+                      {order.items.map((item) => {
+                        const ingredients = ingredientMap[item.menuItemId];
+                        return (
+                          <div key={item.id} className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="text-base">
+                                <span className="font-bold text-lg">{item.quantity}x</span>{" "}
+                                {item.seatNumber && (
+                                  <span className="text-xs bg-purple-600 text-white px-1.5 py-0.5 rounded mr-1 font-medium">
+                                    S{item.seatNumber}
+                                  </span>
+                                )}
+                                {getName(item.menuItem)}
+                              </div>
+                              {item.modifiers.length > 0 && (
+                                <div className="text-sm text-gray-400 mt-0.5">
+                                  {item.modifiers.map((m) => getName(m.modifier)).join(", ")}
+                                </div>
                               )}
-                              {getName(item.menuItem)}
+                              {ingredients && ingredients.length > 0 && (
+                                <div className="text-xs text-emerald-400/80 mt-0.5">
+                                  {ingredients.map((ing) => `${getName(ing)} ${ing.quantity}${ing.unit}`).join(", ")}
+                                </div>
+                              )}
+                              {item.notes && (
+                                <div className="text-sm text-yellow-400 italic mt-1 font-medium bg-yellow-900/30 rounded px-2 py-1">
+                                  📝 {item.notes}
+                                </div>
+                              )}
                             </div>
-                            {item.modifiers.length > 0 && (
-                              <div className="text-sm text-gray-400 mt-0.5">
-                                {item.modifiers.map((m) => getName(m.modifier)).join(", ")}
-                              </div>
-                            )}
-                            {item.notes && (
-                              <div className="text-sm text-yellow-400 italic mt-1 font-medium bg-yellow-900/30 rounded px-2 py-1">
-                                📝 {item.notes}
-                              </div>
+                            {item.status === "READY" ? (
+                              <span className="text-green-400 text-xl font-bold shrink-0">✓</span>
+                            ) : (
+                              <button
+                                onClick={() => markReady(item.id)}
+                                className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg active:bg-green-700 touch-manipulation shrink-0"
+                              >
+                                {t("display.markReady")}
+                              </button>
                             )}
                           </div>
-                          {item.status === "READY" ? (
-                            <span className="text-green-400 text-xl font-bold shrink-0">✓</span>
-                          ) : (
-                            <button
-                              onClick={() => markReady(item.id)}
-                              className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg active:bg-green-700 touch-manipulation shrink-0"
-                            >
-                              {t("display.markReady")}
-                            </button>
-                          )}
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     {/* Mark All Ready button */}

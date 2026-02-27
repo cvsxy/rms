@@ -57,7 +57,13 @@
     "noSearchResults": "No se encontraron artículos",
     "clearCart": "Vaciar",
     "seatNumber": "Asiento",
-    "noSeat": "Sin Asiento"
+    "noSeat": "Sin Asiento",
+    "whatsInThis": "Ingredientes",
+    "ingredientsPerServing": "Ingredientes por Porcion",
+    "addIngredient": "Agregar Ingrediente",
+    "selectIngredient": "Seleccionar ingrediente...",
+    "noIngredientsLinked": "Sin ingredientes vinculados",
+    "ingredientsList": "Ingredientes"
   },
   "orders": {
     "title": "Orden",

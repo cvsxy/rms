@@ -57,7 +57,13 @@
     "noSearchResults": "No items found",
     "clearCart": "Clear",
     "seatNumber": "Seat",
-    "noSeat": "No Seat"
+    "noSeat": "No Seat",
+    "whatsInThis": "What's in this",
+    "ingredientsPerServing": "Ingredients per Serving",
+    "addIngredient": "Add Ingredient",
+    "selectIngredient": "Select ingredient...",
+    "noIngredientsLinked": "No ingredients linked",
+    "ingredientsList": "Ingredients"
   },
   "orders": {
     "title": "Order",
