@@ -14,8 +14,26 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const body = await request.json();
-  const { modifiers, ...itemData } = body;
+  const { modifiers, ingredients, ...itemData } = body;
+
   const item = await prisma.menuItem.update({ where: { id }, data: itemData });
+
+  // Update ingredients if provided
+  if (ingredients !== undefined) {
+    await prisma.menuItemIngredient.deleteMany({ where: { menuItemId: id } });
+    if (ingredients?.length) {
+      await prisma.menuItemIngredient.createMany({
+        data: ingredients.map(
+          (i: { ingredientId: string; quantity: number }) => ({
+            menuItemId: id,
+            ingredientId: i.ingredientId,
+            quantity: i.quantity,
+          })
+        ),
+      });
+    }
+  }
+
   return NextResponse.json({ data: item });
 }
 

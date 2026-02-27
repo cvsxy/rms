@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { SkeletonCard } from "@/components/common/Skeleton";
+import TableLayoutEditor from "./TableLayoutEditor";
 
 interface Table {
   id: string;
@@ -12,6 +13,8 @@ interface Table {
   seats: number;
   status: string;
   isActive: boolean;
+  posX: number | null;
+  posY: number | null;
 }
 
 export default function ManageTablesPage() {
@@ -25,6 +28,8 @@ export default function ManageTablesPage() {
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "layout">("list");
+  const [customLayoutEnabled, setCustomLayoutEnabled] = useState(false);
 
   async function fetchTables() {
     const res = await fetch("/api/tables");
@@ -35,8 +40,19 @@ export default function ManageTablesPage() {
     setLoading(false);
   }
 
+  async function fetchSettings() {
+    try {
+      const res = await fetch("/api/settings");
+      if (res.ok) {
+        const json = await res.json();
+        setCustomLayoutEnabled(json.data?.useCustomLayout === "true");
+      }
+    } catch { /* ignore */ }
+  }
+
   useEffect(() => {
     fetchTables();
+    fetchSettings();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -82,6 +98,25 @@ export default function ManageTablesPage() {
     setShowForm(true);
   }
 
+  async function handleSaveLayout(positions: { id: string; posX: number; posY: number }[]) {
+    await fetch("/api/tables/positions", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ positions }),
+    });
+    fetchTables();
+  }
+
+  async function toggleCustomLayout() {
+    const newVal = !customLayoutEnabled;
+    setCustomLayoutEnabled(newVal);
+    await fetch("/api/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: "useCustomLayout", value: String(newVal) }),
+    });
+  }
+
   const statusColors: Record<string, string> = {
     AVAILABLE: "bg-green-100 text-green-800",
     OCCUPIED: "bg-red-100 text-red-800",
@@ -106,23 +141,124 @@ export default function ManageTablesPage() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
           {t("admin.manageTables")}
         </h1>
-        <button
-          onClick={() => {
-            setEditingId(null);
-            setFormNumber((tables.length + 1).toString());
-            setFormName("");
-            setFormSeats("4");
-            setShowForm(true);
-          }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-        >
-          + {t("tables.createTable")}
-        </button>
+        <div className="flex items-center gap-3">
+          {/* View mode toggle */}
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                viewMode === "list"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {t("tables.listView")}
+            </button>
+            <button
+              onClick={() => setViewMode("layout")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                viewMode === "layout"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {t("tables.layoutView")}
+            </button>
+          </div>
+
+          <button
+            onClick={() => {
+              setEditingId(null);
+              setFormNumber((tables.length + 1).toString());
+              setFormName("");
+              setFormSeats("4");
+              setShowForm(true);
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            + {t("tables.createTable")}
+          </button>
+        </div>
       </div>
+
+      {/* Custom layout toggle */}
+      {viewMode === "layout" && (
+        <div className="mb-4 flex items-center gap-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={customLayoutEnabled}
+              onChange={toggleCustomLayout}
+              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+            />
+            <span className="text-sm font-medium text-gray-700">
+              {t("tables.enableCustomLayout")}
+            </span>
+          </label>
+          {customLayoutEnabled && (
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+              {t("tables.customLayoutEnabled")}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Layout view */}
+      {viewMode === "layout" ? (
+        <TableLayoutEditor tables={tables} onSave={handleSaveLayout} />
+      ) : (
+        /* List view (original grid) */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {tables.map((table) => (
+            <div
+              key={table.id}
+              className="bg-white rounded-xl shadow-sm p-5 border border-gray-200"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900">
+                  {t("tables.tableNumber", { number: table.number })}
+                </h3>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    statusColors[table.status] || "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {table.status === "AVAILABLE"
+                    ? t("tables.available")
+                    : table.status === "OCCUPIED"
+                    ? t("tables.occupied")
+                    : t("tables.reserved")}
+                </span>
+              </div>
+              {table.name && (
+                <p className="text-sm text-gray-500 mb-1">{table.name}</p>
+              )}
+              <p className="text-sm text-gray-500 mb-4">
+                {t("tables.seats", { count: table.seats })}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => startEdit(table)}
+                  className="flex-1 text-sm text-blue-600 hover:text-blue-800 font-medium py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+                >
+                  {t("common.edit")}
+                </button>
+                <button
+                  onClick={() => setDeleteTarget(table.id)}
+                  className="flex-1 text-sm text-red-600 hover:text-red-800 font-medium py-2 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                >
+                  {t("common.delete")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Form modal */}
       {showForm && (
@@ -191,53 +327,6 @@ export default function ManageTablesPage() {
           </div>
         </div>
       )}
-
-      {/* Table grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {tables.map((table) => (
-          <div
-            key={table.id}
-            className="bg-white rounded-xl shadow-sm p-5 border border-gray-200"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900">
-                {t("tables.tableNumber", { number: table.number })}
-              </h3>
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  statusColors[table.status] || "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {table.status === "AVAILABLE"
-                  ? t("tables.available")
-                  : table.status === "OCCUPIED"
-                  ? t("tables.occupied")
-                  : t("tables.reserved")}
-              </span>
-            </div>
-            {table.name && (
-              <p className="text-sm text-gray-500 mb-1">{table.name}</p>
-            )}
-            <p className="text-sm text-gray-500 mb-4">
-              {t("tables.seats", { count: table.seats })}
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => startEdit(table)}
-                className="flex-1 text-sm text-blue-600 hover:text-blue-800 font-medium py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => setDeleteTarget(table.id)}
-                className="flex-1 text-sm text-red-600 hover:text-red-800 font-medium py-2 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
-              >
-                {t("common.delete")}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <ConfirmModal
         open={!!deleteTarget}

@@ -81,9 +81,10 @@ model MenuItem {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
-  category   MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  modifiers  Modifier[]
-  orderItems OrderItem[]
+  category    MenuCategory         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  modifiers   Modifier[]
+  orderItems  OrderItem[]
+  ingredients MenuItemIngredient[]
 
   @@index([categoryId])
   @@index([destination])
@@ -121,6 +122,8 @@ model RestaurantTable {
   seats     Int         @default(4)
   status    TableStatus @default(AVAILABLE)
   active    Boolean     @default(true)
+  posX      Float?
+  posY      Float?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
@@ -220,6 +223,49 @@ model PushSubscription {
 
   @@unique([userId, endpoint])
   @@index([userId])
+}
+
+// ─── INVENTORY ──────────────────────────────────────────────────
+
+model Ingredient {
+  id                String   @id @default(cuid())
+  name              String
+  nameEs            String
+  unit              String   // "kg", "L", "units", "g", "ml", "oz"
+  currentStock      Decimal  @default(0) @db.Decimal(10, 3)
+  lowStockThreshold Decimal  @default(0) @db.Decimal(10, 3)
+  costPerUnit       Decimal  @default(0) @db.Decimal(10, 2)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  menuItems MenuItemIngredient[]
+
+  @@index([active])
+}
+
+model MenuItemIngredient {
+  id           String  @id @default(cuid())
+  menuItemId   String
+  ingredientId String
+  quantity     Decimal @db.Decimal(10, 3)
+
+  menuItem   MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([menuItemId, ingredientId])
+  @@index([menuItemId])
+  @@index([ingredientId])
+}
+
+// ─── SETTINGS ───────────────────────────────────────────────────
+
+model RestaurantSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+
+  @@index([key])
 }
 
 // ─── PAYMENTS ───────────────────────────────────────────────────

@@ -23,9 +23,12 @@ export async function GET(request: NextRequest) {
     where.createdAt = dateFilter;
   }
 
+  const limit = searchParams.get("limit");
+
   const orders = await prisma.order.findMany({
     where,
     orderBy: { createdAt: "desc" },
+    take: limit ? parseInt(limit) : undefined,
     include: {
       table: true,
       server: { select: { id: true, name: true } },

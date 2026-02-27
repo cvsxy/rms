@@ -9,7 +9,10 @@ export async function GET() {
       items: {
         where: { active: true },
         orderBy: { sortOrder: "asc" },
-        include: { modifiers: { where: { active: true } } },
+        include: {
+          modifiers: { where: { active: true } },
+          ingredients: { include: { ingredient: true } },
+        },
       },
     },
   });

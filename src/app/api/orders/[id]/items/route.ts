@@ -47,6 +47,39 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     createdItems.push(orderItem);
   }
 
+  // Deduct ingredient stock
+  try {
+    const menuItemIds = createdItems.map((i) => i.menuItemId);
+    const menuItemIngredients = await prisma.menuItemIngredient.findMany({
+      where: { menuItemId: { in: menuItemIds } },
+    });
+
+    const deductions: Record<string, number> = {};
+    for (const ci of createdItems) {
+      const qty = ci.quantity;
+      const usages = menuItemIngredients.filter(
+        (mi) => mi.menuItemId === ci.menuItemId
+      );
+      for (const usage of usages) {
+        const key = usage.ingredientId;
+        deductions[key] = (deductions[key] || 0) + Number(usage.quantity) * qty;
+      }
+    }
+
+    if (Object.keys(deductions).length > 0) {
+      await prisma.$transaction(
+        Object.entries(deductions).map(([ingredientId, amount]) =>
+          prisma.ingredient.update({
+            where: { id: ingredientId },
+            data: { currentStock: { decrement: amount } },
+          })
+        )
+      );
+    }
+  } catch (err) {
+    console.error("[inventory] Failed to deduct stock:", err);
+  }
+
   const order = await prisma.order.update({
     where: { id: orderId },
     data: { status: "SUBMITTED" },
