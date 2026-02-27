@@ -74,13 +74,19 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 - [x] Notifications page with real-time alerts
 - [x] Polling fallback (5s) for displays
 
-### Phase 7: PWA + Polish - TODO
-- [ ] Service worker for offline caching
-- [ ] PWA icon generation
-- [ ] Apple-specific meta tags for iPad standalone mode
-- [ ] Touch optimization audit (44px min targets)
-- [ ] Loading states and error boundaries
-- [ ] Audio chime files for notifications
+### Phase 7: UX Polish + Server PWA Layout - COMPLETE
+- [x] Server layout overhaul: SVG nav icons, notification badge, 44px+ touch targets, safe area insets
+- [x] Table grid: 5s polling, responsive columns (2/3/4), skeleton loading, reserved status
+- [x] Order view: color-coded status badges, "Mark Served" on ready items, skeleton
+- [x] Menu browser: search bar across categories, larger ±/close buttons, live price preview, clear cart
+- [x] Bill page: tip presets (10%/15%/20%/no tip/custom), larger inputs, payment icons
+- [x] Notifications: sessionStorage persistence, confirm modal for clear all, larger targets
+- [x] PWA: manifest.ts, SVG icons (192/512), service worker with cache-first static assets
+- [x] Admin dashboard: recharts bar charts (7-day revenue, hourly orders, top 5 items)
+- [x] Reusable Skeleton + ConfirmModal components (replaced all window.confirm)
+- [x] CSV export on reports page
+- [x] All new i18n keys in es.json and en.json
+- [x] Dependency added: recharts
 
 ## Database Schema (10 models)
 User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment
