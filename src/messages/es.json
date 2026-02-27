@@ -90,7 +90,8 @@
     "paymentRecorded": "Pago registrado. Mesa cerrada.",
     "filterBySeat": "Filtrar por Asiento",
     "allSeats": "Todos",
-    "seatSubtotal": "Subtotal del asiento"
+    "seatSubtotal": "Subtotal del asiento",
+    "seatFilterNote": "Mostrando artículos del asiento seleccionado. El pago aplica a toda la orden."
   },
   "display": {
     "kitchen": "Cocina",

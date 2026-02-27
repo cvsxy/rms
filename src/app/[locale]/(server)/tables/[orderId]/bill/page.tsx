@@ -114,7 +114,7 @@ export default function BillPage({ params }: { params: Promise<{ orderId: string
                   filterSeat === num ? "bg-purple-600 text-white border-purple-600" : "bg-white text-gray-700 border-gray-200"
                 }`}
               >
-                {t("orders.seat")} {num}
+                {t("orders.seat", { number: num })}
               </button>
             ))}
           </div>
@@ -188,7 +188,7 @@ export default function BillPage({ params }: { params: Promise<{ orderId: string
       <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3 mb-6">
         {filterSeat !== null && (
           <div className="flex justify-between text-sm text-purple-600 font-medium">
-            <span>{t("orders.seat")} {filterSeat}</span>
+            <span>{t("orders.seat", { number: filterSeat })}</span>
             <span>{formatMXN(displaySubtotal)}</span>
           </div>
         )}

@@ -90,7 +90,8 @@
     "paymentRecorded": "Payment recorded. Table closed.",
     "filterBySeat": "Filter by Seat",
     "allSeats": "All",
-    "seatSubtotal": "Seat subtotal"
+    "seatSubtotal": "Seat subtotal",
+    "seatFilterNote": "Showing items for selected seat. Payment applies to full order."
   },
   "display": {
     "kitchen": "Kitchen",

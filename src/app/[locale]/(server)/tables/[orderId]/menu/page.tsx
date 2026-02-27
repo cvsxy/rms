@@ -189,14 +189,14 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
 
       {/* Category + Items layout */}
       {!isSearching ? (
-        <div className="flex-1 flex flex-col sm:flex-row overflow-hidden">
-          {/* Sidebar categories (tablet+) */}
-          <div className="hidden sm:flex flex-col w-1/4 min-w-[140px] max-w-[200px] border-r border-gray-200 overflow-y-auto px-2 py-2 gap-1">
+        <div className="flex-1 flex flex-row overflow-hidden">
+          {/* Category sidebar — always visible */}
+          <div className="flex flex-col w-[110px] sm:w-1/4 sm:min-w-[140px] sm:max-w-[200px] border-r border-gray-200 overflow-y-auto px-1.5 sm:px-2 py-2 gap-1 shrink-0">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`w-full text-left px-3 py-3.5 rounded-xl text-sm font-medium touch-manipulation transition-colors ${
+                className={`w-full text-left px-2.5 sm:px-3 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm font-medium touch-manipulation transition-colors ${
                   selectedCategory === cat.id
                     ? "bg-blue-600 text-white"
                     : "bg-white text-gray-700 active:bg-gray-100 border border-gray-100"
@@ -207,29 +207,8 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
             ))}
           </div>
 
-          {/* Horizontal tabs (mobile only) */}
-          <div className="sm:hidden flex-shrink-0">
-            <div className="px-4 pb-2 overflow-x-auto">
-              <div className="flex gap-2 min-w-max">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap touch-manipulation transition-colors ${
-                      selectedCategory === cat.id
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 text-gray-700 active:bg-gray-300"
-                    }`}
-                  >
-                    {getName(cat)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
           {/* Items grid */}
-          <div className="flex-1 overflow-auto px-4 pb-4">
+          <div className="flex-1 overflow-auto px-3 sm:px-4 pb-4">
             {itemsGrid}
           </div>
         </div>
@@ -308,7 +287,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
             {/* Seat number (optional) */}
             {tableSeats > 0 && (
               <div className="mb-4">
-                <span className="text-sm font-medium text-gray-700 block mb-2">{t("orders.seatNumber")}:</span>
+                <span className="text-sm font-medium text-gray-700 block mb-2">{t("menu.seatNumber")}:</span>
                 <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={() => setSeatNumber(null)}
@@ -318,7 +297,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
                         : "bg-white border-gray-200 text-gray-600 active:bg-gray-50"
                     }`}
                   >
-                    {t("orders.noSeat")}
+                    {t("menu.noSeat")}
                   </button>
                   {Array.from({ length: tableSeats }, (_, i) => i + 1).map((num) => (
                     <button

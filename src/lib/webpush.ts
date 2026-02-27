@@ -3,18 +3,25 @@ import { prisma } from "@/lib/prisma";
 
 let vapidConfigured = false;
 
-function ensureVapid() {
-  if (vapidConfigured) return;
+function ensureVapid(): boolean {
+  if (vapidConfigured) return true;
   const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim();
   const privateKey = process.env.VAPID_PRIVATE_KEY?.trim();
   const email = (process.env.VAPID_EMAIL || "admin@rms.com").trim();
 
   if (!publicKey || !privateKey) {
-    throw new Error("VAPID keys not configured");
+    console.warn("[webpush] VAPID keys not configured, skipping push");
+    return false;
   }
 
-  webpush.setVapidDetails(`mailto:${email}`, publicKey, privateKey);
-  vapidConfigured = true;
+  try {
+    webpush.setVapidDetails(`mailto:${email}`, publicKey, privateKey);
+    vapidConfigured = true;
+    return true;
+  } catch (err) {
+    console.error("[webpush] Failed to configure VAPID:", err);
+    return false;
+  }
 }
 
 export interface PushPayload {
@@ -28,11 +35,13 @@ export async function sendPushToUser(
   userId: string,
   payload: PushPayload
 ): Promise<void> {
-  ensureVapid();
+  if (!ensureVapid()) return;
 
   const subscriptions = await prisma.pushSubscription.findMany({
     where: { userId },
   });
+
+  if (subscriptions.length === 0) return;
 
   const results = await Promise.allSettled(
     subscriptions.map(async (sub) => {
@@ -54,11 +63,12 @@ export async function sendPushToUser(
             (error as { statusCode: number }).statusCode === 404)
         ) {
           await prisma.pushSubscription.delete({ where: { id: sub.id } });
+        } else {
+          console.error("[webpush] Send failed for subscription", sub.id, error);
         }
       }
     })
   );
 
-  // Silently handle all results
   void results;
 }
