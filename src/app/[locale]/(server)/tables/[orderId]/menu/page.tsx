@@ -189,7 +189,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
 
       {/* Category + Items layout */}
       {!isSearching ? (
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col sm:flex-row overflow-hidden">
           {/* Sidebar categories (tablet+) */}
           <div className="hidden sm:flex flex-col w-1/4 min-w-[140px] max-w-[200px] border-r border-gray-200 overflow-y-auto px-2 py-2 gap-1">
             {categories.map((cat) => (

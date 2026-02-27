@@ -1,4 +1,4 @@
-const CACHE_NAME = "rms-v2";
+const CACHE_NAME = "rms-v3";
 const STATIC_ASSETS = ["/", "/es/pin-login", "/en/pin-login"];
 
 self.addEventListener("install", (event) => {
