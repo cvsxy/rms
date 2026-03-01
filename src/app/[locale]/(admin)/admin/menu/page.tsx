@@ -322,7 +322,7 @@ export default function ManageMenuPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
           {t("admin.manageMenu")}
         </h1>
@@ -359,7 +359,7 @@ export default function ManageMenuPage() {
 
       {/* Active category controls */}
       {activeCategory && (
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div className="flex gap-2">
             <button
               onClick={() => startEditCat(activeCategory)}
@@ -399,9 +399,9 @@ export default function ManageMenuPage() {
                 key={item.id}
                 className="bg-white rounded-xl shadow-sm p-5 border border-gray-200"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       <h3 className="font-semibold text-gray-900">
                         {item.name}
                       </h3>
@@ -460,7 +460,7 @@ export default function ManageMenuPage() {
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2 ml-4 items-center">
+                  <div className="flex flex-wrap gap-2 items-center">
                     <button
                       onClick={() => toggleAvailability(item)}
                       className={`text-xs font-medium px-2.5 py-1 rounded-lg border transition-colors ${
@@ -564,7 +564,7 @@ export default function ManageMenuPage() {
               {editingItemId ? "Edit Item" : t("admin.addItem")}
             </h2>
             <form onSubmit={handleItemSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Name (EN)
@@ -590,7 +590,7 @@ export default function ManageMenuPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Description (EN)
@@ -614,7 +614,7 @@ export default function ManageMenuPage() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t("menu.price", { price: "" })} (MXN)
@@ -661,7 +661,7 @@ export default function ManageMenuPage() {
                   </button>
                 </div>
                 {itemModifiers.map((mod, idx) => (
-                  <div key={idx} className="flex gap-2 mb-2 items-center">
+                  <div key={idx} className="flex flex-wrap gap-2 mb-2 items-center">
                     <input
                       type="text"
                       placeholder="EN name"
@@ -721,7 +721,7 @@ export default function ManageMenuPage() {
                   <p className="text-xs text-gray-400 mb-2">{t("menu.noIngredientsLinked")}</p>
                 )}
                 {itemIngredients.map((row, idx) => (
-                  <div key={idx} className="flex gap-2 mb-2 items-center">
+                  <div key={idx} className="flex flex-wrap gap-2 mb-2 items-center">
                     <select
                       value={row.ingredientId}
                       onChange={(e) => updateIngredientRow(idx, e.target.value)}

@@ -163,9 +163,9 @@ export default function InventoryPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-gray-900">{t("inventory.title")}</h1>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => {
               setDeliveryAmounts({});
@@ -307,7 +307,7 @@ export default function InventoryPage() {
               {editingId ? t("inventory.editIngredient") : t("inventory.addIngredient")}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t("inventory.ingredientName")} (EN)
@@ -349,7 +349,7 @@ export default function InventoryPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {t("inventory.currentStock")}
@@ -418,8 +418,8 @@ export default function InventoryPage() {
             </h2>
             <div className="space-y-3 mb-6">
               {ingredients.map((ing) => (
-                <div key={ing.id} className="flex items-center gap-3">
-                  <div className="flex-1">
+                <div key={ing.id} className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                  <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-900">{ing.name}</div>
                     <div className="text-xs text-gray-500">
                       {t("inventory.currentStock")}: {Number(ing.currentStock).toFixed(ing.unit === "units" ? 0 : 2)} {ing.unit}

@@ -142,11 +142,11 @@ export default function ManageTablesPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
           {t("admin.manageTables")}
         </h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {/* View mode toggle */}
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button

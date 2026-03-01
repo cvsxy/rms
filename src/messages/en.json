@@ -41,7 +41,8 @@
     "enableCustomLayout": "Use Custom Layout",
     "customLayoutEnabled": "Custom layout active",
     "dragToPosition": "Drag tables to arrange",
-    "layoutSaved": "Layout saved"
+    "layoutSaved": "Layout saved",
+    "scrollHint": "Scroll horizontally to see the full layout"
   },
   "menu": {
     "title": "Menu",

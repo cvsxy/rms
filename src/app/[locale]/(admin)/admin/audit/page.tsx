@@ -120,7 +120,7 @@ export default function AuditPage() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("audit.title")}</h1>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-6 flex flex-wrap gap-3 items-end">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end">
         <div>
           <label className="block text-xs text-gray-500 mb-1">{t("audit.filterByAction")}</label>
           <select
@@ -178,43 +178,45 @@ export default function AuditPage() {
         ) : entries.length === 0 ? (
           <div className="p-8 text-center text-gray-400">{t("audit.noEntries")}</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("audit.timestamp")}</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("audit.action")}</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("audit.user")}</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("audit.details")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entries.map((entry) => (
-                <tr
-                  key={entry.id}
-                  className="border-t hover:bg-gray-50 cursor-pointer"
-                  onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
-                >
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                    {new Date(entry.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs font-medium px-2 py-1 rounded ${actionColors[entry.action] || "bg-gray-100 text-gray-700"}`}>
-                      {actionLabels[entry.action] || entry.action}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">{entry.user.name}</td>
-                  <td className="px-4 py-3 text-gray-600 max-w-xs truncate">
-                    {formatDetails(entry)}
-                    {expandedId === entry.id && entry.details && (
-                      <pre className="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto whitespace-pre-wrap">
-                        {JSON.stringify(entry.details, null, 2)}
-                      </pre>
-                    )}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.timestamp")}</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.action")}</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.user")}</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.details")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {entries.map((entry) => (
+                  <tr
+                    key={entry.id}
+                    className="border-t hover:bg-gray-50 cursor-pointer"
+                    onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
+                  >
+                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                      {new Date(entry.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`text-xs font-medium px-2 py-1 rounded ${actionColors[entry.action] || "bg-gray-100 text-gray-700"}`}>
+                        {actionLabels[entry.action] || entry.action}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{entry.user.name}</td>
+                    <td className="px-4 py-3 text-gray-600 max-w-xs truncate">
+                      {formatDetails(entry)}
+                      {expandedId === entry.id && entry.details && (
+                        <pre className="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto whitespace-pre-wrap">
+                          {JSON.stringify(entry.details, null, 2)}
+                        </pre>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {/* Pagination */}
@@ -227,17 +229,17 @@ export default function AuditPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                className="px-4 py-2 text-sm border rounded-lg disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 &larr;
               </button>
-              <span className="px-3 py-1 text-sm">
+              <span className="px-3 py-2 text-sm flex items-center">
                 {page} / {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+                className="px-4 py-2 text-sm border rounded-lg disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 &rarr;
               </button>

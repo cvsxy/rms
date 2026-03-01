@@ -150,9 +150,9 @@ export default function TableLayoutEditor({ tables, onSave }: TableLayoutEditorP
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <p className="text-sm text-gray-500">{t("tables.dragToPosition")}</p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={handleReset}
             className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -169,6 +169,7 @@ export default function TableLayoutEditor({ tables, onSave }: TableLayoutEditorP
         </div>
       </div>
 
+      <p className="text-xs text-gray-400 mb-2 md:hidden">{t("tables.scrollHint")}</p>
       <div className="bg-white rounded-xl border border-gray-200 overflow-auto">
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <div

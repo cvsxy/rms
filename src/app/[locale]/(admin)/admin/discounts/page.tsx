@@ -96,7 +96,7 @@ export default function DiscountsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl font-bold text-gray-900">{t("discounts.title")}</h1>
         <button
           onClick={openAdd}
@@ -116,57 +116,59 @@ export default function DiscountsPage() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("discounts.discountName")}</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("discounts.discountType")}</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("discounts.discountValue")}</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">{t("discounts.discountCode")}</th>
-                <th className="text-right px-4 py-3 text-gray-500 font-medium">{t("common.actions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {discounts.map((d) => (
-                <tr key={d.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">
-                    {locale === "es" ? d.nameEs : d.name}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`text-xs font-medium px-2 py-1 rounded ${
-                        d.type === "PERCENTAGE"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-green-100 text-green-700"
-                      }`}
-                    >
-                      {d.type === "PERCENTAGE" ? t("discounts.percentage") : t("discounts.fixed")}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-700">
-                    {d.type === "PERCENTAGE" ? `${d.value}%` : `$${Number(d.value).toFixed(2)}`}
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 font-mono text-xs">
-                    {d.code || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-right space-x-2">
-                    <button
-                      onClick={() => openEdit(d)}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                    >
-                      {t("common.edit")}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(d.id)}
-                      className="text-red-600 hover:text-red-800 text-sm"
-                    >
-                      {t("common.delete")}
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("discounts.discountName")}</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("discounts.discountType")}</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("discounts.discountValue")}</th>
+                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("discounts.discountCode")}</th>
+                  <th className="text-right px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("common.actions")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {discounts.map((d) => (
+                  <tr key={d.id} className="border-t hover:bg-gray-50">
+                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+                      {locale === "es" ? d.nameEs : d.name}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`text-xs font-medium px-2 py-1 rounded ${
+                          d.type === "PERCENTAGE"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-green-100 text-green-700"
+                        }`}
+                      >
+                        {d.type === "PERCENTAGE" ? t("discounts.percentage") : t("discounts.fixed")}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                      {d.type === "PERCENTAGE" ? `${d.value}%` : `$${Number(d.value).toFixed(2)}`}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 font-mono text-xs">
+                      {d.code || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right space-x-2 whitespace-nowrap">
+                      <button
+                        onClick={() => openEdit(d)}
+                        className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1"
+                      >
+                        {t("common.edit")}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(d.id)}
+                        className="text-red-600 hover:text-red-800 text-sm px-2 py-1"
+                      >
+                        {t("common.delete")}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

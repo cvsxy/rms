@@ -41,7 +41,8 @@
     "enableCustomLayout": "Usar Diseño Personalizado",
     "customLayoutEnabled": "Diseño personalizado activo",
     "dragToPosition": "Arrastra las mesas para ordenar",
-    "layoutSaved": "Diseño guardado"
+    "layoutSaved": "Diseño guardado",
+    "scrollHint": "Desplazar horizontalmente para ver todo el diseño"
   },
   "menu": {
     "title": "Menú",

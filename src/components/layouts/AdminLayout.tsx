@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AdminLayoutClient({
   children,
@@ -17,6 +17,11 @@ export default function AdminLayoutClient({
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   const navItems = [
     { href: `/${locale}/admin`, label: t("admin.dashboard"), icon: "grid" },
@@ -129,8 +134,44 @@ export default function AdminLayoutClient({
 
   return (
     <div className="flex h-[100dvh] bg-gray-100 safe-area-top">
+      {/* Mobile top bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 flex items-center justify-between px-4 h-14 safe-area-top">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100"
+          aria-label="Open menu"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <h1 className="text-lg font-bold text-gray-900">RMS Admin</h1>
+        <span className="text-sm text-gray-500 truncate max-w-[100px]">{userName}</span>
+      </div>
+
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg flex flex-col">
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg flex flex-col transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}>
+        {/* Mobile close button */}
+        <div className="md:hidden flex justify-end p-2">
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            aria-label="Close menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
         <div className="p-6 border-b">
           <h1 className="text-xl font-bold text-gray-900">RMS Admin</h1>
           <p className="text-sm text-gray-500 mt-1">{userName}</p>
@@ -141,7 +182,8 @@ export default function AdminLayoutClient({
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                 isActive(item.href)
                   ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -171,7 +213,7 @@ export default function AdminLayoutClient({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto p-8">{children}</main>
+      <main className="flex-1 overflow-auto p-4 pt-18 md:p-8">{children}</main>
     </div>
   );
 }
