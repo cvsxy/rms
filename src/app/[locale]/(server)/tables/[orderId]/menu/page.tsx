@@ -35,10 +35,11 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
   useEffect(() => { fetchMenu(); fetchTableSeats(); }, []);
 
   const fetchMenu = async () => {
-    const [catRes, itemRes] = await Promise.all([fetch("/api/menu/categories"), fetch("/api/menu/items")]);
-    const { data: cats } = await catRes.json();
-    const { data: menuItems } = await itemRes.json();
-    setCategories(cats); setItems(menuItems);
+    const res = await fetch("/api/menu/categories");
+    const { data: cats } = await res.json();
+    const allItems = cats.flatMap((cat: Category & { items: MenuItem[] }) => cat.items);
+    setCategories(cats);
+    setItems(allItems);
     if (cats.length > 0) setSelectedCategory(cats[0].id);
     setLoading(false);
   };

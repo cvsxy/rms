@@ -158,7 +158,7 @@ export default function AdminLayoutClient({
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg flex flex-col transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg flex flex-col safe-area-top transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}>
         {/* Mobile close button */}
         <div className="md:hidden flex justify-end p-2">
           <button

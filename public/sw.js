@@ -1,4 +1,4 @@
-const CACHE_NAME = "rms-v3";
+const CACHE_NAME = "rms-v4";
 const STATIC_ASSETS = ["/", "/es/pin-login", "/en/pin-login"];
 
 self.addEventListener("install", (event) => {
@@ -23,8 +23,25 @@ self.addEventListener("fetch", (event) => {
   // Skip non-GET requests
   if (event.request.method !== "GET") return;
 
-  // Skip API routes and Pusher requests
   const url = new URL(event.request.url);
+
+  // Cache menu data with stale-while-revalidate
+  if (url.pathname === "/api/menu/categories") {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) =>
+        cache.match(event.request).then((cached) => {
+          const fetchPromise = fetch(event.request).then((response) => {
+            if (response.ok) cache.put(event.request, response.clone());
+            return response;
+          });
+          return cached || fetchPromise;
+        })
+      )
+    );
+    return;
+  }
+
+  // Skip other API routes and Pusher requests
   if (
     url.pathname.startsWith("/api") ||
     url.hostname.includes("pusher") ||

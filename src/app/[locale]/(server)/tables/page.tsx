@@ -27,28 +27,18 @@ export default function TablesPage() {
   const fetchTables = useCallback(async () => {
     try {
       const res = await fetch("/api/tables");
-      const { data } = await res.json();
-      setTables(data);
+      const json = await res.json();
+      setTables(json.data);
+      if (json.settings) setUseCustomLayout(json.settings.useCustomLayout);
     } catch { /* ignore */ }
     setLoading(false);
   }, []);
 
-  const fetchSettings = useCallback(async () => {
-    try {
-      const res = await fetch("/api/settings");
-      if (res.ok) {
-        const json = await res.json();
-        setUseCustomLayout(json.data?.useCustomLayout === "true");
-      }
-    } catch { /* ignore */ }
-  }, []);
-
   useEffect(() => {
     fetchTables();
-    fetchSettings();
-    const interval = setInterval(fetchTables, 5000);
+    const interval = setInterval(fetchTables, 15000);
     return () => clearInterval(interval);
-  }, [fetchTables, fetchSettings]);
+  }, [fetchTables]);
 
   const handleTableTap = async (table: TableData) => {
     if (table.status === "OCCUPIED" && table.orders[0]) {
