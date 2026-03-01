@@ -33,6 +33,7 @@ interface MenuItem {
   price: number;
   destination: "KITCHEN" | "BAR";
   isActive: boolean;
+  available: boolean;
   modifiers: Modifier[];
   ingredients?: MenuItemIngredient[];
 }
@@ -244,6 +245,15 @@ export default function ManageMenuPage() {
     fetchCategories();
   }
 
+  async function toggleAvailability(item: MenuItem) {
+    await fetch(`/api/menu/items/${item.id}/availability`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ available: !item.available }),
+    });
+    fetchCategories();
+  }
+
   async function handleDeleteConfirm() {
     if (!deleteTarget) return;
     if (deleteTarget.type === "cat") await deleteCat(deleteTarget.id);
@@ -409,6 +419,11 @@ export default function ManageMenuPage() {
                           ? t("display.kitchen")
                           : t("display.bar")}
                       </span>
+                      {!item.available && (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                          86&apos;d
+                        </span>
+                      )}
                     </div>
                     {item.description && (
                       <p className="text-sm text-gray-500 mt-1">
@@ -445,7 +460,17 @@ export default function ManageMenuPage() {
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-2 ml-4">
+                  <div className="flex gap-2 ml-4 items-center">
+                    <button
+                      onClick={() => toggleAvailability(item)}
+                      className={`text-xs font-medium px-2.5 py-1 rounded-lg border transition-colors ${
+                        item.available
+                          ? "border-green-300 text-green-700 hover:bg-green-50"
+                          : "border-red-300 text-red-700 hover:bg-red-50"
+                      }`}
+                    >
+                      {item.available ? t("menu86.available") : t("menu86.unavailable")}
+                    </button>
                     <button
                       onClick={() => startEditItem(item)}
                       className="text-sm text-blue-600 hover:text-blue-800 font-medium"

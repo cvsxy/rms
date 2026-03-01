@@ -2,14 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
 import { sendPushToUser } from "@/lib/webpush";
+import { getSession } from "@/lib/auth";
+import { createAuditLog } from "@/lib/audit";
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { status } = await request.json();
+  const { status, voidReason, voidNote } = await request.json();
 
   const updateData: Record<string, unknown> = { status };
   if (status === "READY") updateData.readyAt = new Date();
   if (status === "SERVED") updateData.servedAt = new Date();
+  if (status === "CANCELLED") {
+    if (voidReason) updateData.voidReason = voidReason;
+    if (voidNote) updateData.voidNote = voidNote;
+  }
 
   const orderItem = await prisma.orderItem.update({
     where: { id },
@@ -75,6 +81,27 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       });
     } catch {
       // Web push not configured — silently continue
+    }
+  }
+
+  // Audit log for voids
+  if (status === "CANCELLED") {
+    const session = await getSession();
+    if (session) {
+      await createAuditLog({
+        action: "ITEM_VOIDED",
+        userId: session.userId,
+        orderId: orderItem.orderId,
+        orderItemId: orderItem.id,
+        details: {
+          itemName: orderItem.menuItem.name,
+          itemNameEs: orderItem.menuItem.nameEs,
+          quantity: orderItem.quantity,
+          voidReason: voidReason || null,
+          voidNote: voidNote || null,
+          tableNumber: orderItem.order.table.number,
+        },
+      });
     }
   }
 

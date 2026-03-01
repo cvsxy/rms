@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
+import { createAuditLog } from "@/lib/audit";
 
 export async function POST(
   request: NextRequest,
@@ -19,6 +21,20 @@ export async function POST(
     where: { id },
     data: { currentStock: { increment: adjustment } },
   });
+
+  const session = await getSession();
+  if (session) {
+    await createAuditLog({
+      action: "STOCK_ADJUSTED",
+      userId: session.userId,
+      details: {
+        ingredientId: id,
+        ingredientName: ingredient.name,
+        adjustment,
+        newStock: Number(ingredient.currentStock),
+      },
+    });
+  }
 
   return NextResponse.json({ data: ingredient });
 }

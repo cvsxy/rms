@@ -28,6 +28,8 @@ model User {
   orders            Order[]
   sessions          Session[]
   pushSubscriptions PushSubscription[]
+  auditLogs         AuditLog[]
+  appliedDiscounts  OrderDiscount[]
 
   @@index([pin])
   @@index([role])
@@ -77,6 +79,7 @@ model MenuItem {
   destination   ItemDestination
   categoryId    String
   active        Boolean         @default(true)
+  available     Boolean         @default(true)
   sortOrder     Int             @default(0)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -152,10 +155,11 @@ model Order {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  table   RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
-  server  User            @relation(fields: [serverId], references: [id], onDelete: Restrict)
-  items   OrderItem[]
-  payment Payment?
+  table     RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
+  server    User            @relation(fields: [serverId], references: [id], onDelete: Restrict)
+  items     OrderItem[]
+  payment   Payment?
+  discounts OrderDiscount[]
 
   @@index([tableId])
   @@index([serverId])
@@ -187,9 +191,11 @@ model OrderItem {
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 
-  order     Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  menuItem  MenuItem           @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
-  modifiers OrderItemModifier[]
+  order      Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem   MenuItem           @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  modifiers  OrderItemModifier[]
+  voidReason String?
+  voidNote   String?
 
   @@index([orderId])
   @@index([menuItemId])
@@ -283,9 +289,78 @@ model Payment {
   tax       Decimal       @db.Decimal(10, 2)
   total     Decimal       @db.Decimal(10, 2)
   tip       Decimal       @default(0) @db.Decimal(10, 2)
+  discount  Decimal       @default(0) @db.Decimal(10, 2)
   createdAt DateTime      @default(now())
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
+}
+
+// ─── DISCOUNTS ──────────────────────────────────────────────────
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model Discount {
+  id        String       @id @default(cuid())
+  name      String
+  nameEs    String
+  type      DiscountType
+  value     Decimal      @db.Decimal(10, 2)
+  code      String?      @unique
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  orderDiscounts OrderDiscount[]
+
+  @@index([active])
+}
+
+model OrderDiscount {
+  id          String       @id @default(cuid())
+  orderId     String
+  discountId  String?
+  type        DiscountType
+  value       Decimal      @db.Decimal(10, 2)
+  appliedById String
+  note        String?
+  createdAt   DateTime     @default(now())
+
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  discount  Discount? @relation(fields: [discountId], references: [id], onDelete: SetNull)
+  appliedBy User      @relation(fields: [appliedById], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+}
+
+// ─── AUDIT LOG ──────────────────────────────────────────────────
+
+enum AuditAction {
+  ITEM_VOIDED
+  ORDER_CANCELLED
+  PAYMENT_PROCESSED
+  DISCOUNT_APPLIED
+  ITEM_86D
+  STOCK_ADJUSTED
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  userId      String
+  orderId     String?
+  orderItemId String?
+  details     Json?
+  createdAt   DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([action])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([orderId])
 }

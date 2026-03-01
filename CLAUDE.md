@@ -40,6 +40,9 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 | `/es/admin/tables` | Manage tables |
 | `/es/admin/inventory` | Ingredient inventory management |
 | `/es/admin/reports` | Revenue reports with charts + date ranges |
+| `/es/admin/operations` | Live operations dashboard (auto-refresh) |
+| `/es/admin/discounts` | Discount/comp management |
+| `/es/admin/audit` | Audit log with filters |
 
 ## Implementation Progress
 
@@ -150,13 +153,56 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
   - `/api/tables/positions` for batch position saves, `/api/settings` for config
 - [x] Dependencies added: @dnd-kit/core, @dnd-kit/utilities
 - [x] 40+ new i18n keys in both EN and ES (inventory, reports, tables, admin sections)
+- [x] Sample inventory seed data
+  - 40 realistic ingredients (proteins, produce, dairy, tortillas, sauces, spirits, mixers, beer, pantry) — all bilingual EN/ES
+  - Every menu item linked with accurate quantities per serving
+  - Standalone `prisma/seed-ingredients.ts` for seeding existing databases
+  - Updated main `prisma/seed.ts` for future full re-seeds
+- [x] Ingredient UI across app
+  - Admin menu: ingredient picker per item with dropdown + quantity-per-serving inputs
+  - Server menu: collapsible "What's in this" section in item detail sheet
+  - Kitchen/bar displays: ingredient details shown per order item
+  - Menu items API includes ingredients in GET response
+  - 6 new `menu.*` i18n keys (EN + ES)
 
-## Database Schema (15 models)
-User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting
+### Phase 10: Admin Upgrade — Operations, 86'd Items, Discounts, Audit Log - COMPLETE
+- [x] Audit log system
+  - New `AuditLog` model with `AuditAction` enum (ITEM_VOIDED, ORDER_CANCELLED, PAYMENT_PROCESSED, DISCOUNT_APPLIED, ITEM_86D, STOCK_ADJUSTED)
+  - Shared `src/lib/audit.ts` helper called from all mutating API routes
+  - Admin audit log page (`/admin/audit`) with filterable table (action, server, date range), pagination
+  - All voids, cancellations, payments, stock adjustments, and discount applications logged
+- [x] Void reasons
+  - `voidReason` and `voidNote` fields on OrderItem
+  - Server void modal with 5 reason categories (Server Mistake, Kitchen Mistake, Out of Stock, Customer Request, Other) + optional note
+  - Void details included in audit log entries
+- [x] 86'd items (out of stock)
+  - `available` boolean on MenuItem, PATCH toggle at `/api/menu/items/[id]/availability`
+  - Admin menu page: availability toggle button + red "86'd" badge
+  - Server menu: grayed-out items with "86'd" label, disabled interaction
+  - Auto-86: when order submission depletes ingredient stock to 0, linked menu items automatically marked unavailable
+  - Pusher `menu` channel with `item-availability-changed` event for real-time sync
+- [x] Discounts & comps
+  - New `Discount` and `OrderDiscount` models with `DiscountType` enum (PERCENTAGE, FIXED)
+  - Admin discounts page (`/admin/discounts`) with full CRUD (name EN/ES, type, value, code)
+  - Server bill page: "Apply Discount" button with preset selection + custom comp tab
+  - Applied discounts shown as removable chips on bill
+  - Payment calculation: `(subtotal - discount) * taxRate`, discount stored on Payment record
+  - All discount applications logged to audit trail
+- [x] Live operations dashboard
+  - `/api/operations` endpoint with real-time stats (parallel Prisma queries)
+  - Admin operations page (`/admin/operations`) with 10-second auto-refresh
+  - 4 stat cards: active orders, kitchen queue, bar queue, avg prep time
+  - Orders-by-status progress bars, server workload table, 86'd items alert
+- [x] Admin sidebar expanded: 3 new nav items (Operations, Discounts, Audit Log) with SVG icons
+- [x] 60+ new i18n keys in both EN and ES (operations, discounts, audit, void, menu86 sections)
+
+## Database Schema (18 models)
+User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting, Discount, OrderDiscount, AuditLog
 
 ## Pusher Channels
 - `kitchen` (public) — kitchen display subscribes for new items + status changes
 - `bar` (public) — bar display subscribes for new items + status changes
+- `menu` (public) — item availability changes (86'd items)
 - `private-server-{userId}` — each server's notification channel
 
 ## Environment Variables

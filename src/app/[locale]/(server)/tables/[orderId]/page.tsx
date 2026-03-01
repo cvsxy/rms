@@ -29,6 +29,8 @@ const statusColors: Record<string, string> = {
   CANCELLED: "bg-red-100 text-red-800 border-red-200",
 };
 
+const VOID_REASONS = ["SERVER_MISTAKE", "KITCHEN_MISTAKE", "OUT_OF_STOCK", "CUSTOMER_REQUEST", "OTHER"] as const;
+
 export default function OrderViewPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
   const t = useTranslations();
@@ -41,6 +43,8 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   const [cancelling, setCancelling] = useState(false);
   const [voidConfirmItemId, setVoidConfirmItemId] = useState<string | null>(null);
   const [voidingItemId, setVoidingItemId] = useState<string | null>(null);
+  const [voidReason, setVoidReason] = useState("");
+  const [voidNote, setVoidNote] = useState("");
 
   useEffect(() => {
     fetchOrder();
@@ -83,20 +87,37 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   };
 
   const handleVoidItem = async (itemId: string) => {
+    if (!voidReason) return;
     setVoidingItemId(itemId);
     try {
       await fetch(`/api/order-items/${itemId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "CANCELLED" }),
+        body: JSON.stringify({ status: "CANCELLED", voidReason, voidNote: voidNote || null }),
       });
       await fetchOrder();
     } catch { /* ignore */ }
     setVoidingItemId(null);
     setVoidConfirmItemId(null);
+    setVoidReason("");
+    setVoidNote("");
+  };
+
+  const openVoidModal = (itemId: string) => {
+    setVoidConfirmItemId(itemId);
+    setVoidReason("");
+    setVoidNote("");
   };
 
   const getName = (item: { name: string; nameEs: string }) => locale === "es" ? item.nameEs : item.name;
+
+  const voidReasonLabels: Record<string, string> = {
+    SERVER_MISTAKE: t("void.serverMistake"),
+    KITCHEN_MISTAKE: t("void.kitchenMistake"),
+    OUT_OF_STOCK: t("void.outOfStock"),
+    CUSTOMER_REQUEST: t("void.customerRequest"),
+    OTHER: t("void.other"),
+  };
 
   if (loading || !order) {
     return (
@@ -189,7 +210,7 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
                   <div className="flex items-center gap-2 ml-3">
                     {canVoid && (
                       <button
-                        onClick={() => setVoidConfirmItemId(item.id)}
+                        onClick={() => openVoidModal(item.id)}
                         disabled={voidingItemId === item.id}
                         className="text-xs text-red-500 font-medium px-2 py-1.5 rounded-lg active:bg-red-50 touch-manipulation border border-red-200"
                       >
@@ -269,17 +290,57 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
         onCancel={() => setShowCancelConfirm(false)}
       />
 
-      {/* Void item confirmation */}
-      <ConfirmModal
-        open={!!voidConfirmItemId}
-        title={t("orders.voidItem")}
-        message={t("orders.voidItemConfirm")}
-        confirmLabel={t("orders.voidItem")}
-        cancelLabel={t("common.cancel")}
-        variant="danger"
-        onConfirm={() => voidConfirmItemId && handleVoidItem(voidConfirmItemId)}
-        onCancel={() => setVoidConfirmItemId(null)}
-      />
+      {/* Void item modal with reason */}
+      {voidConfirmItemId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setVoidConfirmItemId(null)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative bg-white rounded-2xl p-6 mx-4 max-w-sm w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-gray-800 mb-1">{t("orders.voidItem")}</h3>
+            <p className="text-sm text-gray-500 mb-4">{t("orders.voidItemConfirm")}</p>
+
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t("void.reason")}</label>
+              <select
+                value={voidReason}
+                onChange={(e) => setVoidReason(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl h-12 px-3 text-sm"
+              >
+                <option value="">{t("void.selectReason")}</option>
+                {VOID_REASONS.map((r) => (
+                  <option key={r} value={r}>{voidReasonLabels[r]}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t("void.note")}</label>
+              <input
+                type="text"
+                value={voidNote}
+                onChange={(e) => setVoidNote(e.target.value)}
+                placeholder={t("void.notePlaceholder")}
+                className="w-full border border-gray-300 rounded-xl h-12 px-3 text-sm"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setVoidConfirmItemId(null)}
+                className="flex-1 h-12 rounded-xl border border-gray-300 text-gray-700 font-medium touch-manipulation hover:bg-gray-50 transition-colors"
+              >
+                {t("common.cancel")}
+              </button>
+              <button
+                onClick={() => handleVoidItem(voidConfirmItemId)}
+                disabled={!voidReason || voidingItemId === voidConfirmItemId}
+                className="flex-1 h-12 rounded-xl bg-red-600 text-white font-semibold active:bg-red-700 touch-manipulation disabled:opacity-50 transition-colors"
+              >
+                {voidingItemId === voidConfirmItemId ? "..." : t("orders.voidItem")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,7 +9,7 @@ import { SkeletonMenuItems } from "@/components/common/Skeleton";
 interface Category { id: string; name: string; nameEs: string; }
 interface Modifier { id: string; name: string; nameEs: string; priceAdj: string; }
 interface IngredientInfo { ingredient: { name: string; nameEs: string; unit: string }; quantity: number; }
-interface MenuItem { id: string; name: string; nameEs: string; description: string | null; descriptionEs: string | null; price: string; destination: string; categoryId: string; modifiers: Modifier[]; ingredients?: IngredientInfo[]; }
+interface MenuItem { id: string; name: string; nameEs: string; description: string | null; descriptionEs: string | null; price: string; destination: string; categoryId: string; available: boolean; modifiers: Modifier[]; ingredients?: IngredientInfo[]; }
 interface CartItem { menuItemId: string; name: string; quantity: number; notes: string; modifierIds: string[]; price: number; seatNumber: number | null; }
 
 export default function MenuBrowserPage({ params }: { params: Promise<{ orderId: string }> }) {
@@ -123,21 +123,34 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {filteredItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => openItemSheet(item)}
-              className="bg-white rounded-xl p-4 border border-gray-100 text-left active:bg-gray-50 touch-manipulation transition-colors"
-            >
-              <div className="font-medium text-gray-800 text-sm">{getName(item)}</div>
-              {getDesc(item) && <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{getDesc(item)}</div>}
-              <div className="text-sm font-bold text-blue-600 mt-2">{formatMXN(Number(item.price))}</div>
-              <div className="text-[10px] text-gray-400 mt-0.5">
-                {item.destination === "KITCHEN" ? "🍳" : "🍹"}{" "}
-                {item.destination === "KITCHEN" ? t("display.kitchen") : t("display.bar")}
-              </div>
-            </button>
-          ))}
+          {filteredItems.map((item) => {
+            const is86d = item.available === false;
+            return (
+              <button
+                key={item.id}
+                onClick={() => !is86d && openItemSheet(item)}
+                disabled={is86d}
+                className={`bg-white rounded-xl p-4 border text-left touch-manipulation transition-colors ${
+                  is86d
+                    ? "opacity-50 border-red-200 cursor-not-allowed"
+                    : "border-gray-100 active:bg-gray-50"
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className={`font-medium text-sm ${is86d ? "text-gray-400 line-through" : "text-gray-800"}`}>{getName(item)}</span>
+                  {is86d && (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-600">86&apos;d</span>
+                  )}
+                </div>
+                {getDesc(item) && <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{getDesc(item)}</div>}
+                <div className={`text-sm font-bold mt-2 ${is86d ? "text-gray-400" : "text-blue-600"}`}>{formatMXN(Number(item.price))}</div>
+                <div className="text-[10px] text-gray-400 mt-0.5">
+                  {item.destination === "KITCHEN" ? "🍳" : "🍹"}{" "}
+                  {item.destination === "KITCHEN" ? t("display.kitchen") : t("display.bar")}
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </>

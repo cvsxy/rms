@@ -15,6 +15,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     });
     if (!menuItem) continue;
 
+    // Skip unavailable (86'd) items
+    if (!menuItem.available) continue;
+
     let unitPrice = Number(menuItem.price);
     const modifierData = [];
     if (item.modifierIds?.length) {
@@ -75,6 +78,51 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           })
         )
       );
+
+      // Auto-86: check for depleted ingredients and mark linked items unavailable
+      const depletedIngredients = await prisma.ingredient.findMany({
+        where: {
+          id: { in: Object.keys(deductions) },
+          currentStock: { lte: 0 },
+        },
+        select: { id: true, name: true },
+      });
+
+      if (depletedIngredients.length > 0) {
+        const affectedLinks = await prisma.menuItemIngredient.findMany({
+          where: { ingredientId: { in: depletedIngredients.map((i) => i.id) } },
+          select: { menuItemId: true },
+        });
+
+        const affectedItemIds = [...new Set(affectedLinks.map((l) => l.menuItemId))];
+
+        // Only 86 items that are currently available
+        const itemsTo86 = await prisma.menuItem.findMany({
+          where: { id: { in: affectedItemIds }, available: true },
+          select: { id: true, name: true, nameEs: true },
+        });
+
+        if (itemsTo86.length > 0) {
+          await prisma.menuItem.updateMany({
+            where: { id: { in: itemsTo86.map((i) => i.id) } },
+            data: { available: false },
+          });
+
+          // Notify via Pusher
+          try {
+            for (const item of itemsTo86) {
+              await pusher.trigger("menu", "item-availability-changed", {
+                menuItemId: item.id,
+                available: false,
+                itemName: item.name,
+                itemNameEs: item.nameEs,
+              });
+            }
+          } catch {
+            // Pusher not configured — continue
+          }
+        }
+      }
     }
   } catch (err) {
     console.error("[inventory] Failed to deduct stock:", err);
