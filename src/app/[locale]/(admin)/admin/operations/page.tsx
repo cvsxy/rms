@@ -44,7 +44,7 @@ export default function OperationsPage() {
         <h1 className="text-xl font-semibold text-gray-900 mb-6">{t("operations.title")}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-lg p-6 border border-gray-200 animate-pulse">
+            <div key={i} className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm animate-pulse">
               <div className="h-4 bg-gray-200 rounded w-24 mb-3" />
               <div className="h-8 bg-gray-200 rounded w-16" />
             </div>
@@ -60,25 +60,35 @@ export default function OperationsPage() {
     {
       label: t("operations.activeOrders"),
       value: data.activeOrders,
+      borderClass: "border-l-4 border-l-indigo-500",
     },
     {
       label: t("operations.kitchenQueue"),
       value: data.kitchenQueue,
+      borderClass: "border-l-4 border-l-orange-500",
     },
     {
       label: t("operations.barQueue"),
       value: data.barQueue,
+      borderClass: "border-l-4 border-l-purple-500",
     },
     {
       label: t("operations.avgPrepTime"),
       value: `${data.avgPrepTimeMinutes} ${t("operations.minutes")}`,
+      borderClass: "border-l-4 border-l-sky-500",
     },
   ];
 
   const statusColors: Record<string, string> = {
-    OPEN: "bg-gray-100 text-gray-700",
+    OPEN: "bg-blue-100 text-blue-700",
     SUBMITTED: "bg-yellow-100 text-yellow-700",
     COMPLETED: "bg-green-100 text-green-700",
+  };
+
+  const progressBarColors: Record<string, string> = {
+    OPEN: "bg-blue-500",
+    SUBMITTED: "bg-amber-500",
+    COMPLETED: "bg-emerald-500",
   };
 
   const statusLabels: Record<string, string> = {
@@ -103,7 +113,7 @@ export default function OperationsPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white rounded-lg p-6 border border-gray-200">
+          <div key={card.label} className={`bg-white rounded-lg p-6 border border-gray-200 shadow-sm ${card.borderClass}`}>
             <span className="text-sm text-gray-500">{card.label}</span>
             <p className="text-3xl font-bold text-gray-900 mt-1">{card.value}</p>
           </div>
@@ -112,7 +122,7 @@ export default function OperationsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Orders by status */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
           <h2 className="text-base font-semibold text-gray-900 mb-4">
             {t("operations.ordersByStatus")}
           </h2>
@@ -134,7 +144,7 @@ export default function OperationsPage() {
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-2">
                       <div
-                        className="bg-gray-900 h-2 rounded-full transition-all"
+                        className={`${progressBarColors[status] || "bg-gray-500"} h-2 rounded-full transition-all`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -159,7 +169,7 @@ export default function OperationsPage() {
         </div>
 
         {/* Server workload */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
           <h2 className="text-base font-semibold text-gray-900 mb-4">
             {t("operations.serverWorkload")}
           </h2>
@@ -169,7 +179,7 @@ export default function OperationsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100">
+                  <tr className="border-b border-gray-100 bg-gray-50/80">
                     <th className="text-left py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t("operations.server")}
                     </th>
@@ -183,7 +193,7 @@ export default function OperationsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {data.servers.map((server) => (
-                    <tr key={server.id} className="hover:bg-gray-50/50">
+                    <tr key={server.id} className="hover:bg-indigo-50/30">
                       <td className="py-3 font-medium text-gray-900">{server.name}</td>
                       <td className="py-3 text-center">
                         <span className="text-sm font-medium text-gray-700">

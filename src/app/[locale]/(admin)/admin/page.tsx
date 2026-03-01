@@ -40,10 +40,13 @@ export default async function AdminDashboard() {
     kitchenQueue,
     barQueue,
     serverRevenues,
+    todayVoidedItems,
+    todayTotalItems,
+    todayClosedOrders,
   ] = await Promise.all([
     prisma.payment.findMany({
       where: { createdAt: { gte: today, lt: tomorrow } },
-      select: { total: true },
+      select: { total: true, method: true },
     }),
     prisma.payment.findMany({
       where: { createdAt: { gte: yesterday, lt: today } },
@@ -114,6 +117,18 @@ export default async function AdminDashboard() {
         total: true,
         order: { select: { serverId: true, server: { select: { name: true } } } },
       },
+    }),
+    // Void rate: cancelled items today
+    prisma.orderItem.count({
+      where: { createdAt: { gte: today, lt: tomorrow }, status: "CANCELLED" },
+    }),
+    prisma.orderItem.count({
+      where: { createdAt: { gte: today, lt: tomorrow } },
+    }),
+    // Table turnover: closed orders today with payment time
+    prisma.order.findMany({
+      where: { status: "CLOSED", createdAt: { gte: today, lt: tomorrow } },
+      select: { createdAt: true, payment: { select: { createdAt: true } } },
     }),
   ]);
 
@@ -222,6 +237,30 @@ export default async function AdminDashboard() {
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 5);
 
+  // Void rate
+  const voidRate = todayTotalItems > 0 ? (todayVoidedItems / todayTotalItems) * 100 : 0;
+
+  // Payment method split
+  const cashPayments = todayPayments.filter((p: { method: string }) => p.method === "CASH");
+  const cashTotal = cashPayments.reduce((sum: number, p: { total: unknown }) => sum + Number(p.total), 0);
+  const cashPercent = todayRevenue > 0 ? Math.round((cashTotal / todayRevenue) * 100) : 0;
+
+  // Table turnover
+  const closedWithPayment = todayClosedOrders.filter(
+    (o: { payment: unknown }): o is { createdAt: Date; payment: { createdAt: Date } } => !!o.payment
+  );
+  const avgCoverMinutes = closedWithPayment.length > 0
+    ? Math.round(closedWithPayment.reduce((sum, o) => {
+        const diff = o.payment.createdAt.getTime() - o.createdAt.getTime();
+        return sum + diff / 60000;
+      }, 0) / closedWithPayment.length)
+    : 0;
+
+  // Peak hour
+  const peakHour = ordersByHour.length > 0
+    ? ordersByHour.reduce((max, h) => h.orders > max.orders ? h : max, ordersByHour[0])
+    : null;
+
   // Daily close status
   const isDayClosed = !!todayDailyClose;
 
@@ -270,7 +309,7 @@ export default async function AdminDashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
-        <div className="admin-card p-4">
+        <div className="admin-card p-4 border-l-4 border-l-emerald-500">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.totalRevenue")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             ${todayRevenue.toFixed(2)}
@@ -278,7 +317,7 @@ export default async function AdminDashboard() {
           <TrendBadge value={revenueTrend} />
         </div>
 
-        <div className="admin-card p-4">
+        <div className="admin-card p-4 border-l-4 border-l-indigo-500">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.orderCount")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             {todayOrderCount}
@@ -286,7 +325,7 @@ export default async function AdminDashboard() {
           <TrendBadge value={ordersTrend} />
         </div>
 
-        <div className="admin-card p-4">
+        <div className="admin-card p-4 border-l-4 border-l-sky-500">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.avgOrderValue")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             ${avgOrderValue.toFixed(2)}
@@ -294,14 +333,14 @@ export default async function AdminDashboard() {
           <TrendBadge value={avgTrend} />
         </div>
 
-        <div className="admin-card p-4">
+        <div className="admin-card p-4 border-l-4 border-l-amber-500">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.tipsToday")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             ${tipsTotal.toFixed(2)}
           </p>
         </div>
 
-        <div className="admin-card p-4">
+        <div className="admin-card p-4 border-l-4 border-l-purple-500">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.openTables")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             {activeTables}
@@ -356,6 +395,50 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
+      {/* Insight Widgets */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        {/* Void Rate */}
+        <div className={`admin-card p-4 border-l-4 ${voidRate > 5 ? 'border-l-red-500' : voidRate > 3 ? 'border-l-amber-500' : 'border-l-emerald-500'}`}>
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.voidRate")}</p>
+          <p className={`text-2xl font-semibold mt-1 ${voidRate > 5 ? 'text-red-600' : voidRate > 3 ? 'text-amber-600' : 'text-emerald-600'}`}>
+            {voidRate.toFixed(1)}%
+          </p>
+          <span className="text-xs text-gray-400">{todayVoidedItems} / {todayTotalItems} {t("admin.items")}</span>
+        </div>
+
+        {/* Table Turnover */}
+        <div className="admin-card p-4 border-l-4 border-l-sky-500">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.tableTurnover")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            {closedWithPayment.length}
+          </p>
+          <span className="text-xs text-gray-400">{t("admin.avgCoverTime", { minutes: avgCoverMinutes })}</span>
+        </div>
+
+        {/* Payment Split */}
+        <div className="admin-card p-4 border-l-4 border-l-violet-500">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.paymentSplit")}</p>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+              <div className="bg-emerald-500 h-full rounded-full transition-all" style={{ width: `${cashPercent}%` }} />
+            </div>
+          </div>
+          <div className="flex justify-between mt-1.5">
+            <span className="text-xs text-gray-500">{t("bill.cash")} {cashPercent}%</span>
+            <span className="text-xs text-gray-500">{t("bill.card")} {100 - cashPercent}%</span>
+          </div>
+        </div>
+
+        {/* Peak Hour */}
+        <div className="admin-card p-4 border-l-4 border-l-rose-500">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.peakHour")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            {peakHour?.hour || "--"}
+          </p>
+          <span className="text-xs text-gray-400">{peakHour?.orders || 0} {t("reports.orderCount").toLowerCase()}</span>
+        </div>
+      </div>
+
       {/* Charts */}
       <DashboardCharts
         revenueByDay={revenueByDay}
@@ -375,7 +458,7 @@ export default async function AdminDashboard() {
               {recentOrdersData.map((order) => (
                 <div
                   key={order.id}
-                  className="flex items-center justify-between py-2.5"
+                  className="flex items-center justify-between py-2.5 hover:bg-indigo-50/30 -mx-2 px-2 rounded transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-gray-900 w-6 text-center">
@@ -420,7 +503,9 @@ export default async function AdminDashboard() {
               {leaderboard.map((server, i) => (
                 <div key={server.name} className="flex items-center justify-between py-2.5">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-gray-300 w-5 text-center">
+                    <span className={`text-sm font-semibold w-5 text-center ${
+                      i === 0 ? "text-amber-500" : i === 1 ? "text-gray-400" : i === 2 ? "text-amber-700" : "text-gray-300"
+                    }`}>
                       {i + 1}
                     </span>
                     <span className="text-sm font-medium text-gray-900">{server.name}</span>

@@ -99,7 +99,7 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
   return (
     <div className="space-y-6">
       {/* Period Summary Card */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h2 className="text-base font-semibold text-gray-900">{t("reports.monthlySummary")}</h2>
           <div className="flex gap-2 flex-wrap">
@@ -145,7 +145,7 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
             <p className="text-xs text-green-600 mb-1">{t("reports.tips")}</p>
             <p className="text-xl font-bold text-green-700">{formatMoney(monthly.tips)}</p>
           </div>
-          <div className="text-center p-3 bg-gray-900 rounded-lg">
+          <div className="text-center p-3 bg-indigo-600 rounded-lg">
             <p className="text-xs text-gray-300 mb-1">{t("reports.total")}</p>
             <p className="text-xl font-bold text-white">{formatMoney(monthly.total)}</p>
           </div>
@@ -153,12 +153,12 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
       </div>
 
       {/* Daily Breakdown Table */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
         <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reports.dailyBreakdown")}</h2>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-gray-200 bg-gray-50/80">
                 {(
                   [
                     { key: "date" as SortKey, label: t("reports.date"), align: "left" },
@@ -185,7 +185,7 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
             </thead>
             <tbody className="divide-y divide-gray-100">
               {sorted.map((d) => (
-                <tr key={d.date} className="hover:bg-gray-50/50 transition-colors">
+                <tr key={d.date} className="hover:bg-indigo-50/30 transition-colors">
                   <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{d.date}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 text-right">{d.orderCount}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 text-right">{formatMoney(d.subtotal)}</td>

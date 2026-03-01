@@ -104,7 +104,7 @@ export default function ManageServersPage() {
             setFormPin("");
             setShowForm(true);
           }}
-          className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
         >
           + {t("admin.addServer")}
         </button>
@@ -127,7 +127,7 @@ export default function ManageServersPage() {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   placeholder="Maria"
                 />
               </div>
@@ -143,7 +143,7 @@ export default function ManageServersPage() {
                   value={formPin}
                   onChange={(e) => setFormPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
                   required={!editingId}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 tracking-widest"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 tracking-widest"
                   placeholder="1234"
                   inputMode="numeric"
                 />
@@ -159,7 +159,7 @@ export default function ManageServersPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>
@@ -170,7 +170,7 @@ export default function ManageServersPage() {
       )}
 
       {/* Server list */}
-      <div className="bg-white rounded-lg overflow-hidden">
+      <div className="bg-white rounded-lg overflow-hidden shadow-sm">
         {servers.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             {t("common.noResults")}
@@ -179,7 +179,7 @@ export default function ManageServersPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr>
+                <tr className="bg-gray-50/80">
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     {t("admin.serverName")}
                   </th>
@@ -193,7 +193,7 @@ export default function ManageServersPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {servers.map((server) => (
-                  <tr key={server.id} className="hover:bg-gray-50/50">
+                  <tr key={server.id} className="hover:bg-indigo-50/30">
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       {server.name}
                     </td>

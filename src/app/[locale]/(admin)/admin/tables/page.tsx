@@ -179,7 +179,7 @@ export default function ManageTablesPage() {
               setFormSeats("4");
               setShowForm(true);
             }}
-            className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
           >
             + {t("tables.createTable")}
           </button>
@@ -194,7 +194,7 @@ export default function ManageTablesPage() {
               type="checkbox"
               checked={customLayoutEnabled}
               onChange={toggleCustomLayout}
-              className="w-4 h-4 text-gray-900 rounded border-gray-200 focus:ring-gray-400"
+              className="w-4 h-4 text-indigo-600 rounded border-gray-200 focus:ring-indigo-500"
             />
             <span className="text-sm font-medium text-gray-700">
               {t("tables.enableCustomLayout")}
@@ -217,7 +217,7 @@ export default function ManageTablesPage() {
           {tables.map((table) => (
             <div
               key={table.id}
-              className="bg-white rounded-lg p-4 border border-gray-200"
+              className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-gray-900">
@@ -278,7 +278,7 @@ export default function ManageTablesPage() {
                   onChange={(e) => setFormNumber(e.target.value)}
                   required
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 />
               </div>
               <div>
@@ -289,7 +289,7 @@ export default function ManageTablesPage() {
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   placeholder="Interior 1, Terraza 2..."
                 />
               </div>
@@ -304,7 +304,7 @@ export default function ManageTablesPage() {
                   required
                   min="1"
                   max="20"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 />
               </div>
               <div className="flex gap-2 pt-2">
@@ -318,7 +318,7 @@ export default function ManageTablesPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>

@@ -171,7 +171,7 @@ export default function InventoryPage() {
               setDeliveryAmounts({});
               setShowDelivery(true);
             }}
-            className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -197,21 +197,21 @@ export default function InventoryPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("inventory.searchIngredients")}
-          className="w-full max-w-md px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+          className="w-full max-w-md px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
         />
       </div>
 
       {/* Inventory table */}
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-lg p-8 text-center text-gray-500 border border-gray-200">
+        <div className="bg-white rounded-lg p-8 text-center text-gray-500 border border-gray-200 shadow-sm">
           {t("inventory.noIngredients")}
         </div>
       ) : (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
+                <tr className="border-b border-gray-200 bg-gray-50/80">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {t("inventory.ingredientName")}
                   </th>
@@ -241,7 +241,7 @@ export default function InventoryPage() {
                   return (
                     <tr
                       key={ing.id}
-                      className={`hover:bg-gray-50/50 ${status === "out" ? "bg-red-50" : status === "low" ? "bg-amber-50" : ""}`}
+                      className={`hover:bg-indigo-50/30 ${status === "out" ? "bg-red-50" : status === "low" ? "bg-amber-50" : ""}`}
                     >
                       <td className="px-4 py-3">
                         <div className="text-sm font-medium text-gray-900">{ing.name}</div>
@@ -317,7 +317,7 @@ export default function InventoryPage() {
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     required
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
                   />
                 </div>
                 <div>
@@ -329,7 +329,7 @@ export default function InventoryPage() {
                     value={formNameEs}
                     onChange={(e) => setFormNameEs(e.target.value)}
                     required
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
                   />
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function InventoryPage() {
                 <select
                   value={formUnit}
                   onChange={(e) => setFormUnit(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
                 >
                   {units.map((u) => (
                     <option key={u} value={u}>{u}</option>
@@ -359,7 +359,7 @@ export default function InventoryPage() {
                     step="any"
                     value={formStock}
                     onChange={(e) => setFormStock(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
                   />
                 </div>
                 <div>
@@ -371,7 +371,7 @@ export default function InventoryPage() {
                     step="any"
                     value={formThreshold}
                     onChange={(e) => setFormThreshold(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
                   />
                 </div>
                 <div>
@@ -383,7 +383,7 @@ export default function InventoryPage() {
                     step="0.01"
                     value={formCost}
                     onChange={(e) => setFormCost(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 text-sm"
                   />
                 </div>
               </div>
@@ -399,7 +399,7 @@ export default function InventoryPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>
@@ -438,7 +438,7 @@ export default function InventoryPage() {
                           [ing.id]: e.target.value,
                         }))
                       }
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                   <span className="text-xs text-gray-500 w-10">{ing.unit}</span>
@@ -456,7 +456,7 @@ export default function InventoryPage() {
               <button
                 onClick={handleDelivery}
                 disabled={savingDelivery}
-                className="flex-1 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {savingDelivery ? t("common.loading") : t("common.confirm")}
               </button>

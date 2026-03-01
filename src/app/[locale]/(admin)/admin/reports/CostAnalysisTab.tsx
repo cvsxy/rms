@@ -129,15 +129,15 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
           <p className="text-sm text-gray-500">{t("reports.revenue")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">{formatMoney(totalItemRevenue)}</p>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
           <p className="text-sm text-gray-500">{t("reports.totalFoodCost")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">{formatMoney(totalFoodCost)}</p>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
           <p className="text-sm text-gray-500">{t("reports.grossProfit")}</p>
           <p className="text-2xl font-semibold text-green-600 mt-1">{formatMoney(grossProfit)}</p>
         </div>
@@ -151,12 +151,12 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
 
       {/* Category Margins */}
       {categoryMargins.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reports.categoryMargins")}</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
+                <tr className="border-b border-gray-200 bg-gray-50/80">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {t("menu.categories")}
                   </th>
@@ -176,7 +176,7 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {categoryMargins.map((cat) => (
-                  <tr key={cat.name} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={cat.name} className="hover:bg-indigo-50/30 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900">
                       {isEs ? cat.nameEs : cat.name}
                     </td>
@@ -198,7 +198,7 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
 
       {/* Top Items by Profit */}
       {topItemsByProfit.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reports.itemMargins")}</h2>
 
           {/* Chart */}
@@ -229,7 +229,7 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
+                <tr className="border-b border-gray-200 bg-gray-50/80">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {t("menu.title")}
                   </th>
@@ -252,7 +252,7 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {topItemsByProfit.map((item) => (
-                  <tr key={item.name} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={item.name} className="hover:bg-indigo-50/30 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900">
                       {isEs ? item.nameEs : item.name}
                     </td>

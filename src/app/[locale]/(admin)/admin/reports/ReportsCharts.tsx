@@ -11,6 +11,7 @@ import {
   Cell,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
@@ -57,7 +58,7 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-gray-200 p-5">
+    <div className="rounded-lg border border-gray-200 p-5 shadow-sm">
       <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">{title}</h3>
       {children}
     </div>
@@ -226,10 +227,11 @@ export default function ReportsCharts({
                   x2="0"
                   y2="1"
                 >
-                  <stop offset="5%" stopColor="#111827" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#111827" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 dataKey="date"
                 tick={AXIS_TICK}
@@ -265,7 +267,7 @@ export default function ReportsCharts({
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="#111827"
+                stroke="#10b981"
                 strokeWidth={2}
                 fill="url(#revenueGradient)"
               />
@@ -284,6 +286,7 @@ export default function ReportsCharts({
               data={ordersByHour}
               margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
             >
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 dataKey="hour"
                 tick={AXIS_TICK}
@@ -308,8 +311,8 @@ export default function ReportsCharts({
                       : "Revenue"
                 }
               />
-              <Bar dataKey="orders" fill="#111827" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="revenue" fill="#111827" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="orders" fill="#6366f1" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -404,6 +407,7 @@ export default function ReportsCharts({
               layout="vertical"
               margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
             >
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis type="number" tick={AXIS_TICK} axisLine={false} tickLine={false} />
               <YAxis
                 type="category"
@@ -430,7 +434,7 @@ export default function ReportsCharts({
               />
               <Bar
                 dataKey="quantity"
-                fill="#111827"
+                fill="#6366f1"
                 radius={[0, 4, 4, 0]}
               />
               <Bar

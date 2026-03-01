@@ -331,7 +331,7 @@ export default function ManageMenuPage() {
             resetCatForm();
             setShowCatForm(true);
           }}
-          className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors"
+          className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors"
         >
           + {t("admin.addCategory")}
         </button>
@@ -345,7 +345,7 @@ export default function ManageMenuPage() {
             onClick={() => setActiveTab(cat.id)}
             className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
               activeTab === cat.id
-                ? "bg-gray-900 text-white"
+                ? "bg-indigo-600 text-white"
                 : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
             }`}
           >
@@ -379,7 +379,7 @@ export default function ManageMenuPage() {
               resetItemForm();
               setShowItemForm(true);
             }}
-            className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors"
+            className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors"
           >
             + {t("admin.addItem")}
           </button>
@@ -397,7 +397,7 @@ export default function ManageMenuPage() {
             activeCategory.items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-lg p-4 border border-gray-200"
+                className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -508,7 +508,7 @@ export default function ManageMenuPage() {
                   value={catName}
                   onChange={(e) => setCatName(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 />
               </div>
               <div>
@@ -520,7 +520,7 @@ export default function ManageMenuPage() {
                   value={catNameEs}
                   onChange={(e) => setCatNameEs(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 />
               </div>
               <div>
@@ -532,7 +532,7 @@ export default function ManageMenuPage() {
                   value={catSortOrder}
                   onChange={(e) => setCatSortOrder(e.target.value)}
                   min="1"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                 />
               </div>
               <div className="flex gap-2 pt-2">
@@ -546,7 +546,7 @@ export default function ManageMenuPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>
@@ -574,7 +574,7 @@ export default function ManageMenuPage() {
                     value={itemName}
                     onChange={(e) => setItemName(e.target.value)}
                     required
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   />
                 </div>
                 <div>
@@ -586,7 +586,7 @@ export default function ManageMenuPage() {
                     value={itemNameEs}
                     onChange={(e) => setItemNameEs(e.target.value)}
                     required
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -599,7 +599,7 @@ export default function ManageMenuPage() {
                     type="text"
                     value={itemDesc}
                     onChange={(e) => setItemDesc(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   />
                 </div>
                 <div>
@@ -610,7 +610,7 @@ export default function ManageMenuPage() {
                     type="text"
                     value={itemDescEs}
                     onChange={(e) => setItemDescEs(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   />
                 </div>
               </div>
@@ -626,7 +626,7 @@ export default function ManageMenuPage() {
                     required
                     min="0"
                     step="0.01"
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   />
                 </div>
                 <div>
@@ -638,7 +638,7 @@ export default function ManageMenuPage() {
                     onChange={(e) =>
                       setItemDest(e.target.value as "KITCHEN" | "BAR")
                     }
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
                   >
                     <option value="KITCHEN">{t("display.kitchen")}</option>
                     <option value="BAR">{t("display.bar")}</option>
@@ -670,7 +670,7 @@ export default function ManageMenuPage() {
                         updateModifier(idx, "name", e.target.value)
                       }
                       required
-                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     <input
                       type="text"
@@ -680,7 +680,7 @@ export default function ManageMenuPage() {
                         updateModifier(idx, "nameEs", e.target.value)
                       }
                       required
-                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     <input
                       type="number"
@@ -689,7 +689,7 @@ export default function ManageMenuPage() {
                       onChange={(e) =>
                         updateModifier(idx, "priceAdj", e.target.value)
                       }
-                      className="w-20 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                      className="w-20 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                       step="0.01"
                     />
                     <button
@@ -726,7 +726,7 @@ export default function ManageMenuPage() {
                       value={row.ingredientId}
                       onChange={(e) => updateIngredientRow(idx, e.target.value)}
                       required
-                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                      className="flex-1 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       <option value="">{t("menu.selectIngredient")}</option>
                       {availableIngredients
@@ -745,7 +745,7 @@ export default function ManageMenuPage() {
                       required
                       min="0.001"
                       step="0.001"
-                      className="w-24 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                      className="w-24 px-2 py-1.5 border border-gray-200 rounded text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     {row.unit && (
                       <span className="text-xs text-gray-500 w-8">{row.unit}</span>
@@ -772,7 +772,7 @@ export default function ManageMenuPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>

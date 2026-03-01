@@ -113,7 +113,7 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Share Pie */}
         {pieData.length > 0 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
             <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">{t("reports.revenueShare")}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -143,11 +143,11 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
         )}
 
         {/* Performance Table */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
+                <tr className="border-b border-gray-200 bg-gray-50/80">
                   {(
                     [
                       { key: "name" as SortKey, label: t("admin.serverName"), align: "left" },
@@ -173,7 +173,7 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {sorted.map((s) => (
-                  <tr key={s.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={s.id} className="hover:bg-indigo-50/30 transition-colors">
                     <td className="px-3 py-3 text-sm font-medium text-gray-900">{s.name}</td>
                     <td className="px-3 py-3 text-sm text-gray-600 text-right">{s.orders}</td>
                     <td className="px-3 py-3 text-sm font-medium text-gray-900 text-right">{formatMoney(s.revenue)}</td>

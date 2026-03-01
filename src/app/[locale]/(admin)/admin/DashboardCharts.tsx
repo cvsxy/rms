@@ -7,8 +7,10 @@ import {
   Bar,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { useTranslations } from "next-intl";
 
@@ -24,6 +26,8 @@ const TOOLTIP_STYLE = {
   border: "none",
   boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
 };
+
+const TOP_ITEM_COLORS = ["#6366f1", "#10b981", "#f59e0b", "#f43f5e", "#0ea5e9"];
 
 export default function DashboardCharts({
   revenueByDay,
@@ -47,10 +51,11 @@ export default function DashboardCharts({
             <AreaChart data={revenueByDay}>
               <defs>
                 <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#111827" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#111827" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: 11, fill: "#9ca3af" }}
@@ -70,9 +75,9 @@ export default function DashboardCharts({
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="#111827"
+                stroke="#10b981"
                 fill="url(#revenueGradient)"
-                strokeWidth={1.5}
+                strokeWidth={2}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -91,6 +96,7 @@ export default function DashboardCharts({
         {hasOrders ? (
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={ordersByHour}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 dataKey="hour"
                 tick={{ fontSize: 10, fill: "#9ca3af" }}
@@ -110,9 +116,8 @@ export default function DashboardCharts({
               />
               <Bar
                 dataKey="orders"
-                fill="#111827"
+                fill="#6366f1"
                 radius={[3, 3, 0, 0]}
-                opacity={0.85}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -131,6 +136,7 @@ export default function DashboardCharts({
           </h3>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={topItems} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 type="number"
                 tick={{ fontSize: 11, fill: "#9ca3af" }}
@@ -150,12 +156,11 @@ export default function DashboardCharts({
                 formatter={(value) => [value, t("reports.itemsSold")]}
                 contentStyle={TOOLTIP_STYLE}
               />
-              <Bar
-                dataKey="quantity"
-                fill="#111827"
-                radius={[0, 3, 3, 0]}
-                opacity={0.85}
-              />
+              <Bar dataKey="quantity" radius={[0, 3, 3, 0]}>
+                {topItems.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={TOP_ITEM_COLORS[index % TOP_ITEM_COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

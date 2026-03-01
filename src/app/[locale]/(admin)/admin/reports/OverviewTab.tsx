@@ -101,7 +101,7 @@ export default function OverviewTab({
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {cards.map((card) => (
-          <div key={card.label} className="bg-white rounded-lg border border-gray-200 p-5">
+          <div key={card.label} className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
             <p className="text-sm text-gray-500">{card.label}</p>
             <p className="text-2xl font-semibold text-gray-900 mt-1">{card.value}</p>
           </div>

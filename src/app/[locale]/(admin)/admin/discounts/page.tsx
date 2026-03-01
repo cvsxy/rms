@@ -100,7 +100,7 @@ export default function DiscountsPage() {
         <h1 className="text-xl font-semibold text-gray-900">{t("discounts.title")}</h1>
         <button
           onClick={openAdd}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
         >
           {t("discounts.addDiscount")}
         </button>
@@ -115,11 +115,11 @@ export default function DiscountsPage() {
           {t("discounts.noDiscountsYet")}
         </div>
       ) : (
-        <div className="bg-white rounded-lg overflow-hidden">
+        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr>
+                <tr className="bg-gray-50/80">
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("discounts.discountName")}</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("discounts.discountType")}</th>
                   <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("discounts.discountValue")}</th>
@@ -129,7 +129,7 @@ export default function DiscountsPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {discounts.map((d) => (
-                  <tr key={d.id} className="hover:bg-gray-50/50">
+                  <tr key={d.id} className="hover:bg-indigo-50/30">
                     <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
                       {locale === "es" ? d.nameEs : d.name}
                     </td>
@@ -190,7 +190,7 @@ export default function DiscountsPage() {
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -199,7 +199,7 @@ export default function DiscountsPage() {
                   type="text"
                   value={form.nameEs}
                   onChange={(e) => setForm({ ...form, nameEs: e.target.value })}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
               <div>
@@ -207,7 +207,7 @@ export default function DiscountsPage() {
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value as "PERCENTAGE" | "FIXED" })}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="PERCENTAGE">{t("discounts.percentage")}</option>
                   <option value="FIXED">{t("discounts.fixed")}</option>
@@ -221,7 +221,7 @@ export default function DiscountsPage() {
                   type="number"
                   value={form.value}
                   onChange={(e) => setForm({ ...form, value: e.target.value })}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   min="0"
                   step={form.type === "PERCENTAGE" ? "1" : "0.01"}
                 />
@@ -232,7 +232,7 @@ export default function DiscountsPage() {
                   type="text"
                   value={form.code}
                   onChange={(e) => setForm({ ...form, code: e.target.value })}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="PROMO10"
                 />
               </div>
@@ -247,7 +247,7 @@ export default function DiscountsPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!form.name || !form.nameEs || !form.value}
-                className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium disabled:opacity-50"
               >
                 {t("common.save")}
               </button>

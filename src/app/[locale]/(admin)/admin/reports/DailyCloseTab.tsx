@@ -129,7 +129,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
           {!todayClosed && (
             <button
               onClick={openCloseModal}
-              className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
             >
               {t("reports.closeToday")}
             </button>
@@ -154,7 +154,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
       </div>
 
       {/* Close History Table */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
         {loading ? (
           <div className="animate-pulse space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -167,7 +167,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
+                <tr className="border-b border-gray-200 bg-gray-50/80">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("reports.date")}</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("reports.orderCount")}</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("reports.totalRevenue")}</th>
@@ -180,7 +180,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {closes.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={c.id} className="hover:bg-indigo-50/30 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{c.date}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 text-right">{c.orderCount}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 text-right">{formatMoney(c.totalRevenue)}</td>
@@ -228,7 +228,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
                   step="0.01"
                   value={actualCash}
                   onChange={(e) => setActualCash(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-lg font-mono focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-lg font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="0.00"
                   autoFocus
                 />
@@ -256,7 +256,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   rows={2}
                   placeholder=""
                 />
@@ -277,7 +277,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
                 <button
                   onClick={handleClose}
                   disabled={!actualCash || submitting}
-                  className="flex-1 px-4 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? t("common.loading") : t("reports.confirmClose")}
                 </button>

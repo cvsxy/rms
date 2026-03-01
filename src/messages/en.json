@@ -247,7 +247,13 @@
     "dailyClosed": "Today's close is complete",
     "kitchenQueue": "Kitchen",
     "barQueue": "Bar",
-    "serverLeaderboard": "Server Leaderboard"
+    "serverLeaderboard": "Server Leaderboard",
+    "voidRate": "Void Rate",
+    "tableTurnover": "Covers Today",
+    "avgCoverTime": "Avg {minutes} min",
+    "paymentSplit": "Payment Split",
+    "peakHour": "Peak Hour",
+    "items": "items"
   },
   "inventory": {
     "title": "Inventory",

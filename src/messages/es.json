@@ -247,7 +247,13 @@
     "dailyClosed": "El cierre de hoy está completo",
     "kitchenQueue": "Cocina",
     "barQueue": "Barra",
-    "serverLeaderboard": "Tabla de Meseros"
+    "serverLeaderboard": "Tabla de Meseros",
+    "voidRate": "Tasa de Anulacion",
+    "tableTurnover": "Cubiertos Hoy",
+    "avgCoverTime": "Prom {minutes} min",
+    "paymentSplit": "Division de Pagos",
+    "peakHour": "Hora Pico",
+    "items": "articulos"
   },
   "inventory": {
     "title": "Inventario",
