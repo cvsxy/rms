@@ -1,0 +1,291 @@
+{
+  "guide": {
+    "serverGuideTitle": "Server Guide",
+    "adminGuideTitle": "Admin & Manager Guide",
+    "tableOfContents": "Table of Contents",
+    "backToTop": "Back to Top",
+    "serverSectionsHeader": "Server Features",
+    "adminSectionsHeader": "Admin & Manager Features",
+
+    "gettingStarted": {
+      "title": "Getting Started",
+      "intro": "Welcome to RMS! This guide will walk you through everything you need to know to take orders, manage tables, and process payments like a pro. Don't worry — it's all pretty intuitive once you get the hang of it.",
+      "loginTitle": "Logging In",
+      "loginBody": "When you arrive for your shift, open the app on your iPad and you'll see the PIN login screen. Just tap in the PIN your manager gave you (it's usually 4 digits) and hit \"Log In.\" If you get an error, double-check with your manager — they might need to reset your PIN.",
+      "loginTip": "If you see the admin login page by mistake, look for the small link at the bottom that says \"Server PIN Login\" to get back to the right screen.",
+      "languageTitle": "Switching Languages",
+      "languageBody": "You'll see ES/EN buttons in the top-right corner of every screen. Tap \"EN\" for English or \"ES\" for Spanish. The whole app switches instantly — menu items, buttons, everything. Pick whichever language you're more comfortable with.",
+      "layoutTitle": "Your App Layout",
+      "layoutBody": "The app has three main sections, all accessible from the tabs at the bottom of your screen: Tables (your home base), My Orders (your order history), and Notifications (alerts when items are ready). You'll also see the RMS logo and your name at the top, plus a logout button when your shift is done."
+    },
+
+    "tables": {
+      "title": "Tables",
+      "intro": "The Tables screen is your home base — it shows every table in the restaurant and what's going on with each one at a glance.",
+      "colorsTitle": "What the Colors Mean",
+      "colorsGreen": "Green = Available. The table is empty and ready for new guests. Tap it to start a new order.",
+      "colorsRed": "Red = Occupied. Someone's already seated here with an active order. Tap it to view or add to that order. You'll see the server's name who opened it.",
+      "colorsYellow": "Yellow = Reserved. This table is being held for a reservation. Your manager controls this status.",
+      "openingTitle": "Opening a New Order",
+      "openingBody": "Just tap any green (available) table. The app will automatically create a new order for you and take you straight to the order screen. It's that simple — no extra steps needed.",
+      "viewingTitle": "Viewing an Existing Order",
+      "viewingBody": "Tap any red (occupied) table to jump into its current order. You can see all the items, add more, process the bill, or void items as needed.",
+      "layoutTitle": "Custom Layout Mode",
+      "layoutBody": "Your manager might set up a custom table arrangement that matches your actual restaurant floor plan. If so, you'll see tables positioned where they really are instead of in a basic grid. Either way, everything works the same — just tap a table to get started.",
+      "refreshNote": "The table list updates automatically every 15 seconds, so you'll always see the latest status without needing to manually refresh."
+    },
+
+    "takingOrders": {
+      "title": "Taking Orders",
+      "intro": "This is where you'll spend most of your time. The menu browser makes it easy to find items, customize them, and build up an order before sending everything to the kitchen or bar.",
+      "categoriesTitle": "Browsing the Menu",
+      "categoriesBody": "On the left side of the screen, you'll see a list of menu categories (like \"Appetizers,\" \"Entrees,\" \"Drinks,\" etc.). Tap a category to see all the items in it. The selected category highlights in blue so you always know where you are.",
+      "searchTitle": "Searching for Items",
+      "searchBody": "If you know what you're looking for, use the search bar at the top. Just start typing and the menu instantly filters across all categories. It searches both the English and Spanish names, so it works no matter what language you're using. Hit the X to clear your search and go back to browsing.",
+      "itemDetailTitle": "Item Details",
+      "itemDetailBody": "Tap any menu item to open its detail sheet. Here you'll see the full name, price, and a \"What's in this\" section that lists all the ingredients. This is super helpful when guests ask about what's in a dish — just expand it and show them or read it off.",
+      "modifiersTitle": "Customizations (Modifiers)",
+      "modifiersBody": "Some items have customization options — things like \"Extra Cheese,\" \"No Onions,\" or \"Spicy.\" These show up as buttons you can toggle on or off. If a modifier has an extra charge (like \"+$25\"), you'll see it right on the button. The price preview at the bottom updates in real time as you add or remove modifiers.",
+      "seatPickerTitle": "Assigning Seat Numbers",
+      "seatPickerBody": "If your table has more than one guest, you can assign each item to a specific seat. You'll see numbered buttons (Seat 1, Seat 2, etc.) based on how many seats the table has. This is really helpful later when it's time to split the bill or deliver food to the right person. You can also leave it as \"No Seat\" if you don't need to track it.",
+      "notesTitle": "Special Instructions",
+      "notesBody": "Need to tell the kitchen something specific? Use the \"Special Instructions\" text field at the bottom of the item detail. Type things like \"extra spicy,\" \"allergy to shellfish,\" or \"birthday candle please.\" The kitchen will see these notes highlighted in yellow with a little notepad icon, so they won't miss it.",
+      "cartTitle": "Building Your Cart",
+      "cartBody": "As you add items, they appear in a green bar at the bottom of the screen. This is your cart — it shows a quick summary of what you've added and the running total. You can keep browsing and adding more items before sending anything.",
+      "clearCartTitle": "Clearing the Cart",
+      "clearCartBody": "Made a mistake or need to start over? Tap the red \"Clear\" text on the cart bar to remove everything at once.",
+      "sendingTitle": "Sending to Kitchen/Bar",
+      "sendingBody": "When you're ready, tap the big green \"Send to Kitchen/Bar\" button. This sends all the items in your cart to the right place — food items go to the kitchen display and drink items go to the bar display. The kitchen and bar see the orders instantly on their screens.",
+      "sendingTip": "You can send items in batches! Send appetizers first, then come back later to add entrees. Each batch gets sent as you go.",
+      "eightySixTitle": "What Does \"86'd\" Mean?",
+      "eightySixBody": "If you see a greyed-out item with a red \"86'd\" badge, it means that item is currently unavailable — usually because the kitchen ran out of a key ingredient. You can't add it to orders. When the ingredient is restocked, the item will automatically become available again."
+    },
+
+    "managingOrders": {
+      "title": "Managing Your Orders",
+      "intro": "Once you've sent items to the kitchen or bar, you'll want to keep an eye on their progress. The order view shows you everything that's happening with a table's order.",
+      "viewingTitle": "Viewing Order Items",
+      "viewingBody": "Each item in the order shows its name, quantity, price, any modifiers, and a colored status badge. If you assigned seat numbers, you'll see purple seat badges too. Cancelled items appear with a strikethrough and faded out so you can tell at a glance what's still active.",
+      "statusesTitle": "What the Status Colors Mean",
+      "statusPending": "Yellow (Pending/Sent) — The item has been sent and is waiting to be started by the kitchen or bar.",
+      "statusPreparing": "Blue (Preparing) — The kitchen or bar is actively working on this item right now.",
+      "statusReady": "Green (Ready) — This item is done and waiting for you to pick it up! You'll see a green glow around the card. You'll also get a notification.",
+      "statusServed": "Grey (Served) — You've already delivered this item to the table. All done!",
+      "markServedTitle": "Marking Items as Served",
+      "markServedBody": "When an item turns green (Ready), pick it up from the kitchen or bar and deliver it to the table. Then tap the green \"Mark Served\" button on that item. This lets the system know the item has been delivered and updates the order status.",
+      "voidingTitle": "Voiding an Item",
+      "voidingBody": "Need to remove an item from the order? Tap the red \"Void\" button on that item. You'll need to select a reason from the dropdown (Server Mistake, Kitchen Mistake, Out of Stock, Customer Request, or Other) and you can add an optional note with more details. This gets logged for your manager to review later, so always pick the right reason.",
+      "voidingTip": "You can only void items that haven't been served yet. Once an item is marked as Served, it can't be voided.",
+      "cancelTitle": "Cancelling an Entire Order",
+      "cancelBody": "If you need to cancel the whole order (maybe the guests left), tap the red \"Cancel Order\" button at the bottom. You'll get a confirmation popup since this can't be undone. Cancelling an order automatically cancels all the items in it and frees up the table."
+    },
+
+    "billsPayment": {
+      "title": "Bills & Payment",
+      "intro": "When your guests are ready to pay, the bill page handles everything — from showing the breakdown to processing payment.",
+      "viewingBillTitle": "Viewing the Bill",
+      "viewingBillBody": "Tap \"View Bill\" from the order screen to see the full breakdown. You'll see every item with its price, the subtotal, any discounts applied, the IVA tax (16%), any tip, and the final total. Cancelled items are excluded automatically.",
+      "seatFilterTitle": "Filtering by Seat",
+      "seatFilterBody": "If you assigned seat numbers to items, you can tap a seat button at the top to see just that person's items and their individual subtotal. This is great when guests want to know \"how much is mine?\" Note that payment is always for the full order, but the seat filter helps with splitting.",
+      "tipsTitle": "Tips",
+      "tipsBody": "You'll see preset tip buttons: No Tip, 10%, 15%, and 20%. Just tap the one your guest wants. The percentage is calculated on the discounted subtotal (before tax). If the guest wants a specific amount, tap \"Custom\" and type it in. The total updates instantly as you adjust the tip.",
+      "discountsTitle": "Applying Discounts",
+      "discountsBody": "Tap the purple \"Apply Discount\" button to see available discounts. You'll see two options: preset discounts your manager created (like \"Happy Hour 10%\" or \"Employee Discount\") and a \"Custom Comp\" tab where you can enter a custom percentage or fixed amount with a reason. Applied discounts show up as removable chips on the bill — tap the red \"Remove\" button if you need to take one off.",
+      "paymentTitle": "Processing Payment",
+      "paymentBody": "When everything looks good, tap either the green \"Cash\" button or the blue \"Card\" button at the bottom. You'll see a confirmation popup showing the total, payment method, discount, and tip. Hit \"Confirm\" to close out the order. The table automatically becomes available again for new guests.",
+      "paymentTip": "Double-check the tip amount with your guest before confirming — once the payment is processed, it can't be changed."
+    },
+
+    "notifications": {
+      "title": "Notifications",
+      "intro": "Notifications are your lifeline to the kitchen and bar. When they finish preparing one of your items, you get an instant alert so you can go pick it up.",
+      "realtimeTitle": "How Notifications Work",
+      "realtimeBody": "When the kitchen or bar marks one of your items as \"Ready,\" you'll get a notification right away. It shows the item name, whether it came from the kitchen or bar, and which table it's for. New notifications appear with a green background so they stand out.",
+      "pushTitle": "Enabling Push Notifications",
+      "pushBody": "For the best experience, enable push notifications when the app asks you. This means you'll get alerts even if you're on a different screen or the app is in the background. Just tap \"Confirm\" on the blue banner that appears. If your browser asks for permission, make sure to tap \"Allow.\"",
+      "pushBlockedNote": "If you accidentally blocked notifications, you'll need to go into your device's Settings to re-enable them for the browser. Ask your manager for help if you're not sure how.",
+      "managingTitle": "Managing Your Notifications",
+      "managingBody": "Unread notifications have a green background. Tap \"Mark Read\" to clear the highlight. You can also tap \"Clear All\" at the top to remove everything — the app will ask you to confirm first since you can't undo this. Your notifications are saved on your device, so they're still there even if you close and reopen the app."
+    },
+
+    "myOrders": {
+      "title": "My Orders",
+      "intro": "The My Orders page is your personal order history — see everything you've done today or look back at previous shifts.",
+      "historyBody": "When you open My Orders, you'll see all the orders you created today, sorted by most recent. Each order card shows the table number, status badge, total amount, time created, and item count. Tap any order card to expand it and see all the item details, modifiers, notes, and payment info.",
+      "datePickerBody": "Want to look at a different day? Use the date picker at the top to select any past date. This is useful for checking your totals from yesterday or looking up a specific order."
+    },
+
+    "tipsTricks": {
+      "title": "Tips & Tricks",
+      "tip1Title": "Add to Home Screen",
+      "tip1": "For the best experience, add the app to your iPad's Home Screen. This makes it open full-screen like a real app instead of inside the browser. In Safari, tap the share button and choose \"Add to Home Screen.\"",
+      "tip2Title": "Keep Push Notifications On",
+      "tip2": "Seriously — push notifications are a game-changer. You'll know the instant an item is ready without having to keep checking the Notifications tab.",
+      "tip3Title": "Use Seat Numbers",
+      "tip3": "Getting into the habit of assigning seat numbers saves a ton of time later. It makes delivering food easier (you'll see which item goes to which seat) and helps when guests want to see their individual totals.",
+      "tip4Title": "Use the Search Bar",
+      "tip4": "If you know what a guest wants, searching is way faster than scrolling through categories. Just type the first few letters and you'll find it instantly.",
+      "tip5Title": "Check Notifications Often",
+      "tip5": "The red badge on the Notifications tab shows how many unread alerts you have. Make it a habit to check — your guests will appreciate faster service.",
+      "tip6Title": "Special Notes Are Your Friend",
+      "tip6": "Allergies, preferences, birthday requests — put it all in the special instructions. The kitchen sees these highlighted in bright yellow, so they definitely won't miss them."
+    },
+
+    "admin": {
+      "dashboard": {
+        "title": "Dashboard",
+        "intro": "Your dashboard is the first thing you see when you log in. It gives you a real-time snapshot of how the restaurant is doing today — revenue, orders, and key operational metrics all in one place.",
+        "statsTitle": "Stat Cards",
+        "statsBody": "At the top, you'll see five main stat cards: Total Revenue, Order Count, Average Order Value, Tips Today, and Open Tables. Each one has a small arrow showing whether it's up or down compared to yesterday, so you can spot trends at a glance.",
+        "widgetsTitle": "Insight Widgets",
+        "widgetsBody": "Below the main stats, you'll find four smaller insight cards. Void Rate shows what percentage of items were voided today (green is healthy, amber is a heads-up, red means something might need attention). Table Turnover shows how many tables have been seated and cleared, plus the average time each group stayed. Payment Split shows you the cash vs. card ratio. Peak Hour tells you your busiest time of day.",
+        "chartsTitle": "Charts",
+        "chartsBody": "The dashboard includes three charts: a 7-day revenue trend line (so you can see how the week is going), an orders-by-hour bar chart (helpful for staffing decisions), and a top 5 most-ordered items chart.",
+        "leaderboardTitle": "Server Leaderboard",
+        "leaderboardBody": "At the bottom, you'll see your top-performing servers ranked by revenue today. Gold, silver, and bronze medals highlight the top three. This can be a fun motivator for your team!",
+        "dailyCloseTitle": "Daily Close Reminder",
+        "dailyCloseBody": "If you haven't closed out the day yet, you'll see an amber reminder bar at the top. Tap it to go straight to the Reports page where you can complete the daily close. Once it's done, the bar turns green.",
+        "queueTitle": "Kitchen & Bar Status",
+        "queueBody": "A small status bar shows you how many items are currently in the kitchen and bar queues, plus a low-stock alert if any ingredients are running low."
+      },
+
+      "servers": {
+        "title": "Managing Servers",
+        "intro": "This is where you manage your waitstaff — add new servers, change PINs, or remove people who are no longer working with you.",
+        "addingTitle": "Adding a Server",
+        "addingBody": "Tap \"Add Server\" in the top right. Enter the server's name and create a PIN for them (this is what they'll use to log in on the iPad). PINs can be up to 6 digits. Make sure each server has a unique PIN — the system won't allow duplicates.",
+        "pinsTitle": "How PINs Work",
+        "pinsBody": "Servers use their PIN to log in at the start of every shift. It's simple, fast, and doesn't require them to remember an email or password. If a server forgets their PIN, you can edit their profile to set a new one.",
+        "editingTitle": "Editing & Deleting",
+        "editingBody": "Tap \"Edit\" next to any server to change their name or PIN. If you're editing and leave the PIN field blank, the old PIN stays unchanged. To remove a server, tap \"Delete\" — you'll need to confirm first. The system keeps their historical order data even after deletion."
+      },
+
+      "menu": {
+        "title": "Managing the Menu",
+        "intro": "The menu management page is where you build and maintain your entire menu — categories, items, prices, modifiers, and ingredients. Everything here is bilingual, so make sure to fill in both English and Spanish names.",
+        "categoriesTitle": "Categories",
+        "categoriesBody": "Categories organize your menu (e.g., \"Appetizers,\" \"Entrees,\" \"Cocktails\"). Each category has an English name, Spanish name, and a sort order number that controls the display sequence. Create categories first, then add items to them.",
+        "itemsTitle": "Menu Items",
+        "itemsBody": "Each item needs a name (EN + ES), description (EN + ES), price in MXN, and a destination — either Kitchen or Bar. The destination determines which display screen receives the order. So a Margarita goes to Bar, and Tacos al Pastor goes to Kitchen.",
+        "modifiersTitle": "Modifiers",
+        "modifiersBody": "Modifiers are customization options for items — like \"Extra Guacamole (+$35)\" or \"No Cilantro (no extra charge).\" Each modifier has a bilingual name and an optional price adjustment. Servers see these as toggleable buttons when adding the item to an order.",
+        "ingredientsTitle": "Linking Ingredients",
+        "ingredientsBody": "You can link ingredients from your inventory to each menu item and specify how much of each ingredient one serving uses (e.g., Tacos al Pastor uses 200g of pork, 50g of pineapple, 2 tortillas). This powers two important features: the \"What's in this\" display that servers can show guests, and automatic inventory deduction when orders are placed.",
+        "bilingualTitle": "Bilingual Names",
+        "bilingualBody": "Every item, category, modifier, and ingredient has both English and Spanish names. Always fill in both — servers and kitchen staff might use different languages, and the system shows whatever language each user has selected.",
+        "eightySixTitle": "86'ing Items (Marking Unavailable)",
+        "eightySixBody": "When you're out of something, tap the availability toggle on that item to mark it as \"86'd.\" It'll show a red \"86'd\" badge and servers will see it greyed out in their menu — they won't be able to order it. Toggle it back when you're restocked.",
+        "autoEightySixTitle": "Automatic 86'ing",
+        "autoEightySixBody": "Here's a powerful feature: if you've linked ingredients to menu items and an ingredient's stock hits zero (from orders being placed), the system automatically 86's every menu item that needs that ingredient. All your servers see the change instantly across their devices. So if you run out of shrimp, every shrimp dish goes grey at once — no manual work needed.",
+        "autoEightySixTip": "Automatic 86'ing only works if you've linked ingredients to your menu items with proper quantities. The more complete your ingredient setup, the more reliable this feature becomes."
+      },
+
+      "tables": {
+        "title": "Managing Tables",
+        "intro": "Set up your restaurant's tables here — how many you have, how many seats each one has, and optionally arrange them to match your actual floor plan.",
+        "listViewTitle": "List View",
+        "listViewBody": "By default, you see all your tables in a simple grid showing the table number, name (if you gave it one, like \"Patio 3\"), seat count, and current status. You can add, edit, or delete tables from here.",
+        "addingTitle": "Adding Tables",
+        "addingBody": "Tap \"Add Table\" and enter a table number, an optional name (helpful for distinguishing areas like \"Bar Seat 1\" or \"Terrace 5\"), and the number of seats. The seat count matters — it determines how many seat number options servers get when placing orders.",
+        "layoutViewTitle": "Layout View (Custom Arrangement)",
+        "layoutViewBody": "Switch to \"Layout View\" for a visual editor where you can drag tables around to match your restaurant's actual layout. It's an 800x560 canvas with a dotted grid background. Just grab a table and move it wherever you want.",
+        "enableLayoutTitle": "Enabling Custom Layout for Servers",
+        "enableLayoutBody": "Check the \"Use Custom Layout\" box to make your positioned layout visible to servers on their Tables screen. When enabled, servers see tables arranged exactly where you placed them. When disabled, servers see the standard grid layout."
+      },
+
+      "inventory": {
+        "title": "Inventory",
+        "intro": "Keep track of what's in your kitchen and behind the bar. The inventory system tracks stock levels, alerts you when things are running low, and automatically adjusts quantities as orders come in.",
+        "addingTitle": "Adding Ingredients",
+        "addingBody": "Tap \"Add Ingredient\" and fill in the bilingual name (EN + ES), the unit of measurement (kg, L, units, etc.), your current stock level, a low-stock threshold (the point where you want to be alerted), and the cost per unit. The cost is used in your P&L reports.",
+        "stockLevelsTitle": "Stock Level Indicators",
+        "stockLevelsBody": "Each ingredient shows a colored badge: Green (In Stock) means you're good. Amber (Low Stock) means you've dropped below your threshold — time to think about reordering. Red (Out of Stock) means you've hit zero, and any linked menu items are automatically 86'd.",
+        "deliveryTitle": "Receiving Deliveries",
+        "deliveryBody": "When a delivery arrives, tap \"Receive Delivery\" at the top. You'll see every ingredient listed with its current stock. Just enter the amount you received for each item (leave at 0 for things that weren't in this delivery) and hit \"Confirm.\" The stock gets updated in one batch.",
+        "autoDeductTitle": "Automatic Stock Deduction",
+        "autoDeductBody": "This is where the magic happens. Every time a server sends an order to the kitchen or bar, the system automatically subtracts the right amount of each ingredient. So if someone orders 2 Tacos al Pastor and each taco uses 200g of pork, 400g of pork gets deducted from your inventory immediately.",
+        "autoEightySixTitle": "Automatic 86'ing from Stock",
+        "autoEightySixBody": "When an ingredient hits zero stock from automatic deduction, the system looks at every menu item that uses that ingredient and automatically marks them as unavailable (86'd). Every server's device updates in real time. When you restock through a delivery, those items become available again.",
+        "lowStockTitle": "Low-Stock Alerts",
+        "lowStockBody": "Your dashboard shows a red badge on the Inventory quick action when any ingredients are below their threshold. The inventory page itself highlights low-stock rows in amber and out-of-stock rows in red, so you can quickly see what needs attention.",
+        "costTitle": "Cost per Unit",
+        "costBody": "The cost you enter for each ingredient is used in the Reports > Cost Analysis section to calculate food cost percentages, gross profit, and per-item margins. Keeping this accurate helps you understand your actual profitability."
+      },
+
+      "reports": {
+        "title": "Reports",
+        "intro": "Reports give you a complete picture of your restaurant's financial performance. You can slice the data by date range, export to CSV, and dive into specific areas like tax accounting, food costs, and server performance.",
+        "dateRangeTitle": "Choosing a Date Range",
+        "dateRangeBody": "Use the preset buttons at the top: Today, Yesterday, This Week, This Month, or Custom (pick any start and end date). All the charts and tables below update automatically when you change the range.",
+        "overviewTitle": "Overview Tab",
+        "overviewBody": "The main overview shows your total revenue, order count, average order value, and total tips for the selected period. Below that, you'll see charts for revenue over time, orders by hour, top selling items, category breakdown, and payment method split.",
+        "taxTitle": "Tax & Revenue Tab",
+        "taxBody": "This tab breaks down each day's subtotal, IVA tax (16%), discounts applied, tips received, and total revenue. There's a totals row at the bottom summing everything up. Perfect for your accountant or for filing tax reports.",
+        "costAnalysisTitle": "Cost Analysis Tab",
+        "costAnalysisBody": "See your actual food costs versus revenue. It shows total food cost, gross profit, and food cost percentage. Below that, you get per-category margins and a detailed per-item breakdown showing each item's quantity sold, revenue, cost, profit, and margin percentage. This helps you identify which items are most profitable and which might need a price adjustment.",
+        "serverPerfTitle": "Server Performance Tab",
+        "serverPerfBody": "A table showing each server's order count, total revenue, average order value, items per order, and tips earned for the selected period. Great for understanding who your strongest performers are and who might need additional training.",
+        "dailyCloseTitle": "Daily Close Tab",
+        "dailyCloseBody": "At the end of each day, use this tab to close out. You'll enter the actual cash counted in your register, and the system compares it to the expected amount (based on cash sales). Any variance (over or short) is recorded. You can also see the history of all previous closes with dates, amounts, and notes.",
+        "exportTitle": "Exporting Data",
+        "exportBody": "Each tab has a CSV export button. This downloads a spreadsheet file you can open in Excel or Google Sheets. The exports include dates, totals, and breakdowns — everything you need for bookkeeping or sharing with your accountant."
+      },
+
+      "operations": {
+        "title": "Live Operations",
+        "intro": "The operations dashboard gives you a real-time view of what's happening in the restaurant right now. It's perfect for keeping on a monitor in the office or checking during a busy rush.",
+        "statsTitle": "Key Stats",
+        "statsBody": "Four stat cards show: Active Orders (how many open orders exist right now), Kitchen Queue (items waiting to be prepared or being prepared in the kitchen), Bar Queue (same for the bar), and Average Prep Time (how long items are taking today, in minutes).",
+        "queuesTitle": "Orders by Status",
+        "queuesBody": "Colored progress bars show how your orders are distributed: blue for Open (just created), amber for Submitted (in the kitchen/bar), and green for Completed (all items served, waiting for payment). This helps you spot bottlenecks at a glance.",
+        "serverWorkloadTitle": "Server Workload",
+        "serverWorkloadBody": "A table showing each active server, how many tables they're handling, and how many active items they have in progress. Use this to balance the workload — if one server has 5 tables and another has 1, you know who to assign the next walk-in to.",
+        "eightySixAlertTitle": "86'd Items Alert",
+        "eightySixAlertBody": "A red warning shows if any menu items are currently 86'd (unavailable). This reminds you to check your inventory and restock if possible.",
+        "refreshTitle": "Auto-Refresh",
+        "refreshBody": "Everything on this page updates automatically every 10 seconds. You don't need to refresh or tap anything — just leave it open and it stays current. The timestamp at the top shows when it was last updated."
+      },
+
+      "discounts": {
+        "title": "Discounts",
+        "intro": "Create and manage discounts that your servers can apply to orders. You can set up percentage discounts (like \"10% off\"), fixed amount discounts (like \"$50 off\"), or let servers enter custom comps.",
+        "creatingTitle": "Creating a Discount",
+        "creatingBody": "Tap \"Add Discount\" and fill in: a name in English and Spanish (this is what servers see), the type (Percentage or Fixed Amount), the value (e.g., 10 for 10%, or 50 for $50), and an optional code (like \"HAPPYHOUR\"). The code is just for reference — servers don't need to type it.",
+        "typesTitle": "Discount Types",
+        "typesBody": "Percentage discounts (like 10%) are calculated on the order subtotal before tax. Fixed amount discounts (like $50 off) are subtracted directly from the subtotal. Either way, tax is recalculated on the discounted amount.",
+        "applyingTitle": "How Servers Apply Discounts",
+        "applyingBody": "When a server is on the bill page, they tap \"Apply Discount\" and choose from your preset list, or switch to the \"Custom Comp\" tab to enter a one-off discount with a reason. Applied discounts show as removable chips on the bill, so nothing is hidden.",
+        "trackingTitle": "Tracking Discounts",
+        "trackingBody": "Every discount application is logged in the audit trail with who applied it, when, and the reason. This gives you full visibility into discounting behavior — if someone is giving too many comps, you'll see it."
+      },
+
+      "audit": {
+        "title": "Audit Log",
+        "intro": "The audit log tracks every important action in the system. It's your accountability tool — you can see exactly who did what and when.",
+        "filteringTitle": "Filtering the Log",
+        "filteringBody": "Use the dropdown filters at the top to narrow down what you're looking at. You can filter by action type (voids, cancellations, payments, discounts, 86'd items, stock adjustments), by server, and by date range. The results update instantly.",
+        "actionsTitle": "What's Tracked",
+        "actionsBody": "Six types of actions are logged: Item Voided (with the reason and any notes), Order Cancelled, Payment Processed (with method, amounts, and tip), Discount Applied (with type, value, and reason), Item 86'd (toggled available/unavailable), and Stock Adjusted (deliveries and manual changes). Each entry has a colored badge so you can spot patterns quickly.",
+        "readingTitle": "Reading the Details",
+        "readingBody": "Click any row to expand the full details. For example, a voided item will show you the item name, why it was voided, any note the server added, and which table it was on. A payment entry shows the exact breakdown of subtotal, discount, tax, tip, and total.",
+        "usageTitle": "Using the Audit Log",
+        "usageBody": "Check it regularly to spot trends. Are lots of items being voided for \"kitchen mistake\"? That might signal a training issue. Are certain servers applying lots of discounts? That might need a conversation. The audit log helps you manage by data, not guesswork."
+      },
+
+      "displays": {
+        "title": "Kitchen & Bar Displays",
+        "intro": "The kitchen and bar displays are designed to be shown on screens in the kitchen and behind the bar. They don't require any login — just open the URL on a mounted display and they work.",
+        "accessTitle": "Setting Up Displays",
+        "accessBody": "Navigate to /kitchen for the kitchen display or /bar for the bar display. These are public pages that don't require login, so you can open them on any screen or tablet. Bookmark them for easy access. Each display only shows items going to its area — the kitchen display won't show drink orders, and the bar display won't show food orders.",
+        "whatShowsTitle": "What Appears on the Display",
+        "whatShowsBody": "Each order appears as a card showing the table number, server name, and every item with its quantity, seat number (if assigned), modifiers, special notes (highlighted in bright yellow), and ingredient details. New orders appear with a chime sound.",
+        "timerTitle": "Timer Colors",
+        "timerBody": "Every order card has a live timer that changes color to create urgency: Grey is the default (just started). Yellow appears at 5 minutes — things are getting warm. Red appears at 10 minutes — this order is behind. Green means all items have been marked ready — the timer freezes and shows the total prep time.",
+        "markReadyTitle": "Marking Items Ready",
+        "markReadyBody": "Kitchen and bar staff tap \"Mark Ready\" on each item as it's finished, or \"Mark All Ready\" to complete the whole order at once. This triggers an instant notification to the server who placed the order, so they know to come pick it up.",
+        "collapsibleTitle": "Completed Orders",
+        "collapsibleBody": "Once all items in an order are marked Ready, the order card collapses to save screen space. Tap the chevron to expand it again if you need to double-check something. This keeps the display focused on orders that still need attention."
+      }
+    }
+  }
+}

@@ -1,0 +1,291 @@
+{
+  "guide": {
+    "serverGuideTitle": "Guía del Mesero",
+    "adminGuideTitle": "Guía de Administración",
+    "tableOfContents": "Índice",
+    "backToTop": "Volver Arriba",
+    "serverSectionsHeader": "Funciones del Mesero",
+    "adminSectionsHeader": "Funciones de Administración",
+
+    "gettingStarted": {
+      "title": "Primeros Pasos",
+      "intro": "¡Bienvenido a RMS! Esta guía te explicará todo lo que necesitas saber para tomar órdenes, manejar mesas y procesar pagos como un profesional. No te preocupes — todo es bastante intuitivo una vez que le agarras la onda.",
+      "loginTitle": "Iniciar Sesión",
+      "loginBody": "Cuando llegues a tu turno, abre la app en tu iPad y verás la pantalla de inicio de sesión con PIN. Solo ingresa el PIN que te dio tu gerente (normalmente son 4 dígitos) y toca \"Iniciar Sesión.\" Si te marca error, verifica con tu gerente — puede que necesite restablecer tu PIN.",
+      "loginTip": "Si ves la página de inicio de sesión de administrador por error, busca el enlace pequeño en la parte inferior que dice \"Inicio con PIN\" para regresar a la pantalla correcta.",
+      "languageTitle": "Cambiar Idioma",
+      "languageBody": "Verás los botones ES/EN en la esquina superior derecha de cada pantalla. Toca \"EN\" para inglés o \"ES\" para español. Toda la app cambia al instante — platillos del menú, botones, todo. Usa el idioma con el que te sientas más cómodo.",
+      "layoutTitle": "Tu Diseño de la App",
+      "layoutBody": "La app tiene tres secciones principales, todas accesibles desde las pestañas en la parte inferior de tu pantalla: Mesas (tu base principal), Mis Órdenes (tu historial de órdenes), y Notificaciones (alertas cuando los platillos están listos). También verás el logo de RMS y tu nombre en la parte superior, además de un botón de cerrar sesión cuando termine tu turno."
+    },
+
+    "tables": {
+      "title": "Mesas",
+      "intro": "La pantalla de Mesas es tu base principal — muestra cada mesa del restaurante y qué está pasando con cada una de un vistazo.",
+      "colorsTitle": "Qué Significan los Colores",
+      "colorsGreen": "Verde = Disponible. La mesa está vacía y lista para nuevos clientes. Tócala para iniciar una nueva orden.",
+      "colorsRed": "Rojo = Ocupada. Alguien ya está sentado con una orden activa. Tócala para ver o agregar a esa orden. Verás el nombre del mesero que la abrió.",
+      "colorsYellow": "Amarillo = Reservada. Esta mesa está apartada para una reservación. Tu gerente controla este estado.",
+      "openingTitle": "Abrir una Nueva Orden",
+      "openingBody": "Solo toca cualquier mesa verde (disponible). La app creará automáticamente una nueva orden y te llevará directo a la pantalla de la orden. Así de simple — no necesitas pasos extra.",
+      "viewingTitle": "Ver una Orden Existente",
+      "viewingBody": "Toca cualquier mesa roja (ocupada) para entrar a su orden actual. Puedes ver todos los artículos, agregar más, procesar la cuenta, o anular artículos según sea necesario.",
+      "layoutTitle": "Modo de Diseño Personalizado",
+      "layoutBody": "Tu gerente puede configurar un arreglo de mesas personalizado que coincida con el plano real de tu restaurante. Si es así, verás las mesas posicionadas donde realmente están en lugar de una cuadrícula básica. De cualquier forma, todo funciona igual — solo toca una mesa para empezar.",
+      "refreshNote": "La lista de mesas se actualiza automáticamente cada 15 segundos, así que siempre verás el estado más reciente sin necesidad de actualizar manualmente."
+    },
+
+    "takingOrders": {
+      "title": "Tomar Órdenes",
+      "intro": "Aquí es donde pasarás la mayor parte de tu tiempo. El navegador del menú te facilita encontrar artículos, personalizarlos y armar una orden antes de enviar todo a la cocina o al bar.",
+      "categoriesTitle": "Navegar el Menú",
+      "categoriesBody": "En el lado izquierdo de la pantalla, verás una lista de categorías del menú (como \"Entradas,\" \"Platos Fuertes,\" \"Bebidas,\" etc.). Toca una categoría para ver todos los artículos en ella. La categoría seleccionada se resalta en azul para que siempre sepas dónde estás.",
+      "searchTitle": "Buscar Artículos",
+      "searchBody": "Si sabes lo que buscas, usa la barra de búsqueda en la parte superior. Solo empieza a escribir y el menú se filtra al instante en todas las categorías. Busca tanto en nombres en inglés como en español, así que funciona sin importar qué idioma estés usando. Toca la X para borrar tu búsqueda y volver a navegar.",
+      "itemDetailTitle": "Detalles del Artículo",
+      "itemDetailBody": "Toca cualquier artículo del menú para abrir su hoja de detalle. Aquí verás el nombre completo, precio, y una sección \"Qué contiene\" que lista todos los ingredientes. Esto es súper útil cuando los clientes preguntan qué tiene un platillo — solo expándelo y muéstraselo o léeselo.",
+      "modifiersTitle": "Personalizaciones (Modificadores)",
+      "modifiersBody": "Algunos artículos tienen opciones de personalización — cosas como \"Extra Queso,\" \"Sin Cebolla,\" o \"Picante.\" Aparecen como botones que puedes activar o desactivar. Si un modificador tiene un cargo extra (como \"+$25\"), lo verás directo en el botón. La vista previa del precio en la parte inferior se actualiza en tiempo real mientras agregas o quitas modificadores.",
+      "seatPickerTitle": "Asignar Números de Asiento",
+      "seatPickerBody": "Si tu mesa tiene más de un comensal, puedes asignar cada artículo a un asiento específico. Verás botones numerados (Asiento 1, Asiento 2, etc.) según cuántos asientos tenga la mesa. Esto es muy útil después cuando sea hora de dividir la cuenta o entregar la comida a la persona correcta. También puedes dejarlo como \"Sin Asiento\" si no necesitas rastrearlo.",
+      "notesTitle": "Instrucciones Especiales",
+      "notesBody": "¿Necesitas decirle algo específico a la cocina? Usa el campo de texto \"Instrucciones Especiales\" en la parte inferior del detalle del artículo. Escribe cosas como \"extra picante,\" \"alergia a mariscos,\" o \"vela de cumpleaños por favor.\" La cocina verá estas notas resaltadas en amarillo con un pequeño icono de libreta, así que definitivamente no las pasarán por alto.",
+      "cartTitle": "Armando Tu Carrito",
+      "cartBody": "Mientras agregas artículos, aparecen en una barra verde en la parte inferior de la pantalla. Este es tu carrito — muestra un resumen rápido de lo que has agregado y el total acumulado. Puedes seguir navegando y agregando más artículos antes de enviar algo.",
+      "clearCartTitle": "Vaciar el Carrito",
+      "clearCartBody": "¿Cometiste un error o necesitas empezar de nuevo? Toca el texto rojo \"Limpiar\" en la barra del carrito para quitar todo de una vez.",
+      "sendingTitle": "Enviar a Cocina/Bar",
+      "sendingBody": "Cuando estés listo, toca el botón verde grande \"Enviar a Cocina/Bar.\" Esto envía todos los artículos de tu carrito al lugar correcto — los platillos van a la pantalla de cocina y las bebidas van a la pantalla del bar. La cocina y el bar ven las órdenes al instante en sus pantallas.",
+      "sendingTip": "¡Puedes enviar artículos por tandas! Envía las entradas primero, luego regresa después a agregar los platos fuertes. Cada tanda se envía conforme avanzas.",
+      "eightySixTitle": "¿Qué Significa \"86'd\"?",
+      "eightySixBody": "Si ves un artículo en gris con una etiqueta roja \"86'd,\" significa que ese artículo no está disponible actualmente — generalmente porque la cocina se quedó sin un ingrediente clave. No puedes agregarlo a las órdenes. Cuando se reabastezca el ingrediente, el artículo volverá a estar disponible automáticamente."
+    },
+
+    "managingOrders": {
+      "title": "Administrar Tus Órdenes",
+      "intro": "Una vez que hayas enviado artículos a la cocina o al bar, querrás estar al pendiente de su progreso. La vista de la orden te muestra todo lo que está pasando con la orden de una mesa.",
+      "viewingTitle": "Ver los Artículos de la Orden",
+      "viewingBody": "Cada artículo en la orden muestra su nombre, cantidad, precio, cualquier modificador, y una etiqueta de estado con color. Si asignaste números de asiento, también verás etiquetas moradas de asiento. Los artículos cancelados aparecen con texto tachado y desvanecido para que puedas ver de un vistazo qué sigue activo.",
+      "statusesTitle": "Qué Significan los Colores de Estado",
+      "statusPending": "Amarillo (Pendiente/Enviado) — El artículo ha sido enviado y está esperando a que la cocina o el bar lo empiecen.",
+      "statusPreparing": "Azul (Preparando) — La cocina o el bar están trabajando activamente en este artículo ahora mismo.",
+      "statusReady": "Verde (Listo) — ¡Este artículo está terminado y esperando a que lo recojas! Verás un brillo verde alrededor de la tarjeta. También recibirás una notificación.",
+      "statusServed": "Gris (Servido) — Ya entregaste este artículo a la mesa. ¡Listo!",
+      "markServedTitle": "Marcar Artículos como Servidos",
+      "markServedBody": "Cuando un artículo se pone verde (Listo), recógelo de la cocina o el bar y llévalo a la mesa. Luego toca el botón verde \"Marcar Servido\" en ese artículo. Esto le dice al sistema que el artículo fue entregado y actualiza el estado de la orden.",
+      "voidingTitle": "Anular un Artículo",
+      "voidingBody": "¿Necesitas quitar un artículo de la orden? Toca el botón rojo \"Anular\" en ese artículo. Necesitarás seleccionar un motivo del menú desplegable (Error del Mesero, Error de Cocina, Agotado, Solicitud del Cliente, u Otro) y puedes agregar una nota opcional con más detalles. Esto queda registrado para que tu gerente lo revise después, así que siempre elige el motivo correcto.",
+      "voidingTip": "Solo puedes anular artículos que no hayan sido servidos todavía. Una vez que un artículo se marca como Servido, no se puede anular.",
+      "cancelTitle": "Cancelar una Orden Completa",
+      "cancelBody": "Si necesitas cancelar toda la orden (tal vez los clientes se fueron), toca el botón rojo \"Cancelar Orden\" en la parte inferior. Verás una ventana de confirmación ya que esto no se puede deshacer. Cancelar una orden automáticamente cancela todos los artículos en ella y libera la mesa."
+    },
+
+    "billsPayment": {
+      "title": "Cuentas y Pagos",
+      "intro": "Cuando tus clientes estén listos para pagar, la página de la cuenta maneja todo — desde mostrar el desglose hasta procesar el pago.",
+      "viewingBillTitle": "Ver la Cuenta",
+      "viewingBillBody": "Toca \"Ver Cuenta\" desde la pantalla de la orden para ver el desglose completo. Verás cada artículo con su precio, el subtotal, cualquier descuento aplicado, el IVA (16%), cualquier propina, y el total final. Los artículos cancelados se excluyen automáticamente.",
+      "seatFilterTitle": "Filtrar por Asiento",
+      "seatFilterBody": "Si asignaste números de asiento a los artículos, puedes tocar un botón de asiento en la parte superior para ver solo los artículos de esa persona y su subtotal individual. Esto es genial cuando los clientes quieren saber \"¿cuánto es lo mío?\" Ten en cuenta que el pago siempre es por la orden completa, pero el filtro de asiento ayuda a dividir.",
+      "tipsTitle": "Propinas",
+      "tipsBody": "Verás botones de propina preestablecidos: Sin Propina, 10%, 15%, y 20%. Solo toca el que quiera tu cliente. El porcentaje se calcula sobre el subtotal con descuento (antes de impuestos). Si el cliente quiere una cantidad específica, toca \"Personalizada\" y escríbela. El total se actualiza al instante conforme ajustas la propina.",
+      "discountsTitle": "Aplicar Descuentos",
+      "discountsBody": "Toca el botón morado \"Aplicar Descuento\" para ver los descuentos disponibles. Verás dos opciones: descuentos preestablecidos que tu gerente creó (como \"Happy Hour 10%\" o \"Descuento de Empleado\") y una pestaña \"Comp Personalizado\" donde puedes ingresar un porcentaje o monto fijo personalizado con un motivo. Los descuentos aplicados aparecen como etiquetas removibles en la cuenta — toca el botón rojo \"Quitar\" si necesitas eliminar uno.",
+      "paymentTitle": "Procesar el Pago",
+      "paymentBody": "Cuando todo se vea bien, toca el botón verde \"Efectivo\" o el botón azul \"Tarjeta\" en la parte inferior. Verás una ventana de confirmación mostrando el total, método de pago, descuento y propina. Toca \"Confirmar\" para cerrar la orden. La mesa automáticamente queda disponible para nuevos clientes.",
+      "paymentTip": "Verifica el monto de la propina con tu cliente antes de confirmar — una vez que el pago se procesa, no se puede cambiar."
+    },
+
+    "notifications": {
+      "title": "Notificaciones",
+      "intro": "Las notificaciones son tu conexión directa con la cocina y el bar. Cuando terminan de preparar uno de tus artículos, recibes una alerta al instante para que vayas a recogerlo.",
+      "realtimeTitle": "Cómo Funcionan las Notificaciones",
+      "realtimeBody": "Cuando la cocina o el bar marcan uno de tus artículos como \"Listo,\" recibirás una notificación de inmediato. Muestra el nombre del artículo, si vino de la cocina o el bar, y para qué mesa es. Las notificaciones nuevas aparecen con un fondo verde para que destaquen.",
+      "pushTitle": "Activar Notificaciones Push",
+      "pushBody": "Para la mejor experiencia, activa las notificaciones push cuando la app te lo pida. Esto significa que recibirás alertas incluso si estás en una pantalla diferente o la app está en segundo plano. Solo toca \"Confirmar\" en el banner azul que aparece. Si tu navegador pide permiso, asegúrate de tocar \"Permitir.\"",
+      "pushBlockedNote": "Si accidentalmente bloqueaste las notificaciones, necesitarás ir a la Configuración de tu dispositivo para volver a habilitarlas para el navegador. Pide ayuda a tu gerente si no estás seguro cómo hacerlo.",
+      "managingTitle": "Administrar Tus Notificaciones",
+      "managingBody": "Las notificaciones no leídas tienen un fondo verde. Toca \"Marcar como Leída\" para quitar el resaltado. También puedes tocar \"Limpiar Todo\" en la parte superior para eliminar todo — la app te pedirá confirmar primero ya que no puedes deshacerlo. Tus notificaciones se guardan en tu dispositivo, así que siguen ahí incluso si cierras y reabres la app."
+    },
+
+    "myOrders": {
+      "title": "Mis Órdenes",
+      "intro": "La página de Mis Órdenes es tu historial personal de órdenes — ve todo lo que has hecho hoy o revisa turnos anteriores.",
+      "historyBody": "Cuando abres Mis Órdenes, verás todas las órdenes que creaste hoy, ordenadas de la más reciente. Cada tarjeta de orden muestra el número de mesa, etiqueta de estado, monto total, hora de creación, y cantidad de artículos. Toca cualquier tarjeta de orden para expandirla y ver todos los detalles de artículos, modificadores, notas e información de pago.",
+      "datePickerBody": "¿Quieres ver un día diferente? Usa el selector de fecha en la parte superior para elegir cualquier fecha pasada. Esto es útil para revisar tus totales de ayer o buscar una orden específica."
+    },
+
+    "tipsTricks": {
+      "title": "Consejos y Trucos",
+      "tip1Title": "Agregar a la Pantalla de Inicio",
+      "tip1": "Para la mejor experiencia, agrega la app a la Pantalla de Inicio de tu iPad. Esto hace que se abra a pantalla completa como una app real en lugar de dentro del navegador. En Safari, toca el botón de compartir y elige \"Agregar a Inicio.\"",
+      "tip2Title": "Mantén las Notificaciones Push Activadas",
+      "tip2": "En serio — las notificaciones push son un cambio total. Sabrás al instante cuando un artículo esté listo sin tener que estar revisando la pestaña de Notificaciones.",
+      "tip3Title": "Usa los Números de Asiento",
+      "tip3": "Acostumbrarte a asignar números de asiento te ahorra mucho tiempo después. Facilita la entrega de comida (verás qué artículo va a qué asiento) y ayuda cuando los clientes quieren ver sus totales individuales.",
+      "tip4Title": "Usa la Barra de Búsqueda",
+      "tip4": "Si sabes lo que quiere un cliente, buscar es mucho más rápido que desplazarte por las categorías. Solo escribe las primeras letras y lo encontrarás al instante.",
+      "tip5Title": "Revisa las Notificaciones Seguido",
+      "tip5": "La etiqueta roja en la pestaña de Notificaciones muestra cuántas alertas sin leer tienes. Haz el hábito de revisar — tus clientes agradecerán un servicio más rápido.",
+      "tip6Title": "Las Notas Especiales Son Tu Aliado",
+      "tip6": "Alergias, preferencias, solicitudes de cumpleaños — pon todo en las instrucciones especiales. La cocina ve estas notas resaltadas en amarillo brillante, así que definitivamente no las pasarán por alto."
+    },
+
+    "admin": {
+      "dashboard": {
+        "title": "Panel de Control",
+        "intro": "Tu panel de control es lo primero que ves al iniciar sesión. Te da una foto en tiempo real de cómo va el restaurante hoy — ingresos, órdenes y métricas operativas clave, todo en un solo lugar.",
+        "statsTitle": "Tarjetas de Estadísticas",
+        "statsBody": "En la parte superior, verás cinco tarjetas principales: Ingresos Totales, Número de Órdenes, Valor Promedio de Orden, Propinas Hoy, y Mesas Abiertas. Cada una tiene una flechita mostrando si subió o bajó comparado con ayer, para que identifiques tendencias de un vistazo.",
+        "widgetsTitle": "Widgets de Información",
+        "widgetsBody": "Debajo de las estadísticas principales, encontrarás cuatro tarjetas más pequeñas. Tasa de Anulación muestra qué porcentaje de artículos fueron anulados hoy (verde es saludable, ámbar es una señal de atención, rojo significa que algo puede necesitar revisión). Rotación de Mesas muestra cuántas mesas se han ocupado y liberado, más el tiempo promedio que cada grupo permaneció. División de Pagos te muestra la proporción efectivo vs. tarjeta. Hora Pico te dice tu momento más ocupado del día.",
+        "chartsTitle": "Gráficas",
+        "chartsBody": "El panel incluye tres gráficas: una línea de tendencia de ingresos de 7 días (para ver cómo va la semana), una gráfica de barras de órdenes por hora (útil para decisiones de personal), y una gráfica de los 5 artículos más ordenados.",
+        "leaderboardTitle": "Tabla de Posiciones de Meseros",
+        "leaderboardBody": "En la parte inferior, verás a tus meseros con mejor desempeño clasificados por ingresos de hoy. Medallas de oro, plata y bronce destacan a los tres primeros. ¡Esto puede ser un motivador divertido para tu equipo!",
+        "dailyCloseTitle": "Recordatorio de Cierre Diario",
+        "dailyCloseBody": "Si no has cerrado el día todavía, verás una barra de recordatorio ámbar en la parte superior. Tócala para ir directo a la página de Reportes donde puedes completar el cierre diario. Una vez hecho, la barra se pone verde.",
+        "queueTitle": "Estado de Cocina y Bar",
+        "queueBody": "Una pequeña barra de estado te muestra cuántos artículos están actualmente en las colas de cocina y bar, además de una alerta de bajo inventario si algún ingrediente se está acabando."
+      },
+
+      "servers": {
+        "title": "Administrar Meseros",
+        "intro": "Aquí es donde administras a tu personal — agrega nuevos meseros, cambia PINs, o elimina personas que ya no trabajan contigo.",
+        "addingTitle": "Agregar un Mesero",
+        "addingBody": "Toca \"Agregar Mesero\" en la esquina superior derecha. Ingresa el nombre del mesero y crea un PIN para él (esto es lo que usará para iniciar sesión en el iPad). Los PINs pueden tener hasta 6 dígitos. Asegúrate de que cada mesero tenga un PIN único — el sistema no permite duplicados.",
+        "pinsTitle": "Cómo Funcionan los PINs",
+        "pinsBody": "Los meseros usan su PIN para iniciar sesión al inicio de cada turno. Es simple, rápido, y no requiere que recuerden un correo o contraseña. Si un mesero olvida su PIN, puedes editar su perfil para establecer uno nuevo.",
+        "editingTitle": "Editar y Eliminar",
+        "editingBody": "Toca \"Editar\" junto a cualquier mesero para cambiar su nombre o PIN. Si estás editando y dejas el campo de PIN vacío, el PIN anterior se mantiene sin cambios. Para eliminar un mesero, toca \"Eliminar\" — necesitarás confirmar primero. El sistema conserva sus datos históricos de órdenes incluso después de la eliminación."
+      },
+
+      "menu": {
+        "title": "Administrar el Menú",
+        "intro": "La página de administración del menú es donde construyes y mantienes todo tu menú — categorías, artículos, precios, modificadores e ingredientes. Todo aquí es bilingüe, así que asegúrate de llenar los nombres tanto en inglés como en español.",
+        "categoriesTitle": "Categorías",
+        "categoriesBody": "Las categorías organizan tu menú (ej., \"Entradas,\" \"Platos Fuertes,\" \"Cócteles\"). Cada categoría tiene un nombre en inglés, nombre en español, y un número de orden de clasificación que controla la secuencia de visualización. Crea las categorías primero, luego agrega artículos a ellas.",
+        "itemsTitle": "Artículos del Menú",
+        "itemsBody": "Cada artículo necesita un nombre (EN + ES), descripción (EN + ES), precio en MXN, y un destino — ya sea Cocina o Bar. El destino determina qué pantalla recibe la orden. Así que una Margarita va al Bar, y los Tacos al Pastor van a la Cocina.",
+        "modifiersTitle": "Modificadores",
+        "modifiersBody": "Los modificadores son opciones de personalización para artículos — como \"Extra Guacamole (+$35)\" o \"Sin Cilantro (sin cargo extra).\" Cada modificador tiene un nombre bilingüe y un ajuste de precio opcional. Los meseros ven estos como botones alternables al agregar el artículo a una orden.",
+        "ingredientsTitle": "Vincular Ingredientes",
+        "ingredientsBody": "Puedes vincular ingredientes de tu inventario a cada artículo del menú y especificar cuánto de cada ingrediente usa una porción (ej., Tacos al Pastor usa 200g de cerdo, 50g de piña, 2 tortillas). Esto alimenta dos funciones importantes: la sección \"Qué contiene\" que los meseros pueden mostrar a los clientes, y la deducción automática del inventario cuando se hacen órdenes.",
+        "bilingualTitle": "Nombres Bilingües",
+        "bilingualBody": "Cada artículo, categoría, modificador e ingrediente tiene nombres en inglés y español. Siempre llena ambos — los meseros y el personal de cocina pueden usar diferentes idiomas, y el sistema muestra el idioma que cada usuario tenga seleccionado.",
+        "eightySixTitle": "Artículos 86'd (Marcar No Disponible)",
+        "eightySixBody": "Cuando se te acaba algo, toca el botón de disponibilidad en ese artículo para marcarlo como \"86'd.\" Mostrará una etiqueta roja \"86'd\" y los meseros lo verán en gris en su menú — no podrán ordenarlo. Actívalo de nuevo cuando te reabastescas.",
+        "autoEightySixTitle": "86 Automático",
+        "autoEightySixBody": "Aquí hay una función poderosa: si has vinculado ingredientes a los artículos del menú y el stock de un ingrediente llega a cero (por las órdenes colocadas), el sistema automáticamente marca como 86'd cada artículo del menú que necesite ese ingrediente. Todos tus meseros ven el cambio al instante en sus dispositivos. Así que si se te acaba el camarón, todos los platillos con camarón se ponen grises de una vez — sin trabajo manual.",
+        "autoEightySixTip": "El 86 automático solo funciona si has vinculado ingredientes a tus artículos del menú con cantidades adecuadas. Mientras más completa sea tu configuración de ingredientes, más confiable será esta función."
+      },
+
+      "tables": {
+        "title": "Administrar Mesas",
+        "intro": "Configura las mesas de tu restaurante aquí — cuántas tienes, cuántos asientos tiene cada una, y opcionalmente organízalas para que coincidan con tu plano real.",
+        "listViewTitle": "Vista de Lista",
+        "listViewBody": "Por defecto, ves todas tus mesas en una cuadrícula simple mostrando el número de mesa, nombre (si le diste uno, como \"Patio 3\"), cantidad de asientos, y estado actual. Puedes agregar, editar o eliminar mesas desde aquí.",
+        "addingTitle": "Agregar Mesas",
+        "addingBody": "Toca \"Agregar Mesa\" e ingresa un número de mesa, un nombre opcional (útil para distinguir áreas como \"Asiento de Barra 1\" o \"Terraza 5\"), y el número de asientos. La cantidad de asientos importa — determina cuántas opciones de número de asiento obtienen los meseros al tomar órdenes.",
+        "layoutViewTitle": "Vista de Diseño (Arreglo Personalizado)",
+        "layoutViewBody": "Cambia a \"Vista de Diseño\" para un editor visual donde puedes arrastrar mesas para que coincidan con el diseño real de tu restaurante. Es un lienzo de 800x560 con un fondo de cuadrícula punteada. Solo agarra una mesa y muévela a donde quieras.",
+        "enableLayoutTitle": "Habilitar Diseño Personalizado para Meseros",
+        "enableLayoutBody": "Marca la casilla \"Usar Diseño Personalizado\" para hacer visible tu diseño posicionado a los meseros en su pantalla de Mesas. Cuando está habilitado, los meseros ven las mesas organizadas exactamente donde las colocaste. Cuando está deshabilitado, los meseros ven el diseño estándar de cuadrícula."
+      },
+
+      "inventory": {
+        "title": "Inventario",
+        "intro": "Lleva el control de lo que hay en tu cocina y detrás del bar. El sistema de inventario rastrea niveles de stock, te alerta cuando las cosas se están acabando, y ajusta automáticamente las cantidades conforme entran órdenes.",
+        "addingTitle": "Agregar Ingredientes",
+        "addingBody": "Toca \"Agregar Ingrediente\" y llena el nombre bilingüe (EN + ES), la unidad de medida (kg, L, unidades, etc.), tu nivel de stock actual, un umbral de bajo stock (el punto donde quieres ser alertado), y el costo por unidad. El costo se usa en tus reportes de pérdidas y ganancias.",
+        "stockLevelsTitle": "Indicadores de Nivel de Stock",
+        "stockLevelsBody": "Cada ingrediente muestra una etiqueta con color: Verde (En Stock) significa que estás bien. Ámbar (Bajo Stock) significa que bajaste de tu umbral — hora de pensar en reordenar. Rojo (Agotado) significa que llegaste a cero, y cualquier artículo del menú vinculado se marca automáticamente como 86'd.",
+        "deliveryTitle": "Recibir Entregas",
+        "deliveryBody": "Cuando llega una entrega, toca \"Recibir Entrega\" en la parte superior. Verás todos los ingredientes listados con su stock actual. Solo ingresa la cantidad que recibiste de cada uno (deja en 0 los que no vinieron en esta entrega) y toca \"Confirmar.\" El stock se actualiza en un solo lote.",
+        "autoDeductTitle": "Deducción Automática de Stock",
+        "autoDeductBody": "Aquí es donde sucede la magia. Cada vez que un mesero envía una orden a la cocina o al bar, el sistema automáticamente resta la cantidad correcta de cada ingrediente. Así que si alguien ordena 2 Tacos al Pastor y cada taco usa 200g de cerdo, se deducen 400g de cerdo de tu inventario inmediatamente.",
+        "autoEightySixTitle": "86 Automático por Stock",
+        "autoEightySixBody": "Cuando un ingrediente llega a cero por deducción automática, el sistema busca cada artículo del menú que usa ese ingrediente y automáticamente los marca como no disponibles (86'd). Los dispositivos de todos los meseros se actualizan en tiempo real. Cuando reabasteces a través de una entrega, esos artículos vuelven a estar disponibles.",
+        "lowStockTitle": "Alertas de Bajo Stock",
+        "lowStockBody": "Tu panel muestra una etiqueta roja en la acción rápida de Inventario cuando cualquier ingrediente está por debajo de su umbral. La página de inventario misma resalta las filas de bajo stock en ámbar y las agotadas en rojo, para que rápidamente veas qué necesita atención.",
+        "costTitle": "Costo por Unidad",
+        "costBody": "El costo que ingresas para cada ingrediente se usa en la sección de Reportes > Análisis de Costos para calcular porcentajes de costo de alimentos, ganancia bruta, y márgenes por artículo. Mantener esto preciso te ayuda a entender tu rentabilidad real."
+      },
+
+      "reports": {
+        "title": "Reportes",
+        "intro": "Los reportes te dan una imagen completa del desempeño financiero de tu restaurante. Puedes segmentar los datos por rango de fechas, exportar a CSV, y profundizar en áreas específicas como contabilidad fiscal, costos de alimentos, y desempeño de meseros.",
+        "dateRangeTitle": "Elegir un Rango de Fechas",
+        "dateRangeBody": "Usa los botones preestablecidos en la parte superior: Hoy, Ayer, Esta Semana, Este Mes, o Personalizado (elige cualquier fecha de inicio y fin). Todas las gráficas y tablas de abajo se actualizan automáticamente cuando cambias el rango.",
+        "overviewTitle": "Pestaña de Resumen",
+        "overviewBody": "El resumen principal muestra tus ingresos totales, número de órdenes, valor promedio de orden, y propinas totales para el período seleccionado. Debajo, verás gráficas de ingresos en el tiempo, órdenes por hora, artículos más vendidos, desglose por categoría, y división de métodos de pago.",
+        "taxTitle": "Pestaña de Impuestos e Ingresos",
+        "taxBody": "Esta pestaña desglosa los subtotales diarios, IVA (16%), descuentos aplicados, propinas recibidas, e ingresos totales. Hay una fila de totales al final sumando todo. Perfecto para tu contador o para presentar reportes de impuestos.",
+        "costAnalysisTitle": "Pestaña de Análisis de Costos",
+        "costAnalysisBody": "Ve tus costos reales de alimentos contra los ingresos. Muestra el costo total de alimentos, ganancia bruta, y porcentaje de costo de alimentos. Debajo, obtienes márgenes por categoría y un desglose detallado por artículo mostrando la cantidad vendida, ingresos, costo, ganancia, y porcentaje de margen. Esto te ayuda a identificar qué artículos son más rentables y cuáles pueden necesitar un ajuste de precio.",
+        "serverPerfTitle": "Pestaña de Desempeño de Meseros",
+        "serverPerfBody": "Una tabla mostrando la cantidad de órdenes, ingresos totales, valor promedio de orden, artículos por orden, y propinas ganadas de cada mesero para el período seleccionado. Excelente para entender quiénes son tus mejores y quién podría necesitar capacitación adicional.",
+        "dailyCloseTitle": "Pestaña de Cierre Diario",
+        "dailyCloseBody": "Al final de cada día, usa esta pestaña para cerrar. Ingresarás el efectivo real contado en tu caja, y el sistema lo compara con el monto esperado (basado en ventas en efectivo). Cualquier variación (sobrante o faltante) se registra. También puedes ver el historial de todos los cierres anteriores con fechas, montos y notas.",
+        "exportTitle": "Exportar Datos",
+        "exportBody": "Cada pestaña tiene un botón de exportar CSV. Esto descarga un archivo de hoja de cálculo que puedes abrir en Excel o Google Sheets. Las exportaciones incluyen fechas, totales y desgloses — todo lo que necesitas para la contabilidad o para compartir con tu contador."
+      },
+
+      "operations": {
+        "title": "Operaciones en Vivo",
+        "intro": "El panel de operaciones te da una vista en tiempo real de lo que está pasando en el restaurante ahora mismo. Es perfecto para mantener en un monitor en la oficina o revisar durante un rush.",
+        "statsTitle": "Estadísticas Clave",
+        "statsBody": "Cuatro tarjetas muestran: Órdenes Activas (cuántas órdenes abiertas existen ahora), Cola de Cocina (artículos esperando ser preparados o en preparación), Cola de Bar (lo mismo para el bar), y Tiempo Promedio de Preparación (cuánto tardan los artículos hoy, en minutos).",
+        "queuesTitle": "Órdenes por Estado",
+        "queuesBody": "Barras de progreso con colores muestran cómo están distribuidas tus órdenes: azul para Abiertas (recién creadas), ámbar para Enviadas (en cocina/bar), y verde para Completadas (todos los artículos servidos, esperando pago). Esto te ayuda a detectar cuellos de botella de un vistazo.",
+        "serverWorkloadTitle": "Carga de Trabajo de Meseros",
+        "serverWorkloadBody": "Una tabla mostrando cada mesero activo, cuántas mesas están atendiendo, y cuántos artículos activos tienen en progreso. Usa esto para balancear la carga — si un mesero tiene 5 mesas y otro tiene 1, sabes a quién asignar el siguiente cliente.",
+        "eightySixAlertTitle": "Alerta de Artículos 86'd",
+        "eightySixAlertBody": "Una advertencia roja aparece si algún artículo del menú está actualmente 86'd (no disponible). Esto te recuerda revisar tu inventario y reabastecer si es posible.",
+        "refreshTitle": "Actualización Automática",
+        "refreshBody": "Todo en esta página se actualiza automáticamente cada 10 segundos. No necesitas refrescar ni tocar nada — solo déjalo abierto y se mantiene actual. La marca de tiempo en la parte superior muestra cuándo fue la última actualización."
+      },
+
+      "discounts": {
+        "title": "Descuentos",
+        "intro": "Crea y administra descuentos que tus meseros pueden aplicar a las órdenes. Puedes configurar descuentos por porcentaje (como \"10% de descuento\"), descuentos por monto fijo (como \"$50 de descuento\"), o dejar que los meseros ingresen cortesías personalizadas.",
+        "creatingTitle": "Crear un Descuento",
+        "creatingBody": "Toca \"Agregar Descuento\" y llena: un nombre en inglés y español (esto es lo que ven los meseros), el tipo (Porcentaje o Monto Fijo), el valor (ej., 10 para 10%, o 50 para $50), y un código opcional (como \"HAPPYHOUR\"). El código es solo para referencia — los meseros no necesitan escribirlo.",
+        "typesTitle": "Tipos de Descuento",
+        "typesBody": "Los descuentos por porcentaje (como 10%) se calculan sobre el subtotal de la orden antes de impuestos. Los descuentos por monto fijo (como $50 de descuento) se restan directamente del subtotal. De cualquier forma, el impuesto se recalcula sobre el monto con descuento.",
+        "applyingTitle": "Cómo los Meseros Aplican Descuentos",
+        "applyingBody": "Cuando un mesero está en la página de la cuenta, toca \"Aplicar Descuento\" y elige de tu lista de preestablecidos, o cambia a la pestaña \"Comp Personalizado\" para ingresar un descuento único con un motivo. Los descuentos aplicados aparecen como etiquetas removibles en la cuenta, así que nada queda oculto.",
+        "trackingTitle": "Rastreo de Descuentos",
+        "trackingBody": "Cada aplicación de descuento se registra en el registro de auditoría con quién lo aplicó, cuándo, y el motivo. Esto te da visibilidad completa del comportamiento de descuentos — si alguien está dando demasiadas cortesías, lo verás."
+      },
+
+      "audit": {
+        "title": "Registro de Auditoría",
+        "intro": "El registro de auditoría rastrea cada acción importante en el sistema. Es tu herramienta de rendición de cuentas — puedes ver exactamente quién hizo qué y cuándo.",
+        "filteringTitle": "Filtrar el Registro",
+        "filteringBody": "Usa los filtros desplegables en la parte superior para delimitar lo que estás viendo. Puedes filtrar por tipo de acción (anulaciones, cancelaciones, pagos, descuentos, artículos 86'd, ajustes de stock), por mesero, y por rango de fechas. Los resultados se actualizan al instante.",
+        "actionsTitle": "Qué Se Rastrea",
+        "actionsBody": "Se registran seis tipos de acciones: Artículo Anulado (con el motivo y cualquier nota), Orden Cancelada, Pago Procesado (con método, montos y propina), Descuento Aplicado (con tipo, valor y motivo), Artículo 86'd (alternado disponible/no disponible), y Stock Ajustado (entregas y cambios manuales). Cada entrada tiene una etiqueta con color para que puedas detectar patrones rápidamente.",
+        "readingTitle": "Leer los Detalles",
+        "readingBody": "Haz clic en cualquier fila para expandir los detalles completos. Por ejemplo, un artículo anulado te mostrará el nombre del artículo, por qué fue anulado, cualquier nota que el mesero agregó, y en qué mesa estaba. Una entrada de pago muestra el desglose exacto de subtotal, descuento, impuesto, propina y total.",
+        "usageTitle": "Usando el Registro de Auditoría",
+        "usageBody": "Revísalo regularmente para detectar tendencias. ¿Se están anulando muchos artículos por \"error de cocina\"? Eso podría señalar un problema de capacitación. ¿Ciertos meseros están aplicando muchos descuentos? Eso podría necesitar una conversación. El registro de auditoría te ayuda a administrar con datos, no con suposiciones."
+      },
+
+      "displays": {
+        "title": "Pantallas de Cocina y Bar",
+        "intro": "Las pantallas de cocina y bar están diseñadas para mostrarse en monitores en la cocina y detrás del bar. No requieren inicio de sesión — solo abre la URL en una pantalla montada y funcionan.",
+        "accessTitle": "Configurar las Pantallas",
+        "accessBody": "Navega a /kitchen para la pantalla de cocina o /bar para la pantalla del bar. Son páginas públicas que no requieren inicio de sesión, así que puedes abrirlas en cualquier pantalla o tablet. Guárdalas en marcadores para fácil acceso. Cada pantalla solo muestra artículos que van a su área — la pantalla de cocina no mostrará órdenes de bebidas, y la pantalla del bar no mostrará órdenes de comida.",
+        "whatShowsTitle": "Qué Aparece en la Pantalla",
+        "whatShowsBody": "Cada orden aparece como una tarjeta mostrando el número de mesa, nombre del mesero, y cada artículo con su cantidad, número de asiento (si se asignó), modificadores, notas especiales (resaltadas en amarillo brillante), y detalles de ingredientes. Las órdenes nuevas aparecen con un sonido de alerta.",
+        "timerTitle": "Colores del Temporizador",
+        "timerBody": "Cada tarjeta de orden tiene un temporizador en vivo que cambia de color para crear urgencia: Gris es el predeterminado (recién empezó). Amarillo aparece a los 5 minutos — las cosas se están calentando. Rojo aparece a los 10 minutos — esta orden se está retrasando. Verde significa que todos los artículos han sido marcados como listos — el temporizador se congela y muestra el tiempo total de preparación.",
+        "markReadyTitle": "Marcar Artículos como Listos",
+        "markReadyBody": "El personal de cocina y bar toca \"Marcar Listo\" en cada artículo conforme se termina, o \"Marcar Todo Listo\" para completar toda la orden de una vez. Esto activa una notificación instantánea al mesero que hizo la orden, para que sepa que debe venir a recogerla.",
+        "collapsibleTitle": "Órdenes Completadas",
+        "collapsibleBody": "Una vez que todos los artículos de una orden son marcados como Listos, la tarjeta de la orden se colapsa para ahorrar espacio en pantalla. Toca el chevron para expandirla de nuevo si necesitas verificar algo. Esto mantiene la pantalla enfocada en las órdenes que aún necesitan atención."
+      }
+    }
+  }
+}

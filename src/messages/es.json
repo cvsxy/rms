@@ -13,7 +13,9 @@
     "areYouSure": "¿Estás seguro? Esta acción no se puede deshacer.",
     "edit": "Editar",
     "actions": "Acciones",
-    "name": "Nombre"
+    "name": "Nombre",
+    "help": "Ayuda",
+    "guide": "Guía"
   },
   "auth": {
     "enterPin": "Ingresa tu PIN",

@@ -13,7 +13,9 @@
     "areYouSure": "Are you sure? This action cannot be undone.",
     "edit": "Edit",
     "actions": "Actions",
-    "name": "Name"
+    "name": "Name",
+    "help": "Help",
+    "guide": "Guide"
   },
   "auth": {
     "enterPin": "Enter your PIN",
