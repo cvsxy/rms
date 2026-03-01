@@ -135,18 +135,20 @@ export default function AdminLayoutClient({
   return (
     <div className="flex h-[100dvh] bg-gray-100 safe-area-top">
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 flex items-center justify-between px-4 h-14 safe-area-top">
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100"
-          aria-label="Open menu"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <h1 className="text-lg font-bold text-gray-900">RMS Admin</h1>
-        <span className="text-sm text-gray-500 truncate max-w-[100px]">{userName}</span>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 safe-area-top">
+        <div className="flex items-center justify-between px-4 h-14">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100"
+            aria-label="Open menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <h1 className="text-lg font-bold text-gray-900">RMS Admin</h1>
+          <span className="text-sm text-gray-500 truncate max-w-[100px]">{userName}</span>
+        </div>
       </div>
 
       {/* Mobile backdrop */}

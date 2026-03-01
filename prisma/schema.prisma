@@ -30,6 +30,7 @@ model User {
   pushSubscriptions PushSubscription[]
   auditLogs         AuditLog[]
   appliedDiscounts  OrderDiscount[]
+  dailyCloses       DailyClose[]
 
   @@index([pin])
   @@index([role])
@@ -346,6 +347,7 @@ enum AuditAction {
   DISCOUNT_APPLIED
   ITEM_86D
   STOCK_ADJUSTED
+  DAILY_CLOSED
 }
 
 model AuditLog {
@@ -363,4 +365,28 @@ model AuditLog {
   @@index([userId])
   @@index([createdAt])
   @@index([orderId])
+}
+
+// ─── DAILY CLOSE ───────────────────────────────────────────────
+
+model DailyClose {
+  id            String   @id @default(cuid())
+  date          DateTime @unique @db.Date
+  expectedCash  Decimal  @db.Decimal(10, 2)
+  actualCash    Decimal  @db.Decimal(10, 2)
+  variance      Decimal  @db.Decimal(10, 2)
+  cardTotal     Decimal  @db.Decimal(10, 2)
+  totalRevenue  Decimal  @db.Decimal(10, 2)
+  totalTax      Decimal  @db.Decimal(10, 2)
+  totalTips     Decimal  @db.Decimal(10, 2)
+  totalDiscount Decimal  @db.Decimal(10, 2)
+  subtotal      Decimal  @db.Decimal(10, 2)
+  orderCount    Int
+  closedById    String
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  closedBy User @relation(fields: [closedById], references: [id], onDelete: Restrict)
+
+  @@index([date])
 }

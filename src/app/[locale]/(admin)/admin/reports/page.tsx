@@ -2,11 +2,16 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import ReportsCharts from "./ReportsCharts";
+import OverviewTab from "./OverviewTab";
+import TaxRevenueTab from "./TaxRevenueTab";
+import CostAnalysisTab from "./CostAnalysisTab";
+import ServerPerformanceTab from "./ServerPerformanceTab";
+import DailyCloseTab from "./DailyCloseTab";
 
 // --- Types ---
 
 type Preset = "today" | "yesterday" | "week" | "month" | "custom";
+type Tab = "overview" | "tax" | "cost" | "servers" | "dailyClose";
 
 interface ReportSummary {
   totalRevenue: number;
@@ -18,65 +23,76 @@ interface ReportSummary {
   tipTotal: number;
 }
 
-interface RevenueByDay {
+interface TaxDay {
   date: string;
-  revenue: number;
-  orders: number;
-}
-
-interface OrdersByHour {
-  hour: number;
-  orders: number;
-  revenue: number;
-}
-
-interface TopItem {
-  name: string;
-  nameEs: string;
-  quantity: number;
-  revenue: number;
-}
-
-interface CategoryBreakdown {
-  name: string;
-  nameEs: string;
-  revenue: number;
-  itemCount: number;
-}
-
-interface ServerPerformance {
-  id: string;
-  name: string;
-  orders: number;
-  revenue: number;
-  avgOrder: number;
-  itemsPerOrder: number;
-}
-
-interface PaymentMethod {
-  method: string;
-  count: number;
+  subtotal: number;
+  tax: number;
+  discount: number;
+  tips: number;
   total: number;
+  orderCount: number;
+}
+
+interface TaxMonthly {
+  subtotal: number;
+  tax: number;
+  discount: number;
+  tips: number;
+  total: number;
+  orderCount: number;
+}
+
+interface CostAnalysis {
+  totalFoodCost: number;
+  totalItemRevenue: number;
+  grossProfit: number;
+  foodCostPercent: number;
+  categoryMargins: {
+    name: string;
+    nameEs: string;
+    revenue: number;
+    cost: number;
+    profit: number;
+    marginPercent: number;
+  }[];
+  topItemsByProfit: {
+    name: string;
+    nameEs: string;
+    revenue: number;
+    cost: number;
+    profit: number;
+    marginPercent: number;
+    quantitySold: number;
+  }[];
 }
 
 interface ReportData {
   summary: ReportSummary;
-  revenueByDay: RevenueByDay[];
-  ordersByHour: OrdersByHour[];
-  topItems: TopItem[];
-  categoryBreakdown: CategoryBreakdown[];
-  serverPerformance: ServerPerformance[];
-  paymentMethods: PaymentMethod[];
+  revenueByDay: { date: string; revenue: number; orders: number }[];
+  ordersByHour: { hour: number; orders: number; revenue: number }[];
+  topItems: { name: string; nameEs: string; quantity: number; revenue: number }[];
+  categoryBreakdown: { name: string; nameEs: string; revenue: number; itemCount: number }[];
+  serverPerformance: {
+    id: string;
+    name: string;
+    orders: number;
+    revenue: number;
+    avgOrder: number;
+    itemsPerOrder: number;
+    tips: number;
+  }[];
+  paymentMethods: { method: string; count: number; total: number }[];
+  taxBreakdown: {
+    daily: TaxDay[];
+    monthly: TaxMonthly;
+  };
+  costAnalysis: CostAnalysis;
 }
-
-type SortKey = "name" | "orders" | "revenue" | "avgOrder" | "itemsPerOrder";
-type SortDir = "asc" | "desc";
 
 // --- Helpers ---
 
 function getDateRange(preset: Preset, customFrom: string, customTo: string): { from: Date; to: Date } {
   const now = new Date();
-
   switch (preset) {
     case "today": {
       const from = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
@@ -124,8 +140,7 @@ function formatDate(d: Date): string {
 function ReportsSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Summary cards skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="animate-pulse bg-white rounded-xl border border-gray-200 p-5">
             <div className="bg-gray-200 rounded h-4 w-24 mb-3" />
@@ -133,19 +148,9 @@ function ReportsSkeleton() {
           </div>
         ))}
       </div>
-      {/* Chart skeleton */}
       <div className="animate-pulse bg-white rounded-xl border border-gray-200 p-6">
         <div className="bg-gray-200 rounded h-5 w-40 mb-4" />
         <div className="bg-gray-200 rounded h-48 w-full" />
-      </div>
-      {/* Table skeleton */}
-      <div className="animate-pulse bg-white rounded-xl border border-gray-200 p-6">
-        <div className="bg-gray-200 rounded h-5 w-48 mb-4" />
-        <div className="space-y-3">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-gray-200 rounded h-10 w-full" />
-          ))}
-        </div>
       </div>
     </div>
   );
@@ -155,6 +160,9 @@ function ReportsSkeleton() {
 
 export default function ReportsPage() {
   const t = useTranslations();
+
+  // Tab state
+  const [activeTab, setActiveTab] = useState<Tab>("overview");
 
   // Date range state
   const [preset, setPreset] = useState<Preset>("today");
@@ -166,30 +174,24 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Server performance sort state
-  const [sortKey, setSortKey] = useState<SortKey>("revenue");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
-
   // Compute from/to from preset
   const { from, to } = useMemo(
     () => getDateRange(preset, customFrom, customTo),
     [preset, customFrom, customTo]
   );
 
+  const fromDate = formatDate(from);
+  const toDate = formatDate(to);
+
   // Fetch data
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch(
         `/api/reports?from=${from.toISOString()}&to=${to.toISOString()}`
       );
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       setData(json.data);
     } catch {
@@ -204,86 +206,16 @@ export default function ReportsPage() {
     fetchData();
   }, [fetchData]);
 
-  // Sorted server performance
-  const sortedServers = useMemo(() => {
-    if (!data?.serverPerformance) return [];
-    const sorted = [...data.serverPerformance];
-    sorted.sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        return sortDir === "asc"
-          ? aVal.localeCompare(bVal)
-          : bVal.localeCompare(aVal);
-      }
-      return sortDir === "asc"
-        ? (aVal as number) - (bVal as number)
-        : (bVal as number) - (aVal as number);
-    });
-    return sorted;
-  }, [data?.serverPerformance, sortKey, sortDir]);
+  // Tabs definition
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "overview", label: t("reports.tabOverview") },
+    { key: "tax", label: t("reports.tabTax") },
+    { key: "cost", label: t("reports.tabCost") },
+    { key: "servers", label: t("reports.tabServers") },
+    { key: "dailyClose", label: t("reports.tabDailyClose") },
+  ];
 
-  // Toggle sort on column header click
-  function handleSort(key: SortKey) {
-    if (sortKey === key) {
-      setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortKey(key);
-      setSortDir("desc");
-    }
-  }
-
-  // Sort indicator
-  function sortIndicator(key: SortKey) {
-    if (sortKey !== key) return null;
-    return (
-      <span className="ml-1 text-gray-400">
-        {sortDir === "asc" ? "\u2191" : "\u2193"}
-      </span>
-    );
-  }
-
-  // CSV export
-  function exportCSV() {
-    if (!data) return;
-
-    const { summary, serverPerformance } = data;
-    const fromStr = formatDate(from);
-    const toStr = formatDate(to);
-
-    const lines: string[] = [];
-
-    // Summary section
-    lines.push("Report Summary");
-    lines.push(`Period,${fromStr} to ${toStr}`);
-    lines.push(`Total Revenue,$${summary.totalRevenue.toFixed(2)}`);
-    lines.push(`Orders,${summary.orderCount}`);
-    lines.push(`Avg Order Value,$${summary.avgOrderValue.toFixed(2)}`);
-    lines.push(`Total Tips,$${summary.tipTotal.toFixed(2)}`);
-    lines.push("");
-
-    // Server breakdown
-    if (serverPerformance.length > 0) {
-      lines.push("Server Performance");
-      lines.push("Name,Orders,Revenue,Avg Order,Items/Order");
-      for (const s of serverPerformance) {
-        lines.push(
-          `${s.name},${s.orders},$${s.revenue.toFixed(2)},$${s.avgOrder.toFixed(2)},${s.itemsPerOrder.toFixed(1)}`
-        );
-      }
-    }
-
-    const csv = lines.join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `rms-report-${fromStr}-to-${toStr}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // Preset button styles
+  // Preset buttons
   const presets: { key: Preset; label: string }[] = [
     { key: "today", label: t("reports.today") },
     { key: "yesterday", label: t("reports.yesterday") },
@@ -297,13 +229,9 @@ export default function ReportsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {t("reports.title")}
-        </h1>
-
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <h1 className="text-2xl font-bold text-gray-900">{t("reports.title")}</h1>
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Preset buttons */}
           {presets.map(({ key, label }) => (
             <button
               key={key}
@@ -317,35 +245,12 @@ export default function ReportsPage() {
               {label}
             </button>
           ))}
-
-          {/* CSV export button */}
-          {!loading && hasData && (
-            <button
-              onClick={exportCSV}
-              className="ml-2 px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              {t("reports.exportCsv")}
-            </button>
-          )}
         </div>
       </div>
 
       {/* Custom date range inputs */}
       {preset === "custom" && (
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-4">
           <label className="text-sm text-gray-600">{t("reports.from")}</label>
           <input
             type="date"
@@ -363,129 +268,74 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {/* Loading state */}
+      {/* Tab Navigation */}
+      <div className="flex gap-1 mb-6 overflow-x-auto border-b border-gray-200">
+        {tabs.map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setActiveTab(key)}
+            className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+              activeTab === key
+                ? "border-gray-900 text-gray-900"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
       {loading ? (
         <ReportsSkeleton />
       ) : error ? (
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-red-500">
           {error}
         </div>
+      ) : activeTab === "dailyClose" ? (
+        /* Daily Close has its own data fetching */
+        <DailyCloseTab fromDate={fromDate} toDate={toDate} />
       ) : !hasData ? (
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
           {t("reports.noDataForPeriod")}
         </div>
       ) : (
-        <div className="space-y-6">
-          {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <p className="text-sm text-gray-500">{t("reports.totalRevenue")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                ${data.summary.totalRevenue.toFixed(2)}
-              </p>
-            </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <p className="text-sm text-gray-500">{t("reports.orderCount")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                {data.summary.orderCount}
-              </p>
-            </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <p className="text-sm text-gray-500">{t("reports.avgOrderValue")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                ${data.summary.avgOrderValue.toFixed(2)}
-              </p>
-            </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <p className="text-sm text-gray-500">{t("reports.tipTotal")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                ${data.summary.tipTotal.toFixed(2)}
-              </p>
-            </div>
-          </div>
-
-          {/* Charts */}
-          <ReportsCharts
-            revenueByDay={data.revenueByDay}
-            ordersByHour={data.ordersByHour}
-            topItems={data.topItems}
-            categoryBreakdown={data.categoryBreakdown}
-            paymentMethods={data.paymentMethods}
-          />
-
-          {/* Server Performance Table */}
-          {sortedServers.length > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                {t("reports.serverPerformance")}
-              </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th
-                        onClick={() => handleSort("name")}
-                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
-                      >
-                        {t("admin.serverName")}
-                        {sortIndicator("name")}
-                      </th>
-                      <th
-                        onClick={() => handleSort("orders")}
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
-                      >
-                        {t("reports.orderCount")}
-                        {sortIndicator("orders")}
-                      </th>
-                      <th
-                        onClick={() => handleSort("revenue")}
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
-                      >
-                        {t("reports.totalRevenue")}
-                        {sortIndicator("revenue")}
-                      </th>
-                      <th
-                        onClick={() => handleSort("avgOrder")}
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
-                      >
-                        {t("reports.avgOrderValue")}
-                        {sortIndicator("avgOrder")}
-                      </th>
-                      <th
-                        onClick={() => handleSort("itemsPerOrder")}
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
-                      >
-                        {t("reports.itemsPerOrder")}
-                        {sortIndicator("itemsPerOrder")}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {sortedServers.map((s) => (
-                      <tr key={s.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                          {s.name}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                          {s.orders}
-                        </td>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
-                          ${s.revenue.toFixed(2)}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                          ${s.avgOrder.toFixed(2)}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                          {s.itemsPerOrder.toFixed(1)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        <>
+          {activeTab === "overview" && data && (
+            <OverviewTab
+              summary={data.summary}
+              revenueByDay={data.revenueByDay}
+              ordersByHour={data.ordersByHour}
+              topItems={data.topItems}
+              categoryBreakdown={data.categoryBreakdown}
+              paymentMethods={data.paymentMethods}
+              serverPerformance={data.serverPerformance}
+              fromDate={fromDate}
+              toDate={toDate}
+            />
           )}
-        </div>
+          {activeTab === "tax" && data && (
+            <TaxRevenueTab
+              taxBreakdown={data.taxBreakdown}
+              fromDate={fromDate}
+              toDate={toDate}
+            />
+          )}
+          {activeTab === "cost" && data && (
+            <CostAnalysisTab
+              costAnalysis={data.costAnalysis}
+              fromDate={fromDate}
+              toDate={toDate}
+            />
+          )}
+          {activeTab === "servers" && data && (
+            <ServerPerformanceTab
+              serverPerformance={data.serverPerformance}
+              fromDate={fromDate}
+              toDate={toDate}
+            />
+          )}
+        </>
       )}
     </div>
   );
