@@ -24,9 +24,10 @@ interface ServerPerformanceTabProps {
 const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#f97316"];
 
 const TOOLTIP_STYLE = {
-  borderRadius: 8,
-  fontSize: 13,
-  border: "1px solid #e5e7eb",
+  borderRadius: 6,
+  fontSize: 12,
+  border: "none",
+  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
 };
 
 const RADIAN = Math.PI / 180;
@@ -97,10 +98,10 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="text-lg font-semibold text-gray-900">{t("reports.serverPerformance")}</h2>
+        <h2 className="text-base font-semibold text-gray-900">{t("reports.serverPerformance")}</h2>
         <button
           onClick={exportServers}
-          className="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
+          className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -112,8 +113,8 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Share Pie */}
         {pieData.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-4">{t("reports.revenueShare")}</h3>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">{t("reports.revenueShare")}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -142,7 +143,7 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
         )}
 
         {/* Performance Table */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -172,7 +173,7 @@ export default function ServerPerformanceTab({ serverPerformance, fromDate, toDa
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {sorted.map((s) => (
-                  <tr key={s.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={s.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-3 py-3 text-sm font-medium text-gray-900">{s.name}</td>
                     <td className="px-3 py-3 text-sm text-gray-600 text-right">{s.orders}</td>
                     <td className="px-3 py-3 text-sm font-medium text-gray-900 text-right">{formatMoney(s.revenue)}</td>

@@ -87,10 +87,10 @@ export default function OverviewTab({
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">{t("reports.dailySummary")}</h2>
+        <h2 className="text-base font-semibold text-gray-900">{t("reports.dailySummary")}</h2>
         <button
           onClick={exportCSV}
-          className="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
+          className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -101,7 +101,7 @@ export default function OverviewTab({
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {cards.map((card) => (
-          <div key={card.label} className="bg-white rounded-xl border border-gray-200 p-5">
+          <div key={card.label} className="bg-white rounded-lg border border-gray-200 p-5">
             <p className="text-sm text-gray-500">{card.label}</p>
             <p className="text-2xl font-semibold text-gray-900 mt-1">{card.value}</p>
           </div>

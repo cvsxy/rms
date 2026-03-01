@@ -142,13 +142,13 @@ function ReportsSkeleton() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-white rounded-xl border border-gray-200 p-5">
+          <div key={i} className="animate-pulse bg-white rounded-lg border border-gray-200 p-5">
             <div className="bg-gray-200 rounded h-4 w-24 mb-3" />
             <div className="bg-gray-200 rounded h-7 w-32" />
           </div>
         ))}
       </div>
-      <div className="animate-pulse bg-white rounded-xl border border-gray-200 p-6">
+      <div className="animate-pulse bg-white rounded-lg border border-gray-200 p-6">
         <div className="bg-gray-200 rounded h-5 w-40 mb-4" />
         <div className="bg-gray-200 rounded h-48 w-full" />
       </div>
@@ -230,7 +230,7 @@ export default function ReportsPage() {
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-        <h1 className="text-2xl font-bold text-gray-900">{t("reports.title")}</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{t("reports.title")}</h1>
         <div className="flex items-center gap-2 flex-wrap">
           {presets.map(({ key, label }) => (
             <button
@@ -239,7 +239,7 @@ export default function ReportsPage() {
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 preset === key
                   ? "bg-gray-900 text-white"
-                  : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-50"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
               }`}
             >
               {label}
@@ -251,19 +251,19 @@ export default function ReportsPage() {
       {/* Custom date range inputs */}
       {preset === "custom" && (
         <div className="flex items-center gap-3 mb-4">
-          <label className="text-sm text-gray-600">{t("reports.from")}</label>
+          <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("reports.from")}</label>
           <input
             type="date"
             value={customFrom}
             onChange={(e) => setCustomFrom(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
+            className="px-3 py-2 border border-gray-200 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
           />
-          <label className="text-sm text-gray-600">{t("reports.to")}</label>
+          <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("reports.to")}</label>
           <input
             type="date"
             value={customTo}
             onChange={(e) => setCustomTo(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
+            className="px-3 py-2 border border-gray-200 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
           />
         </div>
       )}
@@ -289,14 +289,14 @@ export default function ReportsPage() {
       {loading ? (
         <ReportsSkeleton />
       ) : error ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-red-500">
+        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-red-500">
           {error}
         </div>
       ) : activeTab === "dailyClose" ? (
         /* Daily Close has its own data fetching */
         <DailyCloseTab fromDate={fromDate} toDate={toDate} />
       ) : !hasData ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
+        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">
           {t("reports.noDataForPeriod")}
         </div>
       ) : (

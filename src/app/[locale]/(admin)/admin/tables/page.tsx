@@ -143,7 +143,7 @@ export default function ManageTablesPage() {
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-xl font-semibold text-gray-900">
           {t("admin.manageTables")}
         </h1>
         <div className="flex flex-wrap items-center gap-3">
@@ -179,7 +179,7 @@ export default function ManageTablesPage() {
               setFormSeats("4");
               setShowForm(true);
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
           >
             + {t("tables.createTable")}
           </button>
@@ -194,14 +194,14 @@ export default function ManageTablesPage() {
               type="checkbox"
               checked={customLayoutEnabled}
               onChange={toggleCustomLayout}
-              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              className="w-4 h-4 text-gray-900 rounded border-gray-200 focus:ring-gray-400"
             />
             <span className="text-sm font-medium text-gray-700">
               {t("tables.enableCustomLayout")}
             </span>
           </label>
           {customLayoutEnabled && (
-            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
               {t("tables.customLayoutEnabled")}
             </span>
           )}
@@ -217,7 +217,7 @@ export default function ManageTablesPage() {
           {tables.map((table) => (
             <div
               key={table.id}
-              className="bg-white rounded-xl shadow-sm p-5 border border-gray-200"
+              className="bg-white rounded-lg p-4 border border-gray-200"
             >
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-gray-900">
@@ -244,13 +244,13 @@ export default function ManageTablesPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => startEdit(table)}
-                  className="flex-1 text-sm text-blue-600 hover:text-blue-800 font-medium py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+                  className="flex-1 text-sm font-medium py-2 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   {t("common.edit")}
                 </button>
                 <button
                   onClick={() => setDeleteTarget(table.id)}
-                  className="flex-1 text-sm text-red-600 hover:text-red-800 font-medium py-2 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                  className="flex-1 text-sm font-medium py-2 bg-white text-red-600 border border-gray-200 rounded-lg hover:bg-red-50 transition-colors"
                 >
                   {t("common.delete")}
                 </button>
@@ -263,13 +263,13 @@ export default function ManageTablesPage() {
       {/* Form modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
-            <h2 className="text-lg font-semibold mb-4">
+          <div className="bg-white rounded-lg p-5 w-full max-w-md mx-4">
+            <h2 className="text-base font-semibold mb-4">
               {editingId ? t("common.save") : t("tables.createTable")}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                   {t("tables.tableNumber", { number: "" })} #
                 </label>
                 <input
@@ -278,23 +278,23 @@ export default function ManageTablesPage() {
                   onChange={(e) => setFormNumber(e.target.value)}
                   required
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                   Name
                 </label>
                 <input
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
                   placeholder="Interior 1, Terraza 2..."
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                   {t("tables.seats", { count: "" })}
                 </label>
                 <input
@@ -304,21 +304,21 @@ export default function ManageTablesPage() {
                   required
                   min="1"
                   max="20"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
                 />
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
                 >
                   {t("common.cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>

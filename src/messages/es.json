@@ -236,7 +236,18 @@
     "itemsLowStock": "{count} artículos bajos",
     "operations": "Operaciones en Vivo",
     "auditLog": "Registro de Auditoría",
-    "discounts": "Descuentos"
+    "discounts": "Descuentos",
+    "sectionManage": "Gestionar",
+    "sectionInsights": "Información",
+    "greetingMorning": "Buenos días",
+    "greetingAfternoon": "Buenas tardes",
+    "greetingEvening": "Buenas noches",
+    "tipsToday": "Propinas Hoy",
+    "dailyCloseReminder": "Cierre diario pendiente — toca para cerrar hoy",
+    "dailyClosed": "El cierre de hoy está completo",
+    "kitchenQueue": "Cocina",
+    "barQueue": "Barra",
+    "serverLeaderboard": "Tabla de Meseros"
   },
   "inventory": {
     "title": "Inventario",

@@ -117,16 +117,16 @@ export default function AuditPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("audit.title")}</h1>
+      <h1 className="text-xl font-semibold text-gray-900 mb-6">{t("audit.title")}</h1>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end">
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end">
         <div>
           <label className="block text-xs text-gray-500 mb-1">{t("audit.filterByAction")}</label>
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
           >
             <option value="">{t("audit.allActions")}</option>
             {ACTIONS.map((a) => (
@@ -141,7 +141,7 @@ export default function AuditPage() {
           <select
             value={serverFilter}
             onChange={(e) => setServerFilter(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
           >
             <option value="">{t("audit.allServers")}</option>
             {servers.map((s) => (
@@ -157,7 +157,7 @@ export default function AuditPage() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
           />
         </div>
         <div>
@@ -166,13 +166,13 @@ export default function AuditPage() {
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-400">{t("common.loading")}</div>
         ) : entries.length === 0 ? (
@@ -180,19 +180,19 @@ export default function AuditPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.timestamp")}</th>
-                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.action")}</th>
-                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.user")}</th>
-                  <th className="text-left px-4 py-3 text-gray-500 font-medium whitespace-nowrap">{t("audit.details")}</th>
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("audit.timestamp")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("audit.action")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("audit.user")}</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{t("audit.details")}</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-100">
                 {entries.map((entry) => (
                   <tr
                     key={entry.id}
-                    className="border-t hover:bg-gray-50 cursor-pointer"
+                    className="hover:bg-gray-50/50 cursor-pointer"
                     onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
                   >
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
@@ -221,7 +221,7 @@ export default function AuditPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
             <span className="text-sm text-gray-500">
               {total} entries
             </span>
@@ -229,17 +229,17 @@ export default function AuditPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 text-sm border rounded-lg disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="px-4 py-2 text-sm bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 &larr;
               </button>
-              <span className="px-3 py-2 text-sm flex items-center">
+              <span className="px-3 py-2 text-sm text-gray-500 flex items-center">
                 {page} / {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-4 py-2 text-sm border rounded-lg disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="px-4 py-2 text-sm bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 &rarr;
               </button>

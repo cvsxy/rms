@@ -11,7 +11,6 @@ import {
   Cell,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
@@ -29,14 +28,13 @@ const COLORS = [
 ];
 
 const TOOLTIP_STYLE = {
-  borderRadius: 8,
-  fontSize: 13,
-  border: "1px solid #e5e7eb",
+  borderRadius: 6,
+  fontSize: 12,
+  border: "none",
+  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
 };
 
 const AXIS_TICK = { fontSize: 12, fill: "#6b7280" };
-
-const GRID_STROKE = "#e5e7eb";
 
 interface ReportsChartsProps {
   revenueByDay: { date: string; revenue: number; orders: number }[];
@@ -59,8 +57,8 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-4">{title}</h3>
+    <div className="rounded-lg border border-gray-200 p-5">
+      <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">{title}</h3>
       {children}
     </div>
   );
@@ -228,14 +226,15 @@ export default function ReportsCharts({
                   x2="0"
                   y2="1"
                 >
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#111827" stopOpacity={0.1} />
+                  <stop offset="95%" stopColor="#111827" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={GRID_STROKE} />
               <XAxis
                 dataKey="date"
                 tick={AXIS_TICK}
+                axisLine={false}
+                tickLine={false}
                 tickFormatter={(val) => {
                   const parts = String(val).split("-");
                   return `${parts[1]}/${parts[2]}`;
@@ -243,6 +242,8 @@ export default function ReportsCharts({
               />
               <YAxis
                 tick={AXIS_TICK}
+                axisLine={false}
+                tickLine={false}
                 tickFormatter={(val) => `$${val}`}
               />
               <Tooltip
@@ -264,7 +265,7 @@ export default function ReportsCharts({
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="#3b82f6"
+                stroke="#111827"
                 strokeWidth={2}
                 fill="url(#revenueGradient)"
               />
@@ -283,13 +284,14 @@ export default function ReportsCharts({
               data={ordersByHour}
               margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke={GRID_STROKE} />
               <XAxis
                 dataKey="hour"
                 tick={AXIS_TICK}
+                axisLine={false}
+                tickLine={false}
                 tickFormatter={(val) => formatHour(Number(val))}
               />
-              <YAxis tick={AXIS_TICK} allowDecimals={false} />
+              <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip
                 contentStyle={TOOLTIP_STYLE}
                 labelFormatter={(label) => formatHour(Number(label))}
@@ -306,8 +308,8 @@ export default function ReportsCharts({
                       : "Revenue"
                 }
               />
-              <Bar dataKey="orders" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="revenue" fill="#22c55e" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="orders" fill="#111827" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="revenue" fill="#111827" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         )}
@@ -402,13 +404,14 @@ export default function ReportsCharts({
               layout="vertical"
               margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke={GRID_STROKE} />
-              <XAxis type="number" tick={AXIS_TICK} />
+              <XAxis type="number" tick={AXIS_TICK} axisLine={false} tickLine={false} />
               <YAxis
                 type="category"
                 dataKey="displayName"
                 tick={AXIS_TICK}
                 width={90}
+                axisLine={false}
+                tickLine={false}
               />
               <Tooltip
                 contentStyle={TOOLTIP_STYLE}
@@ -427,7 +430,7 @@ export default function ReportsCharts({
               />
               <Bar
                 dataKey="quantity"
-                fill="#8b5cf6"
+                fill="#111827"
                 radius={[0, 4, 4, 0]}
               />
               <Bar

@@ -236,7 +236,18 @@
     "itemsLowStock": "{count} items low",
     "operations": "Live Operations",
     "auditLog": "Audit Log",
-    "discounts": "Discounts"
+    "discounts": "Discounts",
+    "sectionManage": "Manage",
+    "sectionInsights": "Insights",
+    "greetingMorning": "Good morning",
+    "greetingAfternoon": "Good afternoon",
+    "greetingEvening": "Good evening",
+    "tipsToday": "Tips Today",
+    "dailyCloseReminder": "Daily close pending — tap to close today",
+    "dailyClosed": "Today's close is complete",
+    "kitchenQueue": "Kitchen",
+    "barQueue": "Bar",
+    "serverLeaderboard": "Server Leaderboard"
   },
   "inventory": {
     "title": "Inventory",

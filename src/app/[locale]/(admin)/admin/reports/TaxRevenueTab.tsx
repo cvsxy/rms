@@ -99,13 +99,13 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
   return (
     <div className="space-y-6">
       {/* Period Summary Card */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">{t("reports.monthlySummary")}</h2>
+          <h2 className="text-base font-semibold text-gray-900">{t("reports.monthlySummary")}</h2>
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={exportDailyTax}
-              className="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -114,7 +114,7 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
             </button>
             <button
               onClick={exportMonthlySummary}
-              className="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -153,8 +153,8 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
       </div>
 
       {/* Daily Breakdown Table */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("reports.dailyBreakdown")}</h2>
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reports.dailyBreakdown")}</h2>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -185,7 +185,7 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
             </thead>
             <tbody className="divide-y divide-gray-100">
               {sorted.map((d) => (
-                <tr key={d.date} className="hover:bg-gray-50 transition-colors">
+                <tr key={d.date} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{d.date}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 text-right">{d.orderCount}</td>
                   <td className="px-4 py-3 text-sm text-gray-600 text-right">{formatMoney(d.subtotal)}</td>
@@ -199,7 +199,7 @@ export default function TaxRevenueTab({ taxBreakdown, fromDate, toDate }: TaxRev
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t-2 border-gray-300 bg-gray-50">
+              <tr className="border-t-2 border-gray-300">
                 <td className="px-4 py-3 text-sm font-bold text-gray-900">{t("reports.periodTotals")}</td>
                 <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">{monthly.orderCount}</td>
                 <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">{formatMoney(monthly.subtotal)}</td>

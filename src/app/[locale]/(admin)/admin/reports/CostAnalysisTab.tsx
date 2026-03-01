@@ -6,7 +6,6 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -47,9 +46,10 @@ interface CostAnalysisTabProps {
 }
 
 const TOOLTIP_STYLE = {
-  borderRadius: 8,
-  fontSize: 13,
-  border: "1px solid #e5e7eb",
+  borderRadius: 6,
+  fontSize: 12,
+  border: "none",
+  boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
 };
 
 function costPercentColor(pct: number): string {
@@ -116,10 +116,10 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
     <div className="space-y-6">
       {/* P&L Summary Cards */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="text-lg font-semibold text-gray-900">{t("reports.pnlSummary")}</h2>
+        <h2 className="text-base font-semibold text-gray-900">{t("reports.pnlSummary")}</h2>
         <button
           onClick={exportPnl}
-          className="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
+          className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -129,19 +129,19 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
           <p className="text-sm text-gray-500">{t("reports.revenue")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">{formatMoney(totalItemRevenue)}</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
           <p className="text-sm text-gray-500">{t("reports.totalFoodCost")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">{formatMoney(totalFoodCost)}</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-white rounded-lg border border-gray-200 p-5">
           <p className="text-sm text-gray-500">{t("reports.grossProfit")}</p>
           <p className="text-2xl font-semibold text-green-600 mt-1">{formatMoney(grossProfit)}</p>
         </div>
-        <div className={`rounded-xl border border-gray-200 p-5 ${costPercentBg(foodCostPercent)}`}>
+        <div className={`rounded-lg border border-gray-200 p-5 ${costPercentBg(foodCostPercent)}`}>
           <p className="text-sm text-gray-500">{t("reports.foodCostPercent")}</p>
           <p className={`text-2xl font-semibold mt-1 ${costPercentColor(foodCostPercent)}`}>
             {formatPercent(foodCostPercent)}
@@ -151,8 +151,8 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
 
       {/* Category Margins */}
       {categoryMargins.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("reports.categoryMargins")}</h2>
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reports.categoryMargins")}</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -176,7 +176,7 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {categoryMargins.map((cat) => (
-                  <tr key={cat.name} className="hover:bg-gray-50 transition-colors">
+                  <tr key={cat.name} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900">
                       {isEs ? cat.nameEs : cat.name}
                     </td>
@@ -198,8 +198,8 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
 
       {/* Top Items by Profit */}
       {topItemsByProfit.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("reports.itemMargins")}</h2>
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reports.itemMargins")}</h2>
 
           {/* Chart */}
           <div className="mb-6">
@@ -209,9 +209,8 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
                 layout="vertical"
                 margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis type="number" tick={{ fontSize: 12, fill: "#6b7280" }} tickFormatter={(v) => `$${v}`} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: "#6b7280" }} width={90} />
+                <XAxis type="number" tick={{ fontSize: 12, fill: "#6b7280" }} tickFormatter={(v) => `$${v}`} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: "#6b7280" }} width={90} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={TOOLTIP_STYLE}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -253,7 +252,7 @@ export default function CostAnalysisTab({ costAnalysis, fromDate, toDate }: Cost
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {topItemsByProfit.map((item) => (
-                  <tr key={item.name} className="hover:bg-gray-50 transition-colors">
+                  <tr key={item.name} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900">
                       {isEs ? item.nameEs : item.name}
                     </td>

@@ -164,14 +164,14 @@ export default function InventoryPage() {
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{t("inventory.title")}</h1>
-        <div className="flex flex-wrap gap-3">
+        <h1 className="text-xl font-semibold text-gray-900">{t("inventory.title")}</h1>
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => {
               setDeliveryAmounts({});
               setShowDelivery(true);
             }}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center gap-2"
+            className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -183,7 +183,7 @@ export default function InventoryPage() {
               resetForm();
               setShowForm(true);
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="px-4 py-2 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors"
           >
             + {t("inventory.addIngredient")}
           </button>
@@ -197,21 +197,21 @@ export default function InventoryPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("inventory.searchIngredients")}
-          className="w-full max-w-md px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full max-w-md px-4 py-2.5 border border-gray-200 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
         />
       </div>
 
       {/* Inventory table */}
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-xl p-8 text-center text-gray-500 border border-gray-200">
+        <div className="bg-white rounded-lg p-8 text-center text-gray-500 border border-gray-200">
           {t("inventory.noIngredients")}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
+                <tr className="border-b border-gray-200">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {t("inventory.ingredientName")}
                   </th>
@@ -235,13 +235,13 @@ export default function InventoryPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-100">
                 {filtered.map((ing) => {
                   const status = getStockStatus(ing);
                   return (
                     <tr
                       key={ing.id}
-                      className={`hover:bg-gray-50 ${status === "out" ? "bg-red-50" : status === "low" ? "bg-amber-50" : ""}`}
+                      className={`hover:bg-gray-50/50 ${status === "out" ? "bg-red-50" : status === "low" ? "bg-amber-50" : ""}`}
                     >
                       <td className="px-4 py-3">
                         <div className="text-sm font-medium text-gray-900">{ing.name}</div>
@@ -278,13 +278,13 @@ export default function InventoryPage() {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => startEdit(ing)}
-                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                            className="text-sm px-3 py-1.5 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-lg font-medium transition-colors"
                           >
                             {t("common.edit")}
                           </button>
                           <button
                             onClick={() => setDeleteTarget(ing.id)}
-                            className="text-sm text-red-600 hover:text-red-800 font-medium"
+                            className="text-sm px-3 py-1.5 bg-white text-red-600 border border-gray-200 hover:bg-red-50 rounded-lg font-medium transition-colors"
                           >
                             {t("common.delete")}
                           </button>
@@ -302,14 +302,14 @@ export default function InventoryPage() {
       {/* Add/Edit Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-lg p-5 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-base font-semibold text-gray-900 mb-4">
               {editingId ? t("inventory.editIngredient") : t("inventory.addIngredient")}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                     {t("inventory.ingredientName")} (EN)
                   </label>
                   <input
@@ -317,11 +317,11 @@ export default function InventoryPage() {
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                     {t("inventory.ingredientNameEs")} (ES)
                   </label>
                   <input
@@ -329,19 +329,19 @@ export default function InventoryPage() {
                     value={formNameEs}
                     onChange={(e) => setFormNameEs(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                   {t("inventory.unit")}
                 </label>
                 <select
                   value={formUnit}
                   onChange={(e) => setFormUnit(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
                 >
                   {units.map((u) => (
                     <option key={u} value={u}>{u}</option>
@@ -349,9 +349,9 @@ export default function InventoryPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                     {t("inventory.currentStock")}
                   </label>
                   <input
@@ -359,11 +359,11 @@ export default function InventoryPage() {
                     step="any"
                     value={formStock}
                     onChange={(e) => setFormStock(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                     {t("inventory.lowStockThreshold")}
                   </label>
                   <input
@@ -371,11 +371,11 @@ export default function InventoryPage() {
                     step="any"
                     value={formThreshold}
                     onChange={(e) => setFormThreshold(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                     {t("inventory.costPerUnit")} ($)
                   </label>
                   <input
@@ -383,23 +383,23 @@ export default function InventoryPage() {
                     step="0.01"
                     value={formCost}
                     onChange={(e) => setFormCost(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => { setShowForm(false); resetForm(); }}
-                  className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                  className="flex-1 px-4 py-2 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors"
                 >
                   {t("common.cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>
@@ -412,8 +412,8 @@ export default function InventoryPage() {
       {/* Receive Delivery Modal */}
       {showDelivery && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-lg p-5 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-base font-semibold text-gray-900 mb-4">
               {t("inventory.receiveDelivery")}
             </h2>
             <div className="space-y-3 mb-6">
@@ -438,25 +438,25 @@ export default function InventoryPage() {
                           [ing.id]: e.target.value,
                         }))
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
                     />
                   </div>
                   <span className="text-xs text-gray-500 w-10">{ing.unit}</span>
                 </div>
               ))}
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setShowDelivery(false)}
-                className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                className="flex-1 px-4 py-2 bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors"
               >
                 {t("common.cancel")}
               </button>
               <button
                 onClick={handleDelivery}
                 disabled={savingDelivery}
-                className="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {savingDelivery ? t("common.loading") : t("common.confirm")}
               </button>

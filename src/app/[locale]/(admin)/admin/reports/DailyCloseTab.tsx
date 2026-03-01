@@ -124,7 +124,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="text-lg font-semibold text-gray-900">{t("reports.closeHistory")}</h2>
+        <h2 className="text-base font-semibold text-gray-900">{t("reports.closeHistory")}</h2>
         <div className="flex gap-2 flex-wrap">
           {!todayClosed && (
             <button
@@ -142,7 +142,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
           {closes.length > 0 && (
             <button
               onClick={exportCloseHistory}
-              className="px-3 py-1.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
+              className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-1.5"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -154,7 +154,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
       </div>
 
       {/* Close History Table */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
         {loading ? (
           <div className="animate-pulse space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -180,7 +180,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {closes.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={c.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{c.date}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 text-right">{c.orderCount}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 text-right">{formatMoney(c.totalRevenue)}</td>
@@ -204,8 +204,8 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
       {/* Close Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{t("reports.closeToday")}</h3>
+          <div className="bg-white rounded-lg w-full max-w-md p-5">
+            <h3 className="text-base font-semibold text-gray-900 mb-4">{t("reports.closeToday")}</h3>
 
             <div className="space-y-4">
               {/* Expected Cash */}
@@ -222,13 +222,13 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
 
               {/* Actual Cash Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("reports.actualCash")}</label>
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">{t("reports.actualCash")}</label>
                 <input
                   type="number"
                   step="0.01"
                   value={actualCash}
                   onChange={(e) => setActualCash(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-lg font-mono focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
                   placeholder="0.00"
                   autoFocus
                 />
@@ -252,11 +252,11 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("reports.closeNotes")}</label>
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">{t("reports.closeNotes")}</label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
                   rows={2}
                   placeholder=""
                 />
@@ -270,7 +270,7 @@ export default function DailyCloseTab({ fromDate, toDate }: DailyCloseTabProps) 
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                  className="flex-1 px-4 py-3 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
                 >
                   {t("common.cancel")}
                 </button>

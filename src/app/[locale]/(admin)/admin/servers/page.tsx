@@ -94,7 +94,7 @@ export default function ManageServersPage() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-xl font-semibold text-gray-900">
           {t("admin.manageServers")}
         </h1>
         <button
@@ -104,7 +104,7 @@ export default function ManageServersPage() {
             setFormPin("");
             setShowForm(true);
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
         >
           + {t("admin.addServer")}
         </button>
@@ -112,14 +112,14 @@ export default function ManageServersPage() {
 
       {/* Form modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
-            <h2 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-5 w-full max-w-md mx-4">
+            <h2 className="text-base font-semibold mb-4">
               {editingId ? t("common.save") : t("admin.addServer")}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                   {t("admin.serverName")}
                 </label>
                 <input
@@ -127,15 +127,15 @@ export default function ManageServersPage() {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900"
                   placeholder="Maria"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
                   {t("admin.serverPin")}
                   {editingId && (
-                    <span className="text-gray-400 ml-1">(leave blank to keep)</span>
+                    <span className="text-gray-400 ml-1 normal-case tracking-normal">(leave blank to keep)</span>
                   )}
                 </label>
                 <input
@@ -143,23 +143,23 @@ export default function ManageServersPage() {
                   value={formPin}
                   onChange={(e) => setFormPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
                   required={!editingId}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 tracking-widest"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-gray-900 tracking-widest"
                   placeholder="1234"
                   inputMode="numeric"
                 />
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
                 >
                   {t("common.cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50"
                 >
                   {saving ? t("common.loading") : t("common.save")}
                 </button>
@@ -170,7 +170,7 @@ export default function ManageServersPage() {
       )}
 
       {/* Server list */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg overflow-hidden">
         {servers.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             {t("common.noResults")}
@@ -178,7 +178,7 @@ export default function ManageServersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     {t("admin.serverName")}
@@ -191,9 +191,9 @@ export default function ManageServersPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-100">
                 {servers.map((server) => (
-                  <tr key={server.id} className="hover:bg-gray-50">
+                  <tr key={server.id} className="hover:bg-gray-50/50">
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       {server.name}
                     </td>
@@ -203,13 +203,13 @@ export default function ManageServersPage() {
                     <td className="px-6 py-4 text-right space-x-2">
                       <button
                         onClick={() => startEdit(server)}
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium px-2 py-1"
+                        className="text-sm text-gray-700 font-medium px-2.5 py-1 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => setDeleteTarget(server.id)}
-                        className="text-sm text-red-600 hover:text-red-800 font-medium px-2 py-1"
+                        className="text-sm text-red-600 font-medium px-2.5 py-1 border border-gray-200 rounded-lg hover:bg-red-50 transition-colors"
                       >
                         {t("common.delete")}
                       </button>

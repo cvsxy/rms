@@ -1,8 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import DashboardCharts from "./DashboardCharts";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
+
+function getGreetingKey(): string {
+  const h = new Date().getHours();
+  if (h < 12) return "admin.greetingMorning";
+  if (h < 18) return "admin.greetingAfternoon";
+  return "admin.greetingEvening";
+}
 
 export default async function AdminDashboard() {
   const t = await getTranslations();
@@ -27,6 +35,11 @@ export default async function AdminDashboard() {
     todayOrdersList,
     topItemsRaw,
     recentOrders,
+    todayTips,
+    todayDailyClose,
+    kitchenQueue,
+    barQueue,
+    serverRevenues,
   ] = await Promise.all([
     prisma.payment.findMany({
       where: { createdAt: { gte: today, lt: tomorrow } },
@@ -75,6 +88,33 @@ export default async function AdminDashboard() {
         payment: { select: { total: true } },
       },
     }),
+    prisma.payment.findMany({
+      where: { createdAt: { gte: today, lt: tomorrow } },
+      select: { tip: true },
+    }),
+    prisma.dailyClose.findFirst({
+      where: { date: today },
+    }),
+    prisma.orderItem.count({
+      where: {
+        status: { in: ["PREPARING", "SENT"] },
+        menuItem: { destination: "KITCHEN" },
+      },
+    }),
+    prisma.orderItem.count({
+      where: {
+        status: { in: ["PREPARING", "SENT"] },
+        menuItem: { destination: "BAR" },
+      },
+    }),
+    // Server leaderboard: today's revenue by server
+    prisma.payment.findMany({
+      where: { createdAt: { gte: today, lt: tomorrow } },
+      select: {
+        total: true,
+        order: { select: { serverId: true, server: { select: { name: true } } } },
+      },
+    }),
   ]);
 
   // Revenue calculations
@@ -99,6 +139,9 @@ export default async function AdminDashboard() {
   const avgTrend = yesterdayAvg > 0
     ? Math.round(((avgOrderValue - yesterdayAvg) / yesterdayAvg) * 100)
     : 0;
+
+  // Tips total
+  const tipsTotal = todayTips.reduce((sum, p) => sum + Number(p.tip), 0);
 
   // Low stock count
   const lowStockCount = allIngredients.filter(
@@ -163,6 +206,25 @@ export default async function AdminDashboard() {
     total: order.payment ? Number(order.payment.total) : null,
   }));
 
+  // Server leaderboard
+  const serverMap = new Map<string, { name: string; revenue: number; orders: number }>();
+  for (const p of serverRevenues) {
+    const sid = p.order.serverId;
+    const existing = serverMap.get(sid);
+    if (existing) {
+      existing.revenue += Number(p.total);
+      existing.orders += 1;
+    } else {
+      serverMap.set(sid, { name: p.order.server.name, revenue: Number(p.total), orders: 1 });
+    }
+  }
+  const leaderboard = Array.from(serverMap.values())
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+
+  // Daily close status
+  const isDayClosed = !!todayDailyClose;
+
   function TrendBadge({ value }: { value: number }) {
     if (value === 0) return null;
     const isPositive = value > 0;
@@ -174,11 +236,11 @@ export default async function AdminDashboard() {
   }
 
   const statusColors: Record<string, string> = {
-    OPEN: "bg-blue-100 text-blue-800",
-    SUBMITTED: "bg-yellow-100 text-yellow-800",
-    COMPLETED: "bg-green-100 text-green-800",
-    CLOSED: "bg-gray-100 text-gray-800",
-    CANCELLED: "bg-red-100 text-red-800",
+    OPEN: "bg-blue-50 text-blue-700",
+    SUBMITTED: "bg-amber-50 text-amber-700",
+    COMPLETED: "bg-green-50 text-green-700",
+    CLOSED: "bg-gray-100 text-gray-600",
+    CANCELLED: "bg-red-50 text-red-700",
   };
 
   const statusLabels: Record<string, string> = {
@@ -189,86 +251,108 @@ export default async function AdminDashboard() {
     CANCELLED: t("orders.cancelled"),
   };
 
+  const dateStr = new Date().toLocaleDateString("es-MX", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        {t("admin.dashboard")}
-      </h1>
+      {/* Header with greeting */}
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-gray-900">
+          {t(getGreetingKey())}
+        </h1>
+        <p className="text-sm text-gray-400 mt-0.5 capitalize">{dateStr}</p>
+      </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {/* Today's Revenue */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">{t("reports.totalRevenue")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                ${todayRevenue.toFixed(2)}
-              </p>
-              <TrendBadge value={revenueTrend} />
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
+        <div className="admin-card p-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.totalRevenue")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            ${todayRevenue.toFixed(2)}
+          </p>
+          <TrendBadge value={revenueTrend} />
         </div>
 
-        {/* Orders Today */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">{t("reports.orderCount")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                {todayOrderCount}
-              </p>
-              <TrendBadge value={ordersTrend} />
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-              </svg>
-            </div>
-          </div>
+        <div className="admin-card p-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.orderCount")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            {todayOrderCount}
+          </p>
+          <TrendBadge value={ordersTrend} />
         </div>
 
-        {/* Avg Order Value */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">{t("reports.avgOrderValue")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                ${avgOrderValue.toFixed(2)}
-              </p>
-              <TrendBadge value={avgTrend} />
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z" />
-              </svg>
-            </div>
-          </div>
+        <div className="admin-card p-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.avgOrderValue")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            ${avgOrderValue.toFixed(2)}
+          </p>
+          <TrendBadge value={avgTrend} />
         </div>
 
-        {/* Open Tables */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">{t("admin.openTables")}</p>
-              <p className="text-2xl font-semibold text-gray-900 mt-1">
-                {activeTables}
-              </p>
-              <span className="text-xs font-medium text-gray-400">
-                {openOrders} {t("orders.open").toLowerCase()}
-              </span>
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center">
-              <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-              </svg>
-            </div>
+        <div className="admin-card p-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.tipsToday")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            ${tipsTotal.toFixed(2)}
+          </p>
+        </div>
+
+        <div className="admin-card p-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.openTables")}</p>
+          <p className="text-2xl font-semibold text-gray-900 mt-1">
+            {activeTables}
+          </p>
+          <span className="text-xs text-gray-400">
+            {openOrders} {t("orders.open").toLowerCase()}
+          </span>
+        </div>
+      </div>
+
+      {/* Daily Close Reminder + Kitchen/Bar Status */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        {/* Daily Close Reminder */}
+        {isDayClosed ? (
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-green-50 border border-green-200 rounded-lg text-sm">
+            <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-green-700 font-medium">{t("admin.dailyClosed")}</span>
           </div>
+        ) : (
+          <Link
+            href="admin/reports"
+            className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-lg text-sm hover:bg-amber-100 transition-colors"
+          >
+            <svg className="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-amber-700 font-medium">{t("admin.dailyCloseReminder")}</span>
+          </Link>
+        )}
+
+        {/* Kitchen / Bar Status */}
+        <div className="admin-card px-4 py-2.5 flex items-center gap-5 text-sm flex-1">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-orange-400"></span>
+            <span className="text-gray-500">{t("admin.kitchenQueue")}</span>
+            <span className="font-semibold text-gray-900">{kitchenQueue}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+            <span className="text-gray-500">{t("admin.barQueue")}</span>
+            <span className="font-semibold text-gray-900">{barQueue}</span>
+          </div>
+          {lowStockCount > 0 && (
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-red-400"></span>
+              <span className="text-gray-500">{t("admin.inventory")}</span>
+              <span className="font-semibold text-red-600">{lowStockCount} low</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -279,39 +363,39 @@ export default async function AdminDashboard() {
         topItems={topItemsData}
       />
 
-      {/* Bottom Section: Recent Orders + Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+      {/* Bottom Section: Recent Orders + Server Leaderboard */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         {/* Recent Orders */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-sm font-semibold text-gray-700 mb-4">
+        <div className="admin-card p-5">
+          <h2 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
             {t("admin.recentOrders")}
           </h2>
           {recentOrdersData.length > 0 ? (
-            <div className="space-y-3">
+            <div className="divide-y divide-gray-100">
               {recentOrdersData.map((order) => (
                 <div
                   key={order.id}
-                  className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+                  className="flex items-center justify-between py-2.5"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-700">
+                    <span className="text-sm font-semibold text-gray-900 w-6 text-center">
                       {order.tableNumber}
-                    </div>
+                    </span>
                     <div>
                       <p className="text-sm font-medium text-gray-900">
                         {t("tables.tableNumber", { number: order.tableNumber })}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-400">
                         {order.serverName} &middot; {order.time}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColors[order.status] || "bg-gray-100 text-gray-800"}`}>
+                  <div className="flex items-center gap-2.5">
+                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${statusColors[order.status] || "bg-gray-100 text-gray-600"}`}>
                       {statusLabels[order.status] || order.status}
                     </span>
                     {order.total !== null && (
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 tabular-nums">
                         ${order.total.toFixed(2)}
                       </span>
                     )}
@@ -326,70 +410,37 @@ export default async function AdminDashboard() {
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-sm font-semibold text-gray-700 mb-4">
-            {t("admin.quickActions")}
+        {/* Server Leaderboard */}
+        <div className="admin-card p-5">
+          <h2 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+            {t("admin.serverLeaderboard")}
           </h2>
-          <div className="grid grid-cols-2 gap-3">
-            <a
-              href="menu"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">{t("admin.manageMenu")}</span>
-            </a>
-
-            <a
-              href="reports"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">{t("admin.reports")}</span>
-            </a>
-
-            <a
-              href="inventory"
-              className="relative flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-            >
-              {lowStockCount > 0 && (
-                <span className="absolute top-2 right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                  {lowStockCount}
-                </span>
-              )}
-              <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">{t("admin.inventory")}</span>
-              {lowStockCount > 0 && (
-                <span className="text-xs text-red-500 font-medium">
-                  {t("admin.itemsLowStock", { count: lowStockCount })}
-                </span>
-              )}
-            </a>
-
-            <a
-              href="tables"
-              className="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                </svg>
-              </div>
-              <span className="text-sm font-medium text-gray-700">{t("admin.manageTables")}</span>
-            </a>
-          </div>
+          {leaderboard.length > 0 ? (
+            <div className="divide-y divide-gray-100">
+              {leaderboard.map((server, i) => (
+                <div key={server.name} className="flex items-center justify-between py-2.5">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-gray-300 w-5 text-center">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900">{server.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-400">
+                      {server.orders} {t("reports.orderCount").toLowerCase()}
+                    </span>
+                    <span className="text-sm font-semibold text-gray-900 tabular-nums">
+                      ${server.revenue.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 text-center py-8">
+              {t("reports.noDataForPeriod")}
+            </p>
+          )}
         </div>
       </div>
     </div>
