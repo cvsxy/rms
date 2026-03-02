@@ -15,9 +15,15 @@ interface OrderData {
   items: {
     id: string; quantity: number; unitPrice: string; notes: string | null; status: string;
     seatNumber: number | null;
+    courseNumber: number | null;
     menuItem: { name: string; nameEs: string; destination: string };
     modifiers: { modifier: { name: string; nameEs: string; priceAdj: string } }[];
   }[];
+}
+
+interface CourseData {
+  courses: { courseNumber: number; fired: boolean; firedAt: string | null }[];
+  itemsByCourse: Record<number, string[]>;
 }
 
 const statusColors: Record<string, string> = {
@@ -45,10 +51,13 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   const [voidingItemId, setVoidingItemId] = useState<string | null>(null);
   const [voidReason, setVoidReason] = useState("");
   const [voidNote, setVoidNote] = useState("");
+  const [courseData, setCourseData] = useState<CourseData | null>(null);
+  const [firingCourse, setFiringCourse] = useState(false);
 
   useEffect(() => {
     fetchOrder();
-    const interval = setInterval(fetchOrder, 5000);
+    fetchCourses();
+    const interval = setInterval(() => { fetchOrder(); fetchCourses(); }, 5000);
     return () => clearInterval(interval);
   }, [orderId]);
 
@@ -56,6 +65,29 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
     const res = await fetch(`/api/orders/${orderId}`);
     if (res.ok) { const { data } = await res.json(); setOrder(data); }
     setLoading(false);
+  };
+
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}/courses`);
+      if (res.ok) {
+        const { data } = await res.json();
+        setCourseData(data);
+      }
+    } catch { /* ignore */ }
+  };
+
+  const handleFireCourse = async (courseNumber: number) => {
+    setFiringCourse(true);
+    try {
+      await fetch(`/api/orders/${orderId}/courses/fire`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseNumber }),
+      });
+      await Promise.all([fetchOrder(), fetchCourses()]);
+    } catch { /* ignore */ }
+    setFiringCourse(false);
   };
 
   const handleMarkServed = async (itemId: string) => {
@@ -134,6 +166,22 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
   const total = order.items.filter((i) => i.status !== "CANCELLED").reduce((sum, i) => sum + Number(i.unitPrice) * i.quantity, 0);
   const canCancel = order.status === "OPEN" || order.status === "SUBMITTED";
 
+  const hasCourses = courseData && courseData.courses.length > 0;
+  const nextUnfiredCourse = hasCourses
+    ? courseData.courses.find((c) => !c.fired)?.courseNumber ?? null
+    : null;
+
+  // Build a set of item IDs that belong to unfired courses (should show HELD)
+  const heldItemIds = new Set<string>();
+  if (hasCourses && courseData) {
+    courseData.courses.forEach((c) => {
+      if (!c.fired) {
+        const itemIds = courseData.itemsByCourse[c.courseNumber] || [];
+        itemIds.forEach((id) => heldItemIds.add(id));
+      }
+    });
+  }
+
   return (
     <div className="p-4">
       {/* Header */}
@@ -157,6 +205,55 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
         </span>
       </div>
 
+      {/* Course Control Bar */}
+      {hasCourses && courseData && (
+        <div className="bg-white rounded-xl p-3 border border-gray-200 mb-4">
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <span className="text-sm font-medium text-gray-700">Courses:</span>
+            {courseData.courses.map((c) => (
+              <span
+                key={c.courseNumber}
+                className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${
+                  c.fired
+                    ? "bg-green-100 text-green-800 border-green-200"
+                    : "bg-amber-100 text-amber-800 border-amber-200"
+                }`}
+              >
+                C{c.courseNumber}
+                {c.fired ? (
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4" />
+                  </svg>
+                )}
+              </span>
+            ))}
+          </div>
+          {nextUnfiredCourse !== null && (
+            <button
+              onClick={() => handleFireCourse(nextUnfiredCourse)}
+              disabled={firingCourse}
+              className="w-full h-11 rounded-lg bg-indigo-600 text-white text-sm font-semibold active:bg-indigo-700 touch-manipulation transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {firingCourse ? (
+                "..."
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                  </svg>
+                  Fire Course {nextUnfiredCourse}
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Items list */}
       <div className="space-y-2 mb-4">
         {order.items.length === 0 ? (
@@ -168,7 +265,8 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
           </div>
         ) : (
           order.items.map((item) => {
-            const isReady = item.status === "READY";
+            const isHeld = heldItemIds.has(item.id);
+            const isReady = !isHeld && item.status === "READY";
             const isCancelled = item.status === "CANCELLED";
             const isServed = item.status === "SERVED";
             const canVoid = !isCancelled && !isServed;
@@ -180,6 +278,8 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
                     ? "opacity-50 border-gray-100"
                     : isReady
                     ? "border-green-300 ring-2 ring-green-100"
+                    : isHeld
+                    ? "border-gray-200 bg-gray-50"
                     : "border-gray-100"
                 }`}
               >
@@ -189,9 +289,20 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
                       <span className={`font-medium text-gray-800 ${isCancelled ? "line-through text-gray-400" : ""}`}>
                         {item.quantity}x {getName(item.menuItem)}
                       </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${statusColors[item.status]}`}>
-                        {t(`orders.${item.status.toLowerCase()}`)}
-                      </span>
+                      {isHeld ? (
+                        <span className="text-xs px-2 py-0.5 rounded-full font-medium border bg-gray-100 text-gray-500 border-gray-200">
+                          HELD
+                        </span>
+                      ) : (
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${statusColors[item.status]}`}>
+                          {t(`orders.${item.status.toLowerCase()}`)}
+                        </span>
+                      )}
+                      {item.courseNumber && (
+                        <span className="text-xs px-1.5 py-0.5 rounded-full font-bold border bg-indigo-100 text-indigo-700 border-indigo-200">
+                          C{item.courseNumber}
+                        </span>
+                      )}
                       {item.seatNumber && (
                         <span className="text-xs px-2 py-0.5 rounded-full font-medium border bg-purple-100 text-purple-800 border-purple-200">
                           {t("orders.seat")} {item.seatNumber}
@@ -212,7 +323,7 @@ export default function OrderViewPage({ params }: { params: Promise<{ orderId: s
                       <button
                         onClick={() => openVoidModal(item.id)}
                         disabled={voidingItemId === item.id}
-                        className="text-xs text-red-500 font-medium px-2 py-1.5 rounded-lg active:bg-red-50 touch-manipulation border border-red-200"
+                        className="text-xs text-red-500 font-medium px-3 py-2 rounded-lg active:bg-red-50 touch-manipulation border border-red-200 min-h-[44px]"
                       >
                         {voidingItemId === item.id ? "..." : t("orders.voidItem")}
                       </button>

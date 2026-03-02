@@ -34,6 +34,42 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       }
     }
 
+    // Determine status based on course firing logic
+    let itemStatus: "SENT" | "PENDING" = "SENT";
+    let sentAt: Date | null = new Date();
+    const courseNumber = item.courseNumber ?? null;
+
+    if (courseNumber && courseNumber > 1) {
+      // Check if this course has been fired already
+      const firedCourse = await prisma.orderCourse.findUnique({
+        where: { orderId_courseNumber: { orderId, courseNumber } },
+      });
+      if (!firedCourse || !firedCourse.firedAt) {
+        // Course not fired yet — hold item as PENDING
+        itemStatus = "PENDING";
+        sentAt = null;
+      }
+    }
+
+    // Auto-create/update OrderCourse records
+    if (courseNumber) {
+      if (courseNumber === 1) {
+        // Course 1 is auto-fired
+        await prisma.orderCourse.upsert({
+          where: { orderId_courseNumber: { orderId, courseNumber: 1 } },
+          create: { orderId, courseNumber: 1, firedAt: new Date() },
+          update: { firedAt: new Date() },
+        });
+      } else {
+        // Other courses: create record if it doesn't exist (unfired)
+        await prisma.orderCourse.upsert({
+          where: { orderId_courseNumber: { orderId, courseNumber } },
+          create: { orderId, courseNumber },
+          update: {},
+        });
+      }
+    }
+
     const orderItem = await prisma.orderItem.create({
       data: {
         orderId,
@@ -42,8 +78,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         unitPrice,
         notes: item.notes || null,
         seatNumber: item.seatNumber ?? null,
-        status: "SENT",
-        sentAt: new Date(),
+        courseNumber,
+        status: itemStatus,
+        sentAt,
         modifiers: modifierData.length ? { create: modifierData } : undefined,
       },
       include: {
@@ -147,9 +184,10 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     include: { table: true, server: { select: { id: true, name: true } } },
   });
 
-  // Group items by destination and trigger Pusher events
-  const kitchenItems = createdItems.filter((i) => i.menuItem.destination === "KITCHEN");
-  const barItems = createdItems.filter((i) => i.menuItem.destination === "BAR");
+  // Group items by destination and trigger Pusher events (only SENT items, not held PENDING)
+  const sentItems = createdItems.filter((i) => i.status === "SENT");
+  const kitchenItems = sentItems.filter((i) => i.menuItem.destination === "KITCHEN");
+  const barItems = sentItems.filter((i) => i.menuItem.destination === "BAR");
 
   const orderPayload = {
     orderId,

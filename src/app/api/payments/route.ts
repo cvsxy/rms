@@ -113,5 +113,46 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  // Update customer stats
+  if (order.customerId) {
+    await prisma.customer.update({
+      where: { id: order.customerId },
+      data: {
+        totalVisits: { increment: 1 },
+        totalSpent: { increment: total },
+        lastVisit: new Date(),
+      },
+    });
+  }
+
+  // Auto-earn loyalty points
+  if (order.customerId) {
+    const member = await prisma.loyaltyMember.findUnique({
+      where: { customerId: order.customerId },
+      include: { program: true },
+    });
+    if (member && member.program.active) {
+      const pointsEarned = Math.floor(Number(total) * Number(member.program.pointsPerPeso));
+      if (pointsEarned > 0) {
+        await prisma.loyaltyMember.update({
+          where: { id: member.id },
+          data: {
+            pointsBalance: { increment: pointsEarned },
+            totalEarned: { increment: pointsEarned },
+          },
+        });
+        await prisma.loyaltyTransaction.create({
+          data: {
+            memberId: member.id,
+            type: "EARN",
+            points: pointsEarned,
+            orderId,
+            description: `Earned ${pointsEarned} points`,
+          },
+        });
+      }
+    }
+  }
+
   return NextResponse.json({ data: payment }, { status: 201 });
 }

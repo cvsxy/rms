@@ -111,6 +111,97 @@ model Modifier {
   @@index([menuItemId])
 }
 
+// ─── CUSTOMERS & CRM ──────────────────────────────────────────
+
+model Customer {
+  id           String    @id @default(cuid())
+  name         String
+  phone        String    @unique
+  email        String?
+  notes        String?
+  dietaryNotes String?
+  tags         String[]  @default([])
+  totalVisits  Int       @default(0)
+  totalSpent   Decimal   @default(0) @db.Decimal(10, 2)
+  lastVisit    DateTime?
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  orders        Order[]
+  reservations  Reservation[]
+  loyaltyMember LoyaltyMember?
+
+  @@index([phone])
+  @@index([name])
+}
+
+// ─── RESERVATIONS ──────────────────────────────────────────────
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  SEATED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum ReservationSource {
+  PHONE
+  WALKIN
+  WHATSAPP
+  WEBSITE
+  MANUAL
+}
+
+model Reservation {
+  id           String            @id @default(cuid())
+  customerId   String?
+  guestName    String
+  guestPhone   String
+  guestEmail   String?
+  date         DateTime          @db.Date
+  time         String
+  partySize    Int
+  tableId      String?
+  status       ReservationStatus @default(PENDING)
+  source       ReservationSource @default(MANUAL)
+  notes        String?
+  confirmedAt  DateTime?
+  seatedAt     DateTime?
+  completedAt  DateTime?
+  cancelledAt  DateTime?
+  reminderSent Boolean           @default(false)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  customer Customer?        @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  table    RestaurantTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
+
+  @@index([date])
+  @@index([status])
+  @@index([customerId])
+  @@index([guestPhone])
+}
+
+// ─── WAITLIST ──────────────────────────────────────────────────
+
+model WaitlistEntry {
+  id            String    @id @default(cuid())
+  guestName     String
+  guestPhone    String
+  partySize     Int
+  estimatedWait Int?
+  notes         String?
+  notifiedAt    DateTime?
+  seatedAt      DateTime?
+  cancelledAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([createdAt])
+}
+
 // ─── TABLES ─────────────────────────────────────────────────────
 
 enum TableStatus {
@@ -131,7 +222,8 @@ model RestaurantTable {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  orders Order[]
+  orders       Order[]
+  reservations Reservation[]
 
   @@index([status])
   @@index([number])
@@ -148,24 +240,43 @@ enum OrderStatus {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  tableId   String
-  serverId  String
-  status    OrderStatus @default(OPEN)
-  notes     String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id         String      @id @default(cuid())
+  tableId    String
+  serverId   String
+  customerId String?
+  status     OrderStatus @default(OPEN)
+  notes      String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   table     RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
   server    User            @relation(fields: [serverId], references: [id], onDelete: Restrict)
+  customer  Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
   items     OrderItem[]
   payment   Payment?
   discounts OrderDiscount[]
+  courses   OrderCourse[]
 
   @@index([tableId])
   @@index([serverId])
+  @@index([customerId])
   @@index([status])
   @@index([createdAt])
+}
+
+// ─── COURSE FIRING ─────────────────────────────────────────────
+
+model OrderCourse {
+  id           String    @id @default(cuid())
+  orderId      String
+  courseNumber  Int
+  label        String?
+  firedAt      DateTime?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, courseNumber])
+  @@index([orderId])
 }
 
 enum OrderItemStatus {
@@ -178,14 +289,15 @@ enum OrderItemStatus {
 }
 
 model OrderItem {
-  id         String          @id @default(cuid())
-  orderId    String
-  menuItemId String
-  quantity   Int             @default(1)
-  unitPrice  Decimal         @db.Decimal(10, 2)
-  notes      String?
-  seatNumber Int?
-  status     OrderItemStatus @default(PENDING)
+  id           String          @id @default(cuid())
+  orderId      String
+  menuItemId   String
+  quantity     Int             @default(1)
+  unitPrice    Decimal         @db.Decimal(10, 2)
+  notes        String?
+  seatNumber   Int?
+  courseNumber  Int?
+  status       OrderItemStatus @default(PENDING)
   sentAt     DateTime?
   readyAt    DateTime?
   servedAt   DateTime?
@@ -338,6 +450,113 @@ model OrderDiscount {
   @@index([orderId])
 }
 
+// ─── LOYALTY PROGRAM ───────────────────────────────────────────
+
+model LoyaltyProgram {
+  id            String   @id @default(cuid())
+  name          String
+  nameEs        String
+  pointsPerPeso Decimal  @default(1) @db.Decimal(5, 2)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  rewards LoyaltyReward[]
+  members LoyaltyMember[]
+}
+
+model LoyaltyMember {
+  id            String   @id @default(cuid())
+  customerId    String   @unique
+  programId     String
+  pointsBalance Int      @default(0)
+  totalEarned   Int      @default(0)
+  totalRedeemed Int      @default(0)
+  tier          String   @default("BRONZE")
+  joinedAt      DateTime @default(now())
+
+  customer     Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  program      LoyaltyProgram       @relation(fields: [programId], references: [id], onDelete: Cascade)
+  transactions LoyaltyTransaction[]
+
+  @@index([programId])
+  @@index([customerId])
+}
+
+enum LoyaltyTxType {
+  EARN
+  REDEEM
+  ADJUST
+  EXPIRE
+}
+
+model LoyaltyTransaction {
+  id          String        @id @default(cuid())
+  memberId    String
+  type        LoyaltyTxType
+  points      Int
+  orderId     String?
+  rewardId    String?
+  description String?
+  createdAt   DateTime      @default(now())
+
+  member LoyaltyMember  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  reward LoyaltyReward? @relation(fields: [rewardId], references: [id], onDelete: SetNull)
+
+  @@index([memberId])
+  @@index([createdAt])
+}
+
+model LoyaltyReward {
+  id         String       @id @default(cuid())
+  programId  String
+  name       String
+  nameEs     String
+  pointsCost Int
+  type       DiscountType
+  value      Decimal      @db.Decimal(10, 2)
+  active     Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+
+  program      LoyaltyProgram       @relation(fields: [programId], references: [id], onDelete: Cascade)
+  transactions LoyaltyTransaction[]
+
+  @@index([programId])
+}
+
+// ─── GIFT CARDS ────────────────────────────────────────────────
+
+model GiftCard {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  originalAmount Decimal   @db.Decimal(10, 2)
+  balance        Decimal   @db.Decimal(10, 2)
+  purchaserName  String?
+  recipientName  String?
+  recipientPhone String?
+  expiresAt      DateTime?
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  usages GiftCardUsage[]
+
+  @@index([code])
+  @@index([active])
+}
+
+model GiftCardUsage {
+  id         String   @id @default(cuid())
+  giftCardId String
+  orderId    String?
+  amount     Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+
+  giftCard GiftCard @relation(fields: [giftCardId], references: [id], onDelete: Cascade)
+
+  @@index([giftCardId])
+}
+
 // ─── AUDIT LOG ──────────────────────────────────────────────────
 
 enum AuditAction {
@@ -348,6 +567,12 @@ enum AuditAction {
   ITEM_86D
   STOCK_ADJUSTED
   DAILY_CLOSED
+  RESERVATION_CREATED
+  RESERVATION_CANCELLED
+  RESERVATION_NO_SHOW
+  LOYALTY_REDEEMED
+  GIFT_CARD_REDEEMED
+  COURSE_FIRED
 }
 
 model AuditLog {

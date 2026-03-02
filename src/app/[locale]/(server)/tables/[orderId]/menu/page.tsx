@@ -10,7 +10,7 @@ interface Category { id: string; name: string; nameEs: string; }
 interface Modifier { id: string; name: string; nameEs: string; priceAdj: string; }
 interface IngredientInfo { ingredient: { name: string; nameEs: string; unit: string }; quantity: number; }
 interface MenuItem { id: string; name: string; nameEs: string; description: string | null; descriptionEs: string | null; price: string; destination: string; categoryId: string; available: boolean; modifiers: Modifier[]; ingredients?: IngredientInfo[]; }
-interface CartItem { menuItemId: string; name: string; quantity: number; notes: string; modifierIds: string[]; price: number; seatNumber: number | null; }
+interface CartItem { menuItemId: string; name: string; quantity: number; notes: string; modifierIds: string[]; price: number; seatNumber: number | null; courseNumber: number | null; }
 
 export default function MenuBrowserPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
@@ -31,6 +31,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
   const [searchQuery, setSearchQuery] = useState("");
   const [tableSeats, setTableSeats] = useState(0);
   const [showIngredients, setShowIngredients] = useState(false);
+  const [courseNumber, setCourseNumber] = useState<number | null>(null);
 
   useEffect(() => { fetchMenu(); fetchTableSeats(); }, []);
 
@@ -66,7 +67,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
     return selectedCategory ? items.filter((i) => i.categoryId === selectedCategory) : items;
   }, [isSearching, searchQuery, selectedCategory, items]);
 
-  const openItemSheet = (item: MenuItem) => { setSelectedItem(item); setQuantity(1); setNotes(""); setSelectedModifiers([]); setSeatNumber(null); setShowIngredients(false); };
+  const openItemSheet = (item: MenuItem) => { setSelectedItem(item); setQuantity(1); setNotes(""); setSelectedModifiers([]); setSeatNumber(null); setCourseNumber(null); setShowIngredients(false); };
 
   // Calculate live price preview for the modal
   const modalPrice = useMemo(() => {
@@ -87,6 +88,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
       modifierIds: selectedModifiers,
       price: modalPrice,
       seatNumber,
+      courseNumber,
     }]);
     setSelectedItem(null);
   };
@@ -105,6 +107,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
           notes: c.notes || undefined,
           modifierIds: c.modifierIds.length ? c.modifierIds : undefined,
           seatNumber: c.seatNumber,
+          courseNumber: c.courseNumber,
         })),
       }),
     });
@@ -240,7 +243,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
         <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] left-0 right-0 p-4 bg-white border-t border-gray-200 z-40">
           <div className="flex items-center justify-between mb-2">
             <div className="text-sm text-gray-600 flex-1 truncate">
-              {cart.map((c) => `${c.quantity}x ${c.name}${c.seatNumber ? ` (S${c.seatNumber})` : ""}`).join(", ")}
+              {cart.map((c) => `${c.quantity}x ${c.name}${c.seatNumber ? ` (S${c.seatNumber})` : ""}${c.courseNumber ? ` C${c.courseNumber}` : ""}`).join(", ")}
             </div>
             <button
               onClick={clearCart}
@@ -307,7 +310,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
                 <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={() => setSeatNumber(null)}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium touch-manipulation border transition-colors ${
+                    className={`px-4 py-2.5 rounded-lg text-sm font-medium touch-manipulation border transition-colors min-h-[44px] ${
                       seatNumber === null
                         ? "bg-blue-100 border-blue-400 text-blue-800"
                         : "bg-white border-gray-200 text-gray-600 active:bg-gray-50"
@@ -332,6 +335,36 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
               </div>
             )}
 
+            {/* Course picker */}
+            <div className="mb-4">
+              <span className="text-sm font-medium text-gray-700 block mb-2">Course:</span>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setCourseNumber(null)}
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium touch-manipulation border transition-colors min-h-[44px] ${
+                    courseNumber === null
+                      ? "bg-blue-100 border-blue-400 text-blue-800"
+                      : "bg-white border-gray-200 text-gray-600 active:bg-gray-50"
+                  }`}
+                >
+                  &mdash;
+                </button>
+                {[1, 2, 3, 4].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setCourseNumber(num)}
+                    className={`w-12 h-12 rounded-lg text-sm font-bold touch-manipulation border transition-colors ${
+                      courseNumber === num
+                        ? "bg-indigo-100 border-indigo-400 text-indigo-800"
+                        : "bg-white border-gray-200 text-gray-600 active:bg-gray-50"
+                    }`}
+                  >
+                    C{num}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Modifiers */}
             {selectedItem.modifiers.length > 0 && (
               <div className="mb-4">
@@ -343,7 +376,7 @@ export default function MenuBrowserPage({ params }: { params: Promise<{ orderId:
                       <button
                         key={mod.id}
                         onClick={() => setSelectedModifiers(isSelected ? selectedModifiers.filter((id) => id !== mod.id) : [...selectedModifiers, mod.id])}
-                        className={`px-4 py-2.5 rounded-lg text-sm touch-manipulation border transition-colors ${
+                        className={`px-4 py-2.5 rounded-lg text-sm touch-manipulation border transition-colors min-h-[44px] ${
                           isSelected
                             ? "bg-blue-100 border-blue-400 text-blue-800"
                             : "bg-white border-gray-200 text-gray-700 active:bg-gray-50"

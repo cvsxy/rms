@@ -48,6 +48,10 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 | `/es/admin/discounts` | Discount/comp management |
 | `/es/admin/audit` | Audit log with filters |
 | `/es/admin/guide` | Admin & manager user guide (bilingual, includes server guide) |
+| `/es/admin/reservations` | Reservation management + waitlist |
+| `/es/admin/customers` | Customer CRM directory |
+| `/es/admin/loyalty` | Loyalty program settings + rewards + members |
+| `/es/admin/gift-cards` | Gift card management |
 
 ## Design System
 - **Brand accent:** Indigo-600 (`#4f46e5`) for primary actions, active states, focus rings
@@ -274,15 +278,68 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
   - Discount creation: name EN/ES, type enum, value, percentage cap refinement
 - [x] Dependency added: zod
 
-## Database Schema (18 models)
-User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting, Discount, OrderDiscount, AuditLog, DailyClose
+### Phase 14: Reservations, CRM, Coursing, Loyalty & Gift Cards - COMPLETE
+- [x] 10 new Prisma models + 3 new enums + migration
+  - Customer, Reservation, WaitlistEntry, OrderCourse, LoyaltyProgram, LoyaltyMember, LoyaltyTransaction, LoyaltyReward, GiftCard, GiftCardUsage
+  - ReservationStatus, ReservationSource, LoyaltyTxType enums
+  - Modified Order (+customerId, +courses), OrderItem (+courseNumber), RestaurantTable (+reservations), AuditAction (+6 actions)
+- [x] Customer CRM
+  - Customer model with phone as primary lookup key (Mexico standard)
+  - CRUD API at `/api/customers` with search, tag filters, pagination
+  - Phone-based quick-lookup at `/api/customers/lookup` for server use
+  - Link customer to order at `/api/orders/[id]/customer`
+  - Admin customers page with directory, detail panel, order history
+  - Tags: VIP, Regular, Tourist, New
+- [x] Reservation system
+  - Full CRUD at `/api/reservations` with date/status filtering
+  - Confirm, seat, cancel, no-show status workflows
+  - Seat action auto-creates order + marks table occupied (prisma.$transaction)
+  - Availability API generates 30-min slots with capacity checking
+  - Admin reservations page with date presets, status tabs, create/edit modal
+  - Waitlist management at `/api/waitlist` with notify/seat/cancel actions
+- [x] WhatsApp integration (Meta Cloud API)
+  - `src/lib/whatsapp.ts` helper with `sendTemplate()` and `sendMessage()`
+  - `/api/whatsapp/send` endpoint for template or free-form messages
+  - Graceful fallback if env vars not configured
+- [x] Course firing system
+  - OrderCourse model tracks fired status per course per order
+  - Course 1 auto-fires; courses 2+ stay PENDING until explicitly fired
+  - Fire course API at `/api/orders/[id]/courses/fire` → updates PENDING→SENT, triggers Pusher
+  - Course control bar on order view with fire button
+  - Course picker (C1-C4) in menu item modal
+  - Kitchen/bar displays group items by course with labels
+- [x] Loyalty program
+  - LoyaltyProgram, LoyaltyMember, LoyaltyReward, LoyaltyTransaction models
+  - Program settings + rewards CRUD at `/api/loyalty/*`
+  - Points auto-earned on payment (pointsPerPeso × order total)
+  - Redeem rewards as OrderDiscount at `/api/loyalty/redeem`
+  - Tier system: Bronze, Silver, Gold
+  - Admin loyalty page with program config, rewards table, members list
+  - Bill page: loyalty section shows points balance + redeem button
+- [x] Digital gift cards
+  - GiftCard + GiftCardUsage models
+  - Auto-generated 8-char codes with collision retry
+  - CRUD at `/api/gift-cards/*`, lookup by code, partial redemption
+  - Redeem as OrderDiscount (FIXED type) at `/api/gift-cards/redeem`
+  - Admin gift cards page with stats, create modal, detail with usage history
+  - Bill page: gift card code entry + balance lookup + redeem
+- [x] Admin sidebar updated: new "Customers" nav group with 4 items (Reservations, Customers, Loyalty, Gift Cards)
+- [x] Customer stats auto-updated on payment (totalVisits++, totalSpent, lastVisit)
+- [x] Mobile responsiveness pass: responsive column hiding on all admin tables, 44px min touch targets, stacking grids on mobile
+- [x] ~155 new i18n keys in both EN and ES (reservations, customers, loyalty, giftCards, courses namespaces)
+
+## Database Schema (28 models)
+User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting, Discount, OrderDiscount, AuditLog, DailyClose, Customer, Reservation, WaitlistEntry, OrderCourse, LoyaltyProgram, LoyaltyMember, LoyaltyTransaction, LoyaltyReward, GiftCard, GiftCardUsage
 
 ## Key Enums
 - **OrderItemStatus:** PENDING, SENT, PREPARING, READY, SERVED, CANCELLED
 - **OrderStatus:** OPEN, SUBMITTED, COMPLETED, CLOSED, CANCELLED
 - **PaymentMethod:** CASH, CARD
 - **DiscountType:** PERCENTAGE, FIXED
-- **AuditAction:** ITEM_VOIDED, ORDER_CANCELLED, PAYMENT_PROCESSED, DISCOUNT_APPLIED, ITEM_86D, STOCK_ADJUSTED
+- **AuditAction:** ITEM_VOIDED, ORDER_CANCELLED, PAYMENT_PROCESSED, DISCOUNT_APPLIED, ITEM_86D, STOCK_ADJUSTED, RESERVATION_CREATED, RESERVATION_CANCELLED, RESERVATION_NO_SHOW, LOYALTY_REDEEMED, GIFT_CARD_REDEEMED, COURSE_FIRED
+- **ReservationStatus:** PENDING, CONFIRMED, SEATED, COMPLETED, CANCELLED, NO_SHOW
+- **ReservationSource:** PHONE, WALKIN, WHATSAPP, WEBSITE, MANUAL
+- **LoyaltyTxType:** EARN, REDEEM, ADJUST, EXPIRE
 
 ## Pusher Channels
 - `kitchen` (public) — kitchen display subscribes for new items + status changes
@@ -291,7 +348,7 @@ User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderIt
 - `private-server-{userId}` — each server's notification channel
 
 ## i18n Architecture
-- Main messages: `src/messages/en.json` + `src/messages/es.json` (~370 keys each)
+- Main messages: `src/messages/en.json` + `src/messages/es.json` (~525 keys each)
 - Guide messages: `src/messages/guide-en.json` + `src/messages/guide-es.json` (~170 keys each)
 - Merged at load time in `src/i18n/request.ts` via spread: `{ ...main, ...guide }`
 - Guide content accessed via `useTranslations('guide')` namespace
@@ -309,6 +366,8 @@ NEXT_PUBLIC_CURRENCY       # Currency code (MXN)
 NEXT_PUBLIC_VAPID_PUBLIC_KEY  # VAPID public key for Web Push
 VAPID_PRIVATE_KEY          # VAPID private key (server-side only)
 VAPID_EMAIL                # VAPID contact email
+WHATSAPP_PHONE_NUMBER_ID   # Meta Business phone number ID (optional)
+WHATSAPP_ACCESS_TOKEN      # Meta API access token (optional)
 ```
 
 ## Common Commands

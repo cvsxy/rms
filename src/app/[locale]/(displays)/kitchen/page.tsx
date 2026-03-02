@@ -19,6 +19,7 @@ interface DisplayItem {
   sentAt: string;
   readyAt: string | null;
   seatNumber: number | null;
+  courseNumber: number | null;
   menuItemId: string;
   menuItem: { name: string; nameEs: string; destination: string };
   modifiers: { modifier: { name: string; nameEs: string } }[];
@@ -108,6 +109,52 @@ export default function KitchenDisplayPage() {
 
   const getName = (item: { name: string; nameEs: string }) =>
     locale === "es" ? item.nameEs : item.name;
+
+  const getCourseLabel = (courseNumber: number): string => {
+    if (courseNumber === 1) return locale === "es" ? "Entradas" : "Appetizers";
+    if (courseNumber === 2) return locale === "es" ? "Platos Fuertes" : "Mains";
+    if (courseNumber === 3) return locale === "es" ? "Postres" : "Desserts";
+    return locale === "es" ? `Curso ${courseNumber}` : `Course ${courseNumber}`;
+  };
+
+  const groupItemsByCourse = (items: DisplayItem[]) => {
+    const groups: { courseNumber: number | null; label: string; items: DisplayItem[] }[] = [];
+    const courseMap = new Map<number, DisplayItem[]>();
+    const noCourse: DisplayItem[] = [];
+
+    for (const item of items) {
+      if (item.courseNumber) {
+        const existing = courseMap.get(item.courseNumber) || [];
+        existing.push(item);
+        courseMap.set(item.courseNumber, existing);
+      } else {
+        noCourse.push(item);
+      }
+    }
+
+    // Sort course numbers and build groups
+    const sortedCourses = [...courseMap.keys()].sort((a, b) => a - b);
+    for (const cn of sortedCourses) {
+      groups.push({
+        courseNumber: cn,
+        label: `${locale === "es" ? "Curso" : "Course"} ${cn} — ${getCourseLabel(cn)}`,
+        items: courseMap.get(cn)!,
+      });
+    }
+
+    // Items without courseNumber go at the end
+    if (noCourse.length > 0) {
+      groups.push({
+        courseNumber: null,
+        label: locale === "es" ? "Otros" : "Other",
+        items: noCourse,
+      });
+    }
+
+    return groups;
+  };
+
+  const hasCourses = (items: DisplayItem[]) => items.some((i) => i.courseNumber !== null);
 
   const markReady = async (itemId: string) => {
     await fetch(`/api/order-items/${itemId}/status`, {
@@ -238,51 +285,108 @@ export default function KitchenDisplayPage() {
                   </div>
                 ) : (
                   <>
-                    {/* Items list */}
+                    {/* Items list — grouped by course if any items have courseNumber */}
                     <div className="space-y-3 mb-4">
-                      {order.items.map((item) => {
-                        const ingredients = ingredientMap[item.menuItemId];
-                        return (
-                          <div key={item.id} className="flex items-start justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                              <div className="text-base">
-                                <span className="font-bold text-lg">{item.quantity}x</span>{" "}
-                                {item.seatNumber && (
-                                  <span className="text-xs bg-purple-600 text-white px-1.5 py-0.5 rounded mr-1 font-medium">
-                                    S{item.seatNumber}
-                                  </span>
+                      {hasCourses(order.items) ? (
+                        groupItemsByCourse(order.items).map((group, gi) => (
+                          <div key={group.courseNumber ?? "other"}>
+                            {/* Course header separator */}
+                            {gi > 0 && <div className="border-t border-gray-600 my-3" />}
+                            <div className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                              {group.label}
+                            </div>
+                            <div className="space-y-3">
+                              {group.items.map((item) => {
+                                const ingredients = ingredientMap[item.menuItemId];
+                                return (
+                                  <div key={item.id} className="flex items-start justify-between gap-2">
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-base">
+                                        <span className="font-bold text-lg">{item.quantity}x</span>{" "}
+                                        {item.seatNumber && (
+                                          <span className="text-xs bg-purple-600 text-white px-1.5 py-0.5 rounded mr-1 font-medium">
+                                            S{item.seatNumber}
+                                          </span>
+                                        )}
+                                        {getName(item.menuItem)}
+                                      </div>
+                                      {item.modifiers.length > 0 && (
+                                        <div className="text-sm text-gray-400 mt-0.5">
+                                          {item.modifiers.map((m) => getName(m.modifier)).join(", ")}
+                                        </div>
+                                      )}
+                                      {ingredients && ingredients.length > 0 && (
+                                        <div className="text-xs text-emerald-400/80 mt-0.5">
+                                          {ingredients.map((ing) => `${getName(ing)} ${ing.quantity}${ing.unit}`).join(", ")}
+                                        </div>
+                                      )}
+                                      {item.notes && (
+                                        <div className="text-sm text-yellow-400 italic mt-1 font-medium bg-yellow-900/30 rounded px-2 py-1">
+                                          📝 {item.notes}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {item.status === "READY" ? (
+                                      <span className="text-green-400 text-xl font-bold shrink-0">✓</span>
+                                    ) : (
+                                      <button
+                                        onClick={() => markReady(item.id)}
+                                        className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg active:bg-green-700 touch-manipulation shrink-0"
+                                      >
+                                        {t("display.markReady")}
+                                      </button>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        order.items.map((item) => {
+                          const ingredients = ingredientMap[item.menuItemId];
+                          return (
+                            <div key={item.id} className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="text-base">
+                                  <span className="font-bold text-lg">{item.quantity}x</span>{" "}
+                                  {item.seatNumber && (
+                                    <span className="text-xs bg-purple-600 text-white px-1.5 py-0.5 rounded mr-1 font-medium">
+                                      S{item.seatNumber}
+                                    </span>
+                                  )}
+                                  {getName(item.menuItem)}
+                                </div>
+                                {item.modifiers.length > 0 && (
+                                  <div className="text-sm text-gray-400 mt-0.5">
+                                    {item.modifiers.map((m) => getName(m.modifier)).join(", ")}
+                                  </div>
                                 )}
-                                {getName(item.menuItem)}
+                                {ingredients && ingredients.length > 0 && (
+                                  <div className="text-xs text-emerald-400/80 mt-0.5">
+                                    {ingredients.map((ing) => `${getName(ing)} ${ing.quantity}${ing.unit}`).join(", ")}
+                                  </div>
+                                )}
+                                {item.notes && (
+                                  <div className="text-sm text-yellow-400 italic mt-1 font-medium bg-yellow-900/30 rounded px-2 py-1">
+                                    📝 {item.notes}
+                                  </div>
+                                )}
                               </div>
-                              {item.modifiers.length > 0 && (
-                                <div className="text-sm text-gray-400 mt-0.5">
-                                  {item.modifiers.map((m) => getName(m.modifier)).join(", ")}
-                                </div>
-                              )}
-                              {ingredients && ingredients.length > 0 && (
-                                <div className="text-xs text-emerald-400/80 mt-0.5">
-                                  {ingredients.map((ing) => `${getName(ing)} ${ing.quantity}${ing.unit}`).join(", ")}
-                                </div>
-                              )}
-                              {item.notes && (
-                                <div className="text-sm text-yellow-400 italic mt-1 font-medium bg-yellow-900/30 rounded px-2 py-1">
-                                  📝 {item.notes}
-                                </div>
+                              {item.status === "READY" ? (
+                                <span className="text-green-400 text-xl font-bold shrink-0">✓</span>
+                              ) : (
+                                <button
+                                  onClick={() => markReady(item.id)}
+                                  className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg active:bg-green-700 touch-manipulation shrink-0"
+                                >
+                                  {t("display.markReady")}
+                                </button>
                               )}
                             </div>
-                            {item.status === "READY" ? (
-                              <span className="text-green-400 text-xl font-bold shrink-0">✓</span>
-                            ) : (
-                              <button
-                                onClick={() => markReady(item.id)}
-                                className="px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg active:bg-green-700 touch-manipulation shrink-0"
-                              >
-                                {t("display.markReady")}
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
+                          );
+                        })
+                      )}
                     </div>
 
                     {/* Mark All Ready button */}

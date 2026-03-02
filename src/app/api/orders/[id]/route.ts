@@ -8,6 +8,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     include: {
       table: true,
       server: { select: { id: true, name: true } },
+      customer: { select: { id: true, name: true, phone: true } },
       items: {
         include: {
           menuItem: true,
