@@ -9,8 +9,11 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 - **Real-time:** Pusher Channels (public channels for displays, private for server notifications)
 - **Push Notifications:** Web Push API with VAPID keys (`web-push` package)
 - **Styling:** Tailwind CSS v4
-- **Auth:** Custom JWT with `jose` + `bcryptjs` (PIN for servers, email/password for admin)
+- **Auth:** Custom JWT with `jose` + `bcryptjs` (PIN for servers, email/password for admin) + session DB validation
+- **Validation:** Zod schemas on critical API mutation routes
 - **i18n:** `next-intl` (Spanish default, English switchable)
+- **Charts:** Recharts (AreaChart, BarChart, PieChart)
+- **Drag & Drop:** @dnd-kit/core + @dnd-kit/utilities (table layout editor)
 - **Deployment:** Vercel + Neon PostgreSQL
 
 ## Live URLs
@@ -32,6 +35,7 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 | `/es/tables/[orderId]/bill` | Bill + payment with seat filtering |
 | `/es/my-orders` | Server order history (today + date picker) |
 | `/es/notifications` | Server notifications + push subscribe UI |
+| `/es/guide` | Server user guide (bilingual) |
 | `/es/kitchen` | Kitchen display (no auth) |
 | `/es/bar` | Bar display (no auth) |
 | `/es/admin` | Admin dashboard |
@@ -43,6 +47,14 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 | `/es/admin/operations` | Live operations dashboard (auto-refresh) |
 | `/es/admin/discounts` | Discount/comp management |
 | `/es/admin/audit` | Audit log with filters |
+| `/es/admin/guide` | Admin & manager user guide (bilingual, includes server guide) |
+
+## Design System
+- **Brand accent:** Indigo-600 (`#4f46e5`) for primary actions, active states, focus rings
+- **Semantic colors:** Emerald for revenue/success, Amber for tips/warnings, Red for critical, Indigo for orders/info, Purple for insights, Sky for neutral
+- **Cards:** `shadow-sm` on all admin cards, colored left borders on stat cards
+- **Charts:** Emerald for revenue, Indigo for orders, varied palette for top items, CartesianGrid on all charts
+- **Admin utilities:** `admin-card`, `admin-input`, `admin-select`, `admin-label` defined in globals.css
 
 ## Implementation Progress
 
@@ -196,14 +208,93 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 - [x] Admin sidebar expanded: 3 new nav items (Operations, Discounts, Audit Log) with SVG icons
 - [x] 60+ new i18n keys in both EN and ES (operations, discounts, audit, void, menu86 sections)
 
+### Phase 11: Admin UI/UX — SaaS Design Upgrade - COMPLETE
+- [x] Admin UI redesigned for SaaS product feel
+  - Indigo-600 brand accent replacing gray-900 for all primary actions
+  - Semantic color coding (emerald revenue, amber tips, indigo orders, purple insights)
+  - Colored left borders on dashboard stat cards
+  - Multi-color charts (emerald revenue area, indigo order bars, varied palette for top items)
+  - CartesianGrid added to all charts, shadow-sm restored on all admin cards
+  - Admin utility classes in globals.css (admin-card, admin-input, admin-select, admin-label)
+- [x] 4 new dashboard insight widgets
+  - Void rate (color-coded green/amber/red thresholds)
+  - Table turnover (covers + avg cover time in minutes)
+  - Payment split (cash vs card with progress bar)
+  - Peak hour (busiest hour + order count)
+- [x] Server leaderboard with gold/silver/bronze medal colors
+- [x] Operations page: colored stat card borders, semantic progress bars (blue/amber/green)
+- [x] Reports: indigo tab indicators, emerald/indigo chart colors
+- [x] Color refresh across all 20 admin page files (buttons, focus rings, hover states, table headers)
+- [x] 6 new i18n keys (voidRate, tableTurnover, avgCoverTime, paymentSplit, peakHour, items)
+
+### Phase 12: In-App User Guides — Bilingual - COMPLETE
+- [x] Server guide at `/guide` (8 sections)
+  - Getting Started, Tables, Taking Orders, Managing Orders, Bills & Payment, Notifications, My Orders, Tips & Tricks
+- [x] Admin guide at `/admin/guide` (18 sections — includes all server content + 10 admin sections)
+  - Dashboard, Managing Servers, Managing the Menu, Managing Tables, Inventory, Reports, Live Operations, Discounts, Audit Log, Kitchen & Bar Displays
+- [x] Dedicated guide message files (`guide-en.json`, `guide-es.json`) with ~170 keys each
+  - Merged into main messages via `i18n/request.ts` spread pattern
+  - Accessed via `useTranslations('guide')` namespace
+- [x] Shared `ServerGuideSections` component used by both pages (zero content duplication)
+- [x] Guide components: `GuideLayout` (sticky TOC sidebar + IntersectionObserver active tracking), `GuideSection` (anchor IDs + scroll-mt), `GuideCallout` (tip/important/note boxes)
+- [x] Mobile support: collapsible TOC accordion, back-to-top button with safe-area offset
+- [x] Navigation links: `?` help icon in server header, "Guide" book icon in admin sidebar footer
+- [x] Full bilingual content (ES + EN) with friendly, casual tone
+- [x] 2 new common i18n keys (help, guide) in en.json + es.json
+
+### Phase 13: Security Hardening & Data Integrity - COMPLETE
+- [x] API auth guards on all mutating/sensitive routes
+  - New `src/lib/api-auth.ts` with `requireAuth()` and `requireAdmin()` helpers (discriminated union return types)
+  - `requireAdmin()` on 16 admin routes: servers, menu items, categories, tables, positions, inventory, settings, reports, daily-close, discounts
+  - `requireAuth()` on 4 server routes: order items, order status, payments, order item voids
+  - Kitchen/bar display status updates (READY, PREPARING, SERVED) remain unauthenticated
+- [x] Session DB validation + logout invalidation
+  - `getSession()` now validates JWT `jti` against `Session` table in DB on every request
+  - Logout deletes Session record from DB, immediately invalidating intercepted tokens
+  - Deleted/deactivated users lose access instantly (no waiting for JWT expiry)
+- [x] Duplicate payment prevention
+  - `findFirst` check before payment creation returns 409 Conflict
+  - Order status check blocks payment on CLOSED/CANCELLED orders
+  - Payment + order close + table release wrapped in `prisma.$transaction()` for atomicity
+- [x] Order item status state machine
+  - `VALID_TRANSITIONS` map: PENDING→SENT→PREPARING→READY→SERVED (terminal)
+  - CANCELLED allowed from any non-terminal state, blocked from SERVED/CANCELLED
+  - Prevents fraudulent voids after delivery
+- [x] Discount validation
+  - Type must be PERCENTAGE or FIXED, value must be positive
+  - Percentage capped at 100%, fixed capped at order subtotal
+- [x] Stock floor protection
+  - `updateMany` clamps negative ingredient stock to 0 after decrement operations
+- [x] Rate limiting on auth endpoints
+  - In-memory rate limiting (5 failed attempts per IP per 60-second window) on both PIN and admin login
+  - Uses `Map<string, { count, resetAt }>` pattern
+- [x] Zod input validation on critical mutation routes
+  - Payment: orderId, method enum, tip >= 0
+  - Server creation: name length, PIN digits-only 4-6 chars
+  - Discount creation: name EN/ES, type enum, value, percentage cap refinement
+- [x] Dependency added: zod
+
 ## Database Schema (18 models)
-User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting, Discount, OrderDiscount, AuditLog
+User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting, Discount, OrderDiscount, AuditLog, DailyClose
+
+## Key Enums
+- **OrderItemStatus:** PENDING, SENT, PREPARING, READY, SERVED, CANCELLED
+- **OrderStatus:** OPEN, SUBMITTED, COMPLETED, CLOSED, CANCELLED
+- **PaymentMethod:** CASH, CARD
+- **DiscountType:** PERCENTAGE, FIXED
+- **AuditAction:** ITEM_VOIDED, ORDER_CANCELLED, PAYMENT_PROCESSED, DISCOUNT_APPLIED, ITEM_86D, STOCK_ADJUSTED
 
 ## Pusher Channels
 - `kitchen` (public) — kitchen display subscribes for new items + status changes
 - `bar` (public) — bar display subscribes for new items + status changes
 - `menu` (public) — item availability changes (86'd items)
 - `private-server-{userId}` — each server's notification channel
+
+## i18n Architecture
+- Main messages: `src/messages/en.json` + `src/messages/es.json` (~370 keys each)
+- Guide messages: `src/messages/guide-en.json` + `src/messages/guide-es.json` (~170 keys each)
+- Merged at load time in `src/i18n/request.ts` via spread: `{ ...main, ...guide }`
+- Guide content accessed via `useTranslations('guide')` namespace
 
 ## Environment Variables
 ```

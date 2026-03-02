@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { prisma } from "./prisma";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 const COOKIE_NAME = "rms-session";
@@ -38,7 +39,15 @@ export async function getSession(): Promise<SessionPayload | null> {
 
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as unknown as SessionPayload;
+    const session = payload as unknown as SessionPayload;
+
+    // Validate session exists in DB (handles logout invalidation + deleted users)
+    const dbSession = await prisma.session.findFirst({
+      where: { token: session.jti, userId: session.userId },
+    });
+    if (!dbSession) return null;
+
+    return session;
   } catch {
     return null;
   }

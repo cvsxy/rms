@@ -4,10 +4,49 @@ import { pusher } from "@/lib/pusher-server";
 import { sendPushToUser } from "@/lib/webpush";
 import { getSession } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { requireAuth } from "@/lib/api-auth";
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { status, voidReason, voidNote } = await request.json();
+
+  // Voiding requires authentication (kitchen/bar displays can still mark READY/PREPARING/SERVED)
+  if (status === "CANCELLED") {
+    const auth = await requireAuth();
+    if (auth.error) return auth.error;
+  }
+
+  // Validate status value
+  const VALID_STATUSES = ["PENDING", "SENT", "PREPARING", "READY", "SERVED", "CANCELLED"];
+  if (!VALID_STATUSES.includes(status)) {
+    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+
+  // Enforce status state machine — prevent invalid transitions
+  const currentItem = await prisma.orderItem.findUnique({
+    where: { id },
+    select: { status: true },
+  });
+  if (!currentItem) {
+    return NextResponse.json({ error: "Order item not found" }, { status: 404 });
+  }
+
+  const VALID_TRANSITIONS: Record<string, string[]> = {
+    PENDING: ["SENT", "CANCELLED"],
+    SENT: ["PREPARING", "CANCELLED"],
+    PREPARING: ["READY", "CANCELLED"],
+    READY: ["SERVED", "CANCELLED"],
+    SERVED: [],
+    CANCELLED: [],
+  };
+
+  const allowed = VALID_TRANSITIONS[currentItem.status] || [];
+  if (!allowed.includes(status)) {
+    return NextResponse.json(
+      { error: `Cannot transition from ${currentItem.status} to ${status}` },
+      { status: 400 }
+    );
+  }
 
   const updateData: Record<string, unknown> = { status };
   if (status === "READY") updateData.readyAt = new Date();

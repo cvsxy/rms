@@ -2,9 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { requireAuth } from "@/lib/api-auth";
+import { z } from "zod";
+
+const paymentSchema = z.object({
+  orderId: z.string().min(1),
+  method: z.enum(["CASH", "CARD"]),
+  tip: z.number().min(0).default(0),
+});
 
 export async function POST(request: NextRequest) {
-  const { orderId, method, tip = 0 } = await request.json();
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+
+  const body = await request.json();
+  const parsed = paymentSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+  }
+  const { orderId, method, tip } = parsed.data;
 
   const order = await prisma.order.findUnique({
     where: { id: orderId },
@@ -16,6 +32,17 @@ export async function POST(request: NextRequest) {
 
   if (!order) {
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
+  }
+
+  // Prevent duplicate payments
+  const existingPayment = await prisma.payment.findFirst({ where: { orderId } });
+  if (existingPayment) {
+    return NextResponse.json({ error: "Payment already processed for this order" }, { status: 409 });
+  }
+
+  // Prevent payment on closed/cancelled orders
+  if (order.status === "CLOSED" || order.status === "CANCELLED") {
+    return NextResponse.json({ error: "Order is already closed or cancelled" }, { status: 400 });
   }
 
   let subtotal = 0;
@@ -39,29 +66,34 @@ export async function POST(request: NextRequest) {
   const tax = discountedSubtotal * taxRate;
   const total = discountedSubtotal + tax;
 
-  const payment = await prisma.payment.create({
-    data: { orderId, method, subtotal, tax, total, tip, discount: totalDiscount },
-  });
-
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: "CLOSED" },
-  });
-
-  const otherActiveOrders = await prisma.order.count({
-    where: {
-      tableId: order.tableId,
-      id: { not: orderId },
-      status: { in: ["OPEN", "SUBMITTED", "COMPLETED"] },
-    },
-  });
-
-  if (otherActiveOrders === 0) {
-    await prisma.restaurantTable.update({
-      where: { id: order.tableId },
-      data: { status: "AVAILABLE" },
+  // Atomic transaction: create payment + close order + release table
+  const payment = await prisma.$transaction(async (tx) => {
+    const p = await tx.payment.create({
+      data: { orderId, method, subtotal, tax, total, tip, discount: totalDiscount },
     });
-  }
+
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: "CLOSED" },
+    });
+
+    const otherActiveOrders = await tx.order.count({
+      where: {
+        tableId: order.tableId,
+        id: { not: orderId },
+        status: { in: ["OPEN", "SUBMITTED", "COMPLETED"] },
+      },
+    });
+
+    if (otherActiveOrders === 0) {
+      await tx.restaurantTable.update({
+        where: { id: order.tableId },
+        data: { status: "AVAILABLE" },
+      });
+    }
+
+    return p;
+  });
 
   // Audit log
   const session = await getSession();

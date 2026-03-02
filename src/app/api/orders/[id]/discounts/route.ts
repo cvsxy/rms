@@ -31,9 +31,37 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json({ error: "Missing type or value" }, { status: 400 });
   }
 
-  const order = await prisma.order.findUnique({ where: { id: orderId } });
+  // Validate discount type
+  if (type !== "PERCENTAGE" && type !== "FIXED") {
+    return NextResponse.json({ error: "Type must be PERCENTAGE or FIXED" }, { status: 400 });
+  }
+
+  // Validate discount value
+  const numValue = Number(value);
+  if (isNaN(numValue) || numValue <= 0) {
+    return NextResponse.json({ error: "Discount value must be a positive number" }, { status: 400 });
+  }
+  if (type === "PERCENTAGE" && numValue > 100) {
+    return NextResponse.json({ error: "Percentage discount cannot exceed 100%" }, { status: 400 });
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: { where: { status: { not: "CANCELLED" } } } },
+  });
   if (!order || order.status === "CLOSED" || order.status === "CANCELLED") {
     return NextResponse.json({ error: "Order not available for discounts" }, { status: 400 });
+  }
+
+  // For fixed discounts, validate against order subtotal
+  if (type === "FIXED") {
+    let subtotal = 0;
+    for (const item of order.items) {
+      subtotal += Number(item.unitPrice) * item.quantity;
+    }
+    if (numValue > subtotal) {
+      return NextResponse.json({ error: "Fixed discount cannot exceed order subtotal" }, { status: 400 });
+    }
   }
 
   const orderDiscount = await prisma.orderDiscount.create({

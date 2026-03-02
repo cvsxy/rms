@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { pusher } from "@/lib/pusher-server";
+import { requireAuth } from "@/lib/api-auth";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+
   const { id: orderId } = await params;
   const { items } = await request.json();
 
@@ -78,6 +82,15 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           })
         )
       );
+
+      // Clamp any negative stock values to 0
+      await prisma.ingredient.updateMany({
+        where: {
+          id: { in: Object.keys(deductions) },
+          currentStock: { lt: 0 },
+        },
+        data: { currentStock: 0 },
+      });
 
       // Auto-86: check for depleted ingredients and mark linked items unavailable
       const depletedIngredients = await prisma.ingredient.findMany({
