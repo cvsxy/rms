@@ -66,6 +66,8 @@ export default function ServerGuideSections() {
         <H3>{t("tables.layoutTitle")}</H3>
         <P>{t("tables.layoutBody")}</P>
         <GuideCallout type="note">{t("tables.refreshNote")}</GuideCallout>
+        <H3>{t("tables.reservationsTitle")}</H3>
+        <P>{t("tables.reservationsBody")}</P>
       </GuideSection>
 
       {/* 3. Taking Orders */}
@@ -92,6 +94,8 @@ export default function ServerGuideSections() {
         <GuideCallout type="tip">{t("takingOrders.sendingTip")}</GuideCallout>
         <H3>{t("takingOrders.eightySixTitle")}</H3>
         <P>{t("takingOrders.eightySixBody")}</P>
+        <H3>{t("takingOrders.coursesTitle")}</H3>
+        <P>{t("takingOrders.coursesBody")}</P>
       </GuideSection>
 
       {/* 4. Managing Orders */}
@@ -125,6 +129,11 @@ export default function ServerGuideSections() {
         <GuideCallout type="important">{t("managingOrders.voidingTip")}</GuideCallout>
         <H3>{t("managingOrders.cancelTitle")}</H3>
         <P>{t("managingOrders.cancelBody")}</P>
+        <H3>{t("managingOrders.courseFireTitle")}</H3>
+        <P>{t("managingOrders.courseFireBody")}</P>
+        <GuideCallout type="tip">{t("managingOrders.courseFireTip")}</GuideCallout>
+        <H3>{t("managingOrders.customerInfoTitle")}</H3>
+        <P>{t("managingOrders.customerInfoBody")}</P>
       </GuideSection>
 
       {/* 5. Bills & Payment */}
@@ -141,6 +150,12 @@ export default function ServerGuideSections() {
         <H3>{t("billsPayment.paymentTitle")}</H3>
         <P>{t("billsPayment.paymentBody")}</P>
         <GuideCallout type="important">{t("billsPayment.paymentTip")}</GuideCallout>
+        <H3>{t("billsPayment.linkCustomerTitle")}</H3>
+        <P>{t("billsPayment.linkCustomerBody")}</P>
+        <H3>{t("billsPayment.loyaltyTitle")}</H3>
+        <P>{t("billsPayment.loyaltyBody")}</P>
+        <H3>{t("billsPayment.giftCardTitle")}</H3>
+        <P>{t("billsPayment.giftCardBody")}</P>
       </GuideSection>
 
       {/* 6. Notifications */}

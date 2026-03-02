@@ -32,7 +32,9 @@
       "viewingBody": "Tap any red (occupied) table to jump into its current order. You can see all the items, add more, process the bill, or void items as needed.",
       "layoutTitle": "Custom Layout Mode",
       "layoutBody": "Your manager might set up a custom table arrangement that matches your actual restaurant floor plan. If so, you'll see tables positioned where they really are instead of in a basic grid. Either way, everything works the same — just tap a table to get started.",
-      "refreshNote": "The table list updates automatically every 15 seconds, so you'll always see the latest status without needing to manually refresh."
+      "refreshNote": "The table list updates automatically every 15 seconds, so you'll always see the latest status without needing to manually refresh.",
+      "reservationsTitle": "Today's Reservations",
+      "reservationsBody": "You'll see a \"Reservations\" tab on the Tables screen showing today's upcoming reservations. Each card shows the guest name, party size, time, and status. When a reserved party arrives, tap their reservation card and hit \"Seat\" — this automatically creates a new order for the table, marks the reservation as Seated, and you're ready to start taking their order. No extra steps needed."
     },
 
     "takingOrders": {
@@ -58,7 +60,9 @@
       "sendingBody": "When you're ready, tap the big green \"Send to Kitchen/Bar\" button. This sends all the items in your cart to the right place — food items go to the kitchen display and drink items go to the bar display. The kitchen and bar see the orders instantly on their screens.",
       "sendingTip": "You can send items in batches! Send appetizers first, then come back later to add entrees. Each batch gets sent as you go.",
       "eightySixTitle": "What Does \"86'd\" Mean?",
-      "eightySixBody": "If you see a greyed-out item with a red \"86'd\" badge, it means that item is currently unavailable — usually because the kitchen ran out of a key ingredient. You can't add it to orders. When the ingredient is restocked, the item will automatically become available again."
+      "eightySixBody": "If you see a greyed-out item with a red \"86'd\" badge, it means that item is currently unavailable — usually because the kitchen ran out of a key ingredient. You can't add it to orders. When the ingredient is restocked, the item will automatically become available again.",
+      "coursesTitle": "Course Selection",
+      "coursesBody": "For multi-course meals, you can assign items to specific courses. When adding an item, you'll see course buttons (Course 1, Course 2, Course 3, etc.) that let you group items together. Course 1 items get sent to the kitchen immediately when you submit the order. Items on Course 2 and higher stay in a \"Held\" state — they won't go to the kitchen until your table is ready for that course. This gives you full control over the pacing of the meal."
     },
 
     "managingOrders": {
@@ -77,7 +81,12 @@
       "voidingBody": "Need to remove an item from the order? Tap the red \"Void\" button on that item. You'll need to select a reason from the dropdown (Server Mistake, Kitchen Mistake, Out of Stock, Customer Request, or Other) and you can add an optional note with more details. This gets logged for your manager to review later, so always pick the right reason.",
       "voidingTip": "You can only void items that haven't been served yet. Once an item is marked as Served, it can't be voided.",
       "cancelTitle": "Cancelling an Entire Order",
-      "cancelBody": "If you need to cancel the whole order (maybe the guests left), tap the red \"Cancel Order\" button at the bottom. You'll get a confirmation popup since this can't be undone. Cancelling an order automatically cancels all the items in it and frees up the table."
+      "cancelBody": "If you need to cancel the whole order (maybe the guests left), tap the red \"Cancel Order\" button at the bottom. You'll get a confirmation popup since this can't be undone. Cancelling an order automatically cancels all the items in it and frees up the table.",
+      "courseFireTitle": "Firing Courses",
+      "courseFireBody": "When your table is ready for the next course, tap the \"Fire Next Course\" button on the order screen. This sends all the held items for that course to the kitchen at once. You'll see small course badges (C1, C2, C3) on each item showing which course it belongs to. Once a course is fired, those items move from Held to Sent status and appear on the kitchen display.",
+      "courseFireTip": "Fire courses when the previous course plates have been cleared. The kitchen gets all items for that course at the same time, so everything comes out together.",
+      "customerInfoTitle": "Customer Information",
+      "customerInfoBody": "If a customer has been linked to the order (from the bill page or from a reservation), you'll see their name displayed at the top of the order view. This is helpful for personalizing service — you can greet returning guests by name."
     },
 
     "billsPayment": {
@@ -93,7 +102,13 @@
       "discountsBody": "Tap the purple \"Apply Discount\" button to see available discounts. You'll see two options: preset discounts your manager created (like \"Happy Hour 10%\" or \"Employee Discount\") and a \"Custom Comp\" tab where you can enter a custom percentage or fixed amount with a reason. Applied discounts show up as removable chips on the bill — tap the red \"Remove\" button if you need to take one off.",
       "paymentTitle": "Processing Payment",
       "paymentBody": "When everything looks good, tap either the green \"Cash\" button or the blue \"Card\" button at the bottom. You'll see a confirmation popup showing the total, payment method, discount, and tip. Hit \"Confirm\" to close out the order. The table automatically becomes available again for new guests.",
-      "paymentTip": "Double-check the tip amount with your guest before confirming — once the payment is processed, it can't be changed."
+      "paymentTip": "Double-check the tip amount with your guest before confirming — once the payment is processed, it can't be changed.",
+      "linkCustomerTitle": "Linking a Customer",
+      "linkCustomerBody": "Tap the \"Link Customer\" button on the bill page to connect a customer profile to this order. A phone lookup modal appears — type in the guest's phone number and the system searches for a match. If they're a returning customer, their profile pops up with their name, visit count, and loyalty points. If they're new, you can create a profile right there. Linking customers helps build your restaurant's CRM and enables loyalty points.",
+      "loyaltyTitle": "Loyalty Points",
+      "loyaltyBody": "Once a customer is linked to the order, you'll see their loyalty points balance in a dedicated section on the bill. If they have enough points, a \"Redeem Reward\" button appears showing available rewards (like \"Free Dessert — 500 pts\" or \"10% Off — 1000 pts\"). Tap to apply the reward as a discount on the order. Points are automatically earned after payment based on the total spent.",
+      "giftCardTitle": "Gift Card Payment",
+      "giftCardBody": "Tap the \"Gift Card\" button on the bill page to apply a gift card balance. Enter the card code in the modal and the system shows the current balance. You can apply the full balance or a partial amount to the order. If the gift card covers the entire bill, you're done. If there's a remaining balance, the guest can pay the difference with cash or card."
     },
 
     "notifications": {
@@ -270,6 +285,85 @@
         "readingBody": "Click any row to expand the full details. For example, a voided item will show you the item name, why it was voided, any note the server added, and which table it was on. A payment entry shows the exact breakdown of subtotal, discount, tax, tip, and total.",
         "usageTitle": "Using the Audit Log",
         "usageBody": "Check it regularly to spot trends. Are lots of items being voided for \"kitchen mistake\"? That might signal a training issue. Are certain servers applying lots of discounts? That might need a conversation. The audit log helps you manage by data, not guesswork."
+      },
+
+      "reservations": {
+        "title": "Reservations",
+        "intro": "The reservations page is your command center for managing all bookings. You can view reservations on a calendar, create new ones, manage the waitlist, and track every reservation from initial booking through completion.",
+        "calendarTitle": "Calendar View",
+        "calendarBody": "Reservations are displayed on a date-based view. Use the date picker to navigate between days. Each reservation card shows the guest name, party size, time, assigned table (if any), status badge, and source (Phone, Walk-in, WhatsApp, Website, or Manual). Filter by status using the tabs at the top to focus on what needs attention.",
+        "creatingTitle": "Creating a Reservation",
+        "creatingBody": "Tap \"New Reservation\" to open the booking form. Fill in the guest's name and phone number (required), plus optional email and notes. Select the date, time, party size, and optionally assign a specific table. The phone number is the key identifier — if it matches an existing customer in your CRM, the reservation is automatically linked to their profile.",
+        "statusesTitle": "Reservation Statuses",
+        "statusesBody": "Every reservation moves through a lifecycle: Pending (just created, not yet confirmed), Confirmed (guest has been notified and confirmed), Seated (guest arrived and was seated — an order is created automatically), Completed (meal is done), Cancelled (guest cancelled), and No-Show (guest never arrived). Update statuses by tapping the action buttons on each reservation card.",
+        "confirmingTitle": "Confirming & WhatsApp",
+        "confirmingBody": "When you tap \"Confirm\" on a pending reservation, the system marks it as Confirmed and can send a WhatsApp confirmation message to the guest with the restaurant name, date, time, and party size. Reminder messages can also be sent before the reservation time. This requires WhatsApp Business API setup in your environment settings.",
+        "seatingTitle": "Seating Guests",
+        "seatingBody": "When the guest arrives, tap \"Seat\" on their reservation. This does three things at once: marks the reservation as Seated, creates a new order for the assigned table (or you can pick a table at this point), and the table turns red (occupied) on the server's Tables screen. The server can immediately start taking the order.",
+        "waitlistTitle": "Waitlist",
+        "waitlistBody": "Below the reservations, you'll find the waitlist section for walk-in guests when tables aren't immediately available. Add a guest with their name, phone, party size, and estimated wait time. When a table opens up, tap \"Notify\" to send them a message, then \"Seat\" when they arrive. The waitlist is visible to servers on the Tables screen too.",
+        "sourcesTitle": "Reservation Sources",
+        "sourcesBody": "Each reservation tracks where it came from: Phone (called in), Walk-in (added at the host stand), WhatsApp (received via messaging), Website (booked through the online widget), or Manual (entered by staff). This helps you understand which booking channels your guests prefer. Website reservations come in automatically from the reservation widget if you've set it up."
+      },
+
+      "customers": {
+        "title": "Customers & CRM",
+        "intro": "Build lasting relationships with your guests. The customer directory tracks everyone who visits your restaurant — their contact info, preferences, order history, spending patterns, and loyalty status. It's especially valuable in a tourist area where returning visitors appreciate being remembered.",
+        "directoryTitle": "Customer Directory",
+        "directoryBody": "The main page shows a searchable, sortable table of all your customers. Search by name or phone number using the search bar at the top. Filter by tags (VIP, Regular, Tourist) to narrow down the list. Each row shows the customer's name, phone, total visits, total spent, and last visit date.",
+        "profilesTitle": "Customer Profiles",
+        "profilesBody": "Click any customer to open their detail panel. You'll see their full contact info (name, phone, email), any notes you've added (like \"Prefers corner table\" or \"Anniversary in March\"), dietary notes for allergies and restrictions, and their tags. All of this information helps your team deliver personalized service.",
+        "historyTitle": "Order History & Stats",
+        "historyBody": "Each customer profile shows their lifetime stats: total visits, total amount spent, and when they last came in. Below that, you can see their complete order history — every visit with the date, table, items ordered, and payment details. This is gold for understanding your best customers and their preferences.",
+        "tagsTitle": "Customer Tags",
+        "tagsBody": "Use tags to categorize your customers: VIP for your most valued guests, Regular for frequent visitors, Tourist for seasonal guests, or create your own. Tags help you quickly identify who's who and provide the right level of service. You can filter the directory by tag to see all your VIPs at a glance, for example.",
+        "lookupTitle": "Phone Lookup",
+        "lookupBody": "Throughout the app, whenever you need to find or link a customer, the system uses phone number as the primary search key. Type a phone number and matching customers appear instantly. If no match is found, you can create a new customer profile on the spot. This is used by servers on the bill page, in the reservation form, and anywhere a customer needs to be identified."
+      },
+
+      "loyalty": {
+        "title": "Loyalty Program",
+        "intro": "Reward your returning customers with a points-based loyalty program. Guests earn points on every purchase and can redeem them for rewards like discounts, free items, or special offers. It's a powerful way to encourage repeat visits.",
+        "programTitle": "Program Settings",
+        "programBody": "At the top of the Loyalty page, you'll see your program configuration. Set the earn rate (points per peso spent — for example, 1 point per peso means a $500 bill earns 500 points). You can also configure tier levels: Bronze (default), Silver, and Gold, each with their own benefits. Toggle the program on or off anytime.",
+        "rewardsTitle": "Creating Rewards",
+        "rewardsBody": "In the Rewards section, create the items customers can redeem their points for. Each reward has a bilingual name (EN + ES), a points cost (how many points to redeem), and a value — either a percentage discount (like 10% off) or a fixed amount (like $100 off). Active rewards appear for servers to apply at the bill page when a loyalty member has enough points.",
+        "membersTitle": "Member Management",
+        "membersBody": "The Members section lists everyone enrolled in the loyalty program. You can see each member's points balance, total points earned, total points redeemed, tier level, and join date. Click a member to view their full transaction history — every time they earned or redeemed points.",
+        "earningTitle": "How Points Are Earned",
+        "earningBody": "Points are earned automatically. When a server processes a payment for an order that has a linked customer, the system calculates points based on your earn rate and adds them to the customer's loyalty balance. The customer's stats (total visits, total spent, last visit) are also updated at the same time. No manual work needed.",
+        "redeemingTitle": "How Redemption Works",
+        "redeemingBody": "On the bill page, when a loyalty member is linked to an order, the server sees the customer's points balance and available rewards. Tapping a reward applies it as a discount to the order and deducts the points. The transaction is recorded in the member's history and logged in the audit trail.",
+        "dashboardTitle": "Dashboard Cards",
+        "dashboardBody": "At the top of the Loyalty page, stat cards give you a quick overview: total enrolled members, total points issued across all members, and total rewards redeemed. These help you gauge how engaged your customers are with the program."
+      },
+
+      "giftcards": {
+        "title": "Gift Cards",
+        "intro": "Sell digital gift cards that customers can use to pay for meals. Each card has a unique code, a balance, and optional recipient details. Gift cards are a great revenue generator — they bring in money upfront and encourage new visits.",
+        "creatingTitle": "Creating Gift Cards",
+        "creatingBody": "Tap \"Create Gift Card\" to issue a new card. Set the amount (this becomes both the original amount and starting balance), optionally enter the purchaser's name, recipient's name, and recipient's phone number. You can also set an expiration date. The system generates a unique code automatically — this is what the recipient uses to redeem the card.",
+        "balanceTitle": "Balance Tracking",
+        "balanceBody": "The gift card list shows every card with its code, original amount, current balance, recipient info, and status. Active cards with remaining balance are highlighted. You can deactivate a card at any time if needed (lost, stolen, or expired). The balance updates in real time as it's used.",
+        "redeemingTitle": "How Redemption Works",
+        "redeemingBody": "When a guest wants to pay with a gift card, the server taps \"Gift Card\" on the bill page and enters the card code. The system shows the current balance and lets the server apply it to the order — either the full balance or a specific partial amount. If the card doesn't cover the entire bill, the guest pays the remaining balance with cash or card. The gift card's balance is updated immediately.",
+        "usageTitle": "Usage History",
+        "usageBody": "Click any gift card to see its complete usage history — every transaction showing the date, amount used, and which order it was applied to. This gives you full transparency into how each card is being spent.",
+        "dashboardTitle": "Dashboard Cards",
+        "dashboardBody": "Stat cards at the top show: total gift cards issued, total outstanding balance across all active cards, and total revenue from gift card sales. The outstanding balance is important — it represents a liability on your books since it's money received for future meals."
+      },
+
+      "widget": {
+        "title": "Reservation Widget",
+        "intro": "Let customers book reservations directly from your website. The reservation widget is an embeddable form that integrates seamlessly with your existing reservation system — bookings made through the widget appear instantly in your Reservations page.",
+        "embedTitle": "Embedding on Your Website",
+        "embedBody": "Go to the Widget page in the admin sidebar. You'll see a ready-to-use iframe code snippet. Copy it and paste it into your website's HTML wherever you want the booking form to appear. The widget works on any website — WordPress, Squarespace, Wix, or a custom site. It adapts to any width and looks great on both desktop and mobile.",
+        "settingsTitle": "Widget Settings",
+        "settingsBody": "Three settings control how the widget behaves. \"Widget Enabled\" is a kill switch — turn it off to temporarily disable online bookings (useful during holidays or renovations). \"Max Party Size\" controls the largest group that can book online (default is 12 — larger parties might need a phone call). \"Advance Booking Days\" sets how far ahead guests can book (default is 30 days).",
+        "flowTitle": "How It Works for Customers",
+        "flowBody": "The widget guides guests through three simple steps. First, they pick a date and party size, then tap \"Check Availability.\" Second, they see a grid of available time slots and pick one. Third, they enter their name, phone number, and any special requests, then confirm. The reservation shows up instantly on your Reservations page with a \"Website\" source tag and Pending status. You can then confirm it and optionally send a WhatsApp confirmation.",
+        "spamTitle": "Spam Protection",
+        "spamBody": "The widget has built-in protection against fake bookings. It uses rate limiting (a maximum of 10 submissions per IP address every 5 minutes) and a hidden honeypot field that catches automated bots. Legitimate customers won't notice any of this — it works silently in the background."
       },
 
       "displays": {

@@ -32,7 +32,9 @@
       "viewingBody": "Toca cualquier mesa roja (ocupada) para entrar a su orden actual. Puedes ver todos los artículos, agregar más, procesar la cuenta, o anular artículos según sea necesario.",
       "layoutTitle": "Modo de Diseño Personalizado",
       "layoutBody": "Tu gerente puede configurar un arreglo de mesas personalizado que coincida con el plano real de tu restaurante. Si es así, verás las mesas posicionadas donde realmente están en lugar de una cuadrícula básica. De cualquier forma, todo funciona igual — solo toca una mesa para empezar.",
-      "refreshNote": "La lista de mesas se actualiza automáticamente cada 15 segundos, así que siempre verás el estado más reciente sin necesidad de actualizar manualmente."
+      "refreshNote": "La lista de mesas se actualiza automáticamente cada 15 segundos, así que siempre verás el estado más reciente sin necesidad de actualizar manualmente.",
+      "reservationsTitle": "Reservaciones de Hoy",
+      "reservationsBody": "Verás una pestaña de \"Reservaciones\" en la pantalla de Mesas que muestra las reservaciones del día. Cada tarjeta muestra el nombre del invitado, número de personas, hora y estado. Cuando llega un grupo con reservación, toca su tarjeta y presiona \"Sentar\" — esto crea automáticamente una nueva orden para la mesa, marca la reservación como Sentado, y ya puedes empezar a tomar su orden. Sin pasos extra."
     },
 
     "takingOrders": {
@@ -58,7 +60,9 @@
       "sendingBody": "Cuando estés listo, toca el botón verde grande \"Enviar a Cocina/Bar.\" Esto envía todos los artículos de tu carrito al lugar correcto — los platillos van a la pantalla de cocina y las bebidas van a la pantalla del bar. La cocina y el bar ven las órdenes al instante en sus pantallas.",
       "sendingTip": "¡Puedes enviar artículos por tandas! Envía las entradas primero, luego regresa después a agregar los platos fuertes. Cada tanda se envía conforme avanzas.",
       "eightySixTitle": "¿Qué Significa \"86'd\"?",
-      "eightySixBody": "Si ves un artículo en gris con una etiqueta roja \"86'd,\" significa que ese artículo no está disponible actualmente — generalmente porque la cocina se quedó sin un ingrediente clave. No puedes agregarlo a las órdenes. Cuando se reabastezca el ingrediente, el artículo volverá a estar disponible automáticamente."
+      "eightySixBody": "Si ves un artículo en gris con una etiqueta roja \"86'd,\" significa que ese artículo no está disponible actualmente — generalmente porque la cocina se quedó sin un ingrediente clave. No puedes agregarlo a las órdenes. Cuando se reabastezca el ingrediente, el artículo volverá a estar disponible automáticamente.",
+      "coursesTitle": "Selección de Tiempos",
+      "coursesBody": "Para comidas de varios tiempos, puedes asignar platillos a tiempos específicos. Al agregar un platillo, verás botones de tiempo (Tiempo 1, Tiempo 2, Tiempo 3, etc.) que te permiten agrupar los platillos. Los platillos del Tiempo 1 se envían a la cocina inmediatamente al enviar la orden. Los platillos del Tiempo 2 en adelante quedan en estado \"Retenido\" — no se envían a la cocina hasta que la mesa esté lista para ese tiempo. Esto te da control total sobre el ritmo de la comida."
     },
 
     "managingOrders": {
@@ -77,7 +81,12 @@
       "voidingBody": "¿Necesitas quitar un artículo de la orden? Toca el botón rojo \"Anular\" en ese artículo. Necesitarás seleccionar un motivo del menú desplegable (Error del Mesero, Error de Cocina, Agotado, Solicitud del Cliente, u Otro) y puedes agregar una nota opcional con más detalles. Esto queda registrado para que tu gerente lo revise después, así que siempre elige el motivo correcto.",
       "voidingTip": "Solo puedes anular artículos que no hayan sido servidos todavía. Una vez que un artículo se marca como Servido, no se puede anular.",
       "cancelTitle": "Cancelar una Orden Completa",
-      "cancelBody": "Si necesitas cancelar toda la orden (tal vez los clientes se fueron), toca el botón rojo \"Cancelar Orden\" en la parte inferior. Verás una ventana de confirmación ya que esto no se puede deshacer. Cancelar una orden automáticamente cancela todos los artículos en ella y libera la mesa."
+      "cancelBody": "Si necesitas cancelar toda la orden (tal vez los clientes se fueron), toca el botón rojo \"Cancelar Orden\" en la parte inferior. Verás una ventana de confirmación ya que esto no se puede deshacer. Cancelar una orden automáticamente cancela todos los artículos en ella y libera la mesa.",
+      "courseFireTitle": "Disparar Tiempos",
+      "courseFireBody": "Cuando la mesa está lista para el siguiente tiempo, toca el botón \"Disparar Siguiente Tiempo\" en la pantalla de orden. Esto envía todos los platillos retenidos de ese tiempo a la cocina de una vez. Verás pequeñas insignias de tiempo (T1, T2, T3) en cada platillo mostrando a qué tiempo pertenece. Una vez disparado un tiempo, esos platillos pasan de Retenido a Enviado y aparecen en la pantalla de cocina.",
+      "courseFireTip": "Dispara los tiempos cuando los platos del tiempo anterior hayan sido retirados. La cocina recibe todos los platillos de ese tiempo al mismo momento, así que todo sale junto.",
+      "customerInfoTitle": "Información del Cliente",
+      "customerInfoBody": "Si un cliente ha sido vinculado a la orden (desde la cuenta o desde una reservación), verás su nombre en la parte superior de la vista de orden. Esto es útil para personalizar el servicio — puedes saludar a los clientes que regresan por su nombre."
     },
 
     "billsPayment": {
@@ -93,7 +102,13 @@
       "discountsBody": "Toca el botón morado \"Aplicar Descuento\" para ver los descuentos disponibles. Verás dos opciones: descuentos preestablecidos que tu gerente creó (como \"Happy Hour 10%\" o \"Descuento de Empleado\") y una pestaña \"Comp Personalizado\" donde puedes ingresar un porcentaje o monto fijo personalizado con un motivo. Los descuentos aplicados aparecen como etiquetas removibles en la cuenta — toca el botón rojo \"Quitar\" si necesitas eliminar uno.",
       "paymentTitle": "Procesar el Pago",
       "paymentBody": "Cuando todo se vea bien, toca el botón verde \"Efectivo\" o el botón azul \"Tarjeta\" en la parte inferior. Verás una ventana de confirmación mostrando el total, método de pago, descuento y propina. Toca \"Confirmar\" para cerrar la orden. La mesa automáticamente queda disponible para nuevos clientes.",
-      "paymentTip": "Verifica el monto de la propina con tu cliente antes de confirmar — una vez que el pago se procesa, no se puede cambiar."
+      "paymentTip": "Verifica el monto de la propina con tu cliente antes de confirmar — una vez que el pago se procesa, no se puede cambiar.",
+      "linkCustomerTitle": "Vincular un Cliente",
+      "linkCustomerBody": "Toca el botón \"Vincular Cliente\" en la página de cuenta para conectar un perfil de cliente a esta orden. Aparece un modal de búsqueda por teléfono — escribe el número del invitado y el sistema busca una coincidencia. Si es un cliente que regresa, aparece su perfil con su nombre, número de visitas y puntos de lealtad. Si es nuevo, puedes crear un perfil ahí mismo. Vincular clientes ayuda a construir el CRM del restaurante y habilita los puntos de lealtad.",
+      "loyaltyTitle": "Puntos de Lealtad",
+      "loyaltyBody": "Una vez que un cliente está vinculado a la orden, verás su saldo de puntos de lealtad en una sección dedicada en la cuenta. Si tienen suficientes puntos, aparece un botón \"Canjear Recompensa\" mostrando las recompensas disponibles (como \"Postre Gratis — 500 pts\" o \"10% de Descuento — 1000 pts\"). Toca para aplicar la recompensa como descuento en la orden. Los puntos se ganan automáticamente después del pago basado en el total gastado.",
+      "giftCardTitle": "Pago con Tarjeta de Regalo",
+      "giftCardBody": "Toca el botón \"Tarjeta de Regalo\" en la página de cuenta para aplicar un saldo de tarjeta de regalo. Ingresa el código de la tarjeta en el modal y el sistema muestra el saldo actual. Puedes aplicar el saldo completo o un monto parcial a la orden. Si la tarjeta cubre toda la cuenta, listo. Si hay un saldo restante, el invitado puede pagar la diferencia con efectivo o tarjeta."
     },
 
     "notifications": {
@@ -285,6 +300,85 @@
         "markReadyBody": "El personal de cocina y bar toca \"Marcar Listo\" en cada artículo conforme se termina, o \"Marcar Todo Listo\" para completar toda la orden de una vez. Esto activa una notificación instantánea al mesero que hizo la orden, para que sepa que debe venir a recogerla.",
         "collapsibleTitle": "Órdenes Completadas",
         "collapsibleBody": "Una vez que todos los artículos de una orden son marcados como Listos, la tarjeta de la orden se colapsa para ahorrar espacio en pantalla. Toca el chevron para expandirla de nuevo si necesitas verificar algo. Esto mantiene la pantalla enfocada en las órdenes que aún necesitan atención."
+      },
+
+      "reservations": {
+        "title": "Reservaciones",
+        "intro": "La página de reservaciones es tu centro de control para manejar todas las reservas. Puedes ver reservaciones en un calendario, crear nuevas, manejar la lista de espera, y dar seguimiento a cada reservación desde la reserva inicial hasta que se completa.",
+        "calendarTitle": "Vista de Calendario",
+        "calendarBody": "Las reservaciones se muestran en una vista por fecha. Usa el selector de fecha para navegar entre días. Cada tarjeta de reservación muestra el nombre del invitado, número de personas, hora, mesa asignada (si hay), insignia de estado y origen (Teléfono, Sin reserva, WhatsApp, Sitio web o Manual). Filtra por estado usando las pestañas superiores para enfocarte en lo que necesita atención.",
+        "creatingTitle": "Crear una Reservación",
+        "creatingBody": "Toca \"Nueva Reservación\" para abrir el formulario de reserva. Ingresa el nombre y teléfono del invitado (obligatorios), más correo electrónico y notas opcionales. Selecciona la fecha, hora, número de personas, y opcionalmente asigna una mesa específica. El número de teléfono es el identificador clave — si coincide con un cliente existente en tu CRM, la reservación se vincula automáticamente a su perfil.",
+        "statusesTitle": "Estados de Reservación",
+        "statusesBody": "Cada reservación pasa por un ciclo de vida: Pendiente (recién creada, sin confirmar), Confirmada (el invitado fue notificado y confirmó), Sentado (el invitado llegó y fue sentado — se crea una orden automáticamente), Completada (la comida terminó), Cancelada (el invitado canceló) y No se presentó (el invitado nunca llegó). Actualiza los estados tocando los botones de acción en cada tarjeta de reservación.",
+        "confirmingTitle": "Confirmar y WhatsApp",
+        "confirmingBody": "Cuando tocas \"Confirmar\" en una reservación pendiente, el sistema la marca como Confirmada y puede enviar un mensaje de confirmación por WhatsApp al invitado con el nombre del restaurante, fecha, hora y número de personas. También se pueden enviar mensajes de recordatorio antes de la hora de la reservación. Esto requiere la configuración del API de WhatsApp Business en tus ajustes.",
+        "seatingTitle": "Sentar Invitados",
+        "seatingBody": "Cuando llega el invitado, toca \"Sentar\" en su reservación. Esto hace tres cosas a la vez: marca la reservación como Sentado, crea una nueva orden para la mesa asignada (o puedes elegir una mesa en ese momento), y la mesa se pone roja (ocupada) en la pantalla de Mesas del mesero. El mesero puede empezar a tomar la orden inmediatamente.",
+        "waitlistTitle": "Lista de Espera",
+        "waitlistBody": "Debajo de las reservaciones, encontrarás la sección de lista de espera para invitados sin reservación cuando no hay mesas disponibles. Agrega un invitado con su nombre, teléfono, número de personas y tiempo estimado de espera. Cuando se desocupe una mesa, toca \"Notificar\" para enviarles un mensaje, luego \"Sentar\" cuando lleguen. La lista de espera también es visible para los meseros en la pantalla de Mesas.",
+        "sourcesTitle": "Orígenes de Reservación",
+        "sourcesBody": "Cada reservación registra de dónde vino: Teléfono (llamó), Sin reserva (agregada en la entrada), WhatsApp (recibida por mensaje), Sitio web (reservada a través del widget en línea) o Manual (ingresada por el personal). Esto te ayuda a entender qué canales de reservación prefieren tus invitados. Las reservaciones de sitio web llegan automáticamente desde el widget de reservaciones si lo has configurado."
+      },
+
+      "customers": {
+        "title": "Clientes y CRM",
+        "intro": "Construye relaciones duraderas con tus invitados. El directorio de clientes registra a todos los que visitan tu restaurante — su información de contacto, preferencias, historial de órdenes, patrones de gasto y estado de lealtad. Es especialmente valioso en una zona turística donde los visitantes que regresan aprecian ser recordados.",
+        "directoryTitle": "Directorio de Clientes",
+        "directoryBody": "La página principal muestra una tabla con búsqueda y ordenamiento de todos tus clientes. Busca por nombre o número de teléfono usando la barra de búsqueda superior. Filtra por etiquetas (VIP, Regular, Turista) para acotar la lista. Cada fila muestra el nombre del cliente, teléfono, total de visitas, total gastado y fecha de última visita.",
+        "profilesTitle": "Perfiles de Clientes",
+        "profilesBody": "Haz clic en cualquier cliente para abrir su panel de detalle. Verás su información de contacto completa (nombre, teléfono, correo), cualquier nota que hayas agregado (como \"Prefiere mesa en esquina\" o \"Aniversario en marzo\"), notas dietéticas para alergias y restricciones, y sus etiquetas. Toda esta información ayuda a tu equipo a dar un servicio personalizado.",
+        "historyTitle": "Historial de Órdenes y Estadísticas",
+        "historyBody": "Cada perfil de cliente muestra sus estadísticas de por vida: total de visitas, monto total gastado, y cuándo fue su última visita. Debajo, puedes ver su historial completo de órdenes — cada visita con la fecha, mesa, platillos ordenados y detalles de pago. Esto es oro para entender a tus mejores clientes y sus preferencias.",
+        "tagsTitle": "Etiquetas de Clientes",
+        "tagsBody": "Usa etiquetas para categorizar a tus clientes: VIP para tus invitados más valiosos, Regular para visitantes frecuentes, Turista para invitados de temporada, o crea las tuyas. Las etiquetas te ayudan a identificar rápidamente quién es quién y dar el nivel correcto de servicio. Puedes filtrar el directorio por etiqueta para ver todos tus VIPs de un vistazo, por ejemplo.",
+        "lookupTitle": "Búsqueda por Teléfono",
+        "lookupBody": "En toda la aplicación, cuando necesitas encontrar o vincular un cliente, el sistema usa el número de teléfono como clave de búsqueda principal. Escribe un número de teléfono y los clientes que coinciden aparecen al instante. Si no hay coincidencia, puedes crear un nuevo perfil ahí mismo. Esto lo usan los meseros en la página de cuenta, en el formulario de reservación, y donde sea que se necesite identificar a un cliente."
+      },
+
+      "loyalty": {
+        "title": "Programa de Lealtad",
+        "intro": "Recompensa a tus clientes frecuentes con un programa de puntos. Los invitados ganan puntos en cada compra y pueden canjearlos por recompensas como descuentos, platillos gratis u ofertas especiales. Es una forma poderosa de incentivar las visitas repetidas.",
+        "programTitle": "Configuración del Programa",
+        "programBody": "En la parte superior de la página de Lealtad, verás la configuración de tu programa. Establece la tasa de ganancia (puntos por peso gastado — por ejemplo, 1 punto por peso significa que una cuenta de $500 gana 500 puntos). También puedes configurar los niveles de tier: Bronce (predeterminado), Plata y Oro, cada uno con sus propios beneficios. Activa o desactiva el programa cuando quieras.",
+        "rewardsTitle": "Crear Recompensas",
+        "rewardsBody": "En la sección de Recompensas, crea los premios que los clientes pueden canjear con sus puntos. Cada recompensa tiene un nombre bilingüe (EN + ES), un costo en puntos (cuántos puntos para canjear), y un valor — ya sea un porcentaje de descuento (como 10% de descuento) o un monto fijo (como $100 de descuento). Las recompensas activas aparecen para que los meseros las apliquen en la página de cuenta cuando un miembro de lealtad tiene suficientes puntos.",
+        "membersTitle": "Gestión de Miembros",
+        "membersBody": "La sección de Miembros lista a todos los inscritos en el programa de lealtad. Puedes ver el saldo de puntos de cada miembro, total de puntos ganados, total de puntos canjeados, nivel de tier y fecha de inscripción. Haz clic en un miembro para ver su historial completo de transacciones — cada vez que ganó o canjeó puntos.",
+        "earningTitle": "Cómo se Ganan los Puntos",
+        "earningBody": "Los puntos se ganan automáticamente. Cuando un mesero procesa un pago para una orden que tiene un cliente vinculado, el sistema calcula los puntos basado en tu tasa de ganancia y los agrega al saldo de lealtad del cliente. Las estadísticas del cliente (total de visitas, total gastado, última visita) también se actualizan al mismo tiempo. No se necesita trabajo manual.",
+        "redeemingTitle": "Cómo Funciona el Canjeo",
+        "redeemingBody": "En la página de cuenta, cuando un miembro de lealtad está vinculado a una orden, el mesero ve el saldo de puntos del cliente y las recompensas disponibles. Tocar una recompensa la aplica como descuento a la orden y deduce los puntos. La transacción se registra en el historial del miembro y se anota en el registro de auditoría.",
+        "dashboardTitle": "Tarjetas de Resumen",
+        "dashboardBody": "En la parte superior de la página de Lealtad, las tarjetas de estadísticas te dan un panorama rápido: total de miembros inscritos, total de puntos emitidos entre todos los miembros, y total de recompensas canjeadas. Estas te ayudan a evaluar qué tan comprometidos están tus clientes con el programa."
+      },
+
+      "giftcards": {
+        "title": "Tarjetas de Regalo",
+        "intro": "Vende tarjetas de regalo digitales que los clientes pueden usar para pagar comidas. Cada tarjeta tiene un código único, un saldo y detalles opcionales del destinatario. Las tarjetas de regalo son un gran generador de ingresos — traen dinero por adelantado y fomentan nuevas visitas.",
+        "creatingTitle": "Crear Tarjetas de Regalo",
+        "creatingBody": "Toca \"Crear Tarjeta de Regalo\" para emitir una nueva tarjeta. Establece el monto (esto se convierte tanto en el monto original como en el saldo inicial), opcionalmente ingresa el nombre del comprador, nombre del destinatario y teléfono del destinatario. También puedes establecer una fecha de vencimiento. El sistema genera un código único automáticamente — esto es lo que el destinatario usa para canjear la tarjeta.",
+        "balanceTitle": "Seguimiento de Saldo",
+        "balanceBody": "La lista de tarjetas de regalo muestra cada tarjeta con su código, monto original, saldo actual, información del destinatario y estado. Las tarjetas activas con saldo restante están resaltadas. Puedes desactivar una tarjeta en cualquier momento si es necesario (perdida, robada o vencida). El saldo se actualiza en tiempo real conforme se usa.",
+        "redeemingTitle": "Cómo Funciona el Canjeo",
+        "redeemingBody": "Cuando un invitado quiere pagar con tarjeta de regalo, el mesero toca \"Tarjeta de Regalo\" en la página de cuenta e ingresa el código de la tarjeta. El sistema muestra el saldo actual y permite aplicarlo a la orden — ya sea el saldo completo o un monto parcial específico. Si la tarjeta no cubre toda la cuenta, el invitado paga el resto con efectivo o tarjeta. El saldo de la tarjeta se actualiza inmediatamente.",
+        "usageTitle": "Historial de Uso",
+        "usageBody": "Haz clic en cualquier tarjeta de regalo para ver su historial completo de uso — cada transacción mostrando la fecha, monto usado y a qué orden se aplicó. Esto te da total transparencia sobre cómo se está gastando cada tarjeta.",
+        "dashboardTitle": "Tarjetas de Resumen",
+        "dashboardBody": "Las tarjetas de estadísticas en la parte superior muestran: total de tarjetas de regalo emitidas, saldo total pendiente entre todas las tarjetas activas, e ingresos totales por venta de tarjetas de regalo. El saldo pendiente es importante — representa un pasivo en tus libros ya que es dinero recibido para comidas futuras."
+      },
+
+      "widget": {
+        "title": "Widget de Reservaciones",
+        "intro": "Permite que los clientes reserven directamente desde tu sitio web. El widget de reservaciones es un formulario insertable que se integra perfectamente con tu sistema de reservaciones existente — las reservas hechas a través del widget aparecen instantáneamente en tu página de Reservaciones.",
+        "embedTitle": "Insertar en tu Sitio Web",
+        "embedBody": "Ve a la página de Widget en la barra lateral de admin. Verás un fragmento de código iframe listo para usar. Cópialo y pégalo en el HTML de tu sitio web donde quieras que aparezca el formulario de reservas. El widget funciona en cualquier sitio web — WordPress, Squarespace, Wix o un sitio personalizado. Se adapta a cualquier ancho y se ve genial tanto en escritorio como en móvil.",
+        "settingsTitle": "Configuración del Widget",
+        "settingsBody": "Tres configuraciones controlan cómo se comporta el widget. \"Widget Activo\" es un interruptor general — desactívalo para deshabilitar temporalmente las reservaciones en línea (útil durante vacaciones o remodelaciones). \"Máximo de Personas\" controla el grupo más grande que puede reservar en línea (predeterminado es 12 — grupos más grandes podrían necesitar una llamada). \"Días de Anticipación\" establece con cuánta anticipación pueden reservar los invitados (predeterminado es 30 días).",
+        "flowTitle": "Cómo Funciona para los Clientes",
+        "flowBody": "El widget guía a los invitados en tres pasos simples. Primero, eligen una fecha y número de personas, luego tocan \"Ver Disponibilidad.\" Segundo, ven una cuadrícula de horarios disponibles y eligen uno. Tercero, ingresan su nombre, número de teléfono y cualquier petición especial, luego confirman. La reservación aparece instantáneamente en tu página de Reservaciones con una etiqueta de origen \"Sitio web\" y estado Pendiente. Luego puedes confirmarla y opcionalmente enviar una confirmación por WhatsApp.",
+        "spamTitle": "Protección contra Spam",
+        "spamBody": "El widget tiene protección incorporada contra reservas falsas. Usa limitación de velocidad (un máximo de 10 envíos por dirección IP cada 5 minutos) y un campo trampa oculto que atrapa bots automatizados. Los clientes legítimos no notarán nada de esto — funciona silenciosamente en segundo plano."
       }
     }
   }

@@ -36,6 +36,11 @@ const ADMIN_SECTIONS = [
   { id: "admin-discounts", titleKey: "admin.discounts.title" },
   { id: "admin-audit", titleKey: "admin.audit.title" },
   { id: "admin-displays", titleKey: "admin.displays.title" },
+  { id: "admin-reservations", titleKey: "admin.reservations.title" },
+  { id: "admin-customers", titleKey: "admin.customers.title" },
+  { id: "admin-loyalty", titleKey: "admin.loyalty.title" },
+  { id: "admin-giftcards", titleKey: "admin.giftcards.title" },
+  { id: "admin-widget", titleKey: "admin.widget.title" },
 ];
 
 export default function AdminGuidePage() {
@@ -228,6 +233,85 @@ export default function AdminGuidePage() {
         <P>{t("admin.displays.markReadyBody")}</P>
         <H3>{t("admin.displays.collapsibleTitle")}</H3>
         <P>{t("admin.displays.collapsibleBody")}</P>
+      </GuideSection>
+
+      {/* 19. Reservations */}
+      <GuideSection id="admin-reservations" title={t("admin.reservations.title")}>
+        <P>{t("admin.reservations.intro")}</P>
+        <H3>{t("admin.reservations.calendarTitle")}</H3>
+        <P>{t("admin.reservations.calendarBody")}</P>
+        <H3>{t("admin.reservations.creatingTitle")}</H3>
+        <P>{t("admin.reservations.creatingBody")}</P>
+        <H3>{t("admin.reservations.statusesTitle")}</H3>
+        <P>{t("admin.reservations.statusesBody")}</P>
+        <H3>{t("admin.reservations.confirmingTitle")}</H3>
+        <P>{t("admin.reservations.confirmingBody")}</P>
+        <H3>{t("admin.reservations.seatingTitle")}</H3>
+        <P>{t("admin.reservations.seatingBody")}</P>
+        <H3>{t("admin.reservations.waitlistTitle")}</H3>
+        <P>{t("admin.reservations.waitlistBody")}</P>
+        <H3>{t("admin.reservations.sourcesTitle")}</H3>
+        <P>{t("admin.reservations.sourcesBody")}</P>
+      </GuideSection>
+
+      {/* 20. Customers & CRM */}
+      <GuideSection id="admin-customers" title={t("admin.customers.title")}>
+        <P>{t("admin.customers.intro")}</P>
+        <H3>{t("admin.customers.directoryTitle")}</H3>
+        <P>{t("admin.customers.directoryBody")}</P>
+        <H3>{t("admin.customers.profilesTitle")}</H3>
+        <P>{t("admin.customers.profilesBody")}</P>
+        <H3>{t("admin.customers.historyTitle")}</H3>
+        <P>{t("admin.customers.historyBody")}</P>
+        <H3>{t("admin.customers.tagsTitle")}</H3>
+        <P>{t("admin.customers.tagsBody")}</P>
+        <H3>{t("admin.customers.lookupTitle")}</H3>
+        <P>{t("admin.customers.lookupBody")}</P>
+      </GuideSection>
+
+      {/* 21. Loyalty Program */}
+      <GuideSection id="admin-loyalty" title={t("admin.loyalty.title")}>
+        <P>{t("admin.loyalty.intro")}</P>
+        <H3>{t("admin.loyalty.programTitle")}</H3>
+        <P>{t("admin.loyalty.programBody")}</P>
+        <H3>{t("admin.loyalty.rewardsTitle")}</H3>
+        <P>{t("admin.loyalty.rewardsBody")}</P>
+        <H3>{t("admin.loyalty.membersTitle")}</H3>
+        <P>{t("admin.loyalty.membersBody")}</P>
+        <H3>{t("admin.loyalty.earningTitle")}</H3>
+        <P>{t("admin.loyalty.earningBody")}</P>
+        <H3>{t("admin.loyalty.redeemingTitle")}</H3>
+        <P>{t("admin.loyalty.redeemingBody")}</P>
+        <H3>{t("admin.loyalty.dashboardTitle")}</H3>
+        <P>{t("admin.loyalty.dashboardBody")}</P>
+      </GuideSection>
+
+      {/* 22. Gift Cards */}
+      <GuideSection id="admin-giftcards" title={t("admin.giftcards.title")}>
+        <P>{t("admin.giftcards.intro")}</P>
+        <H3>{t("admin.giftcards.creatingTitle")}</H3>
+        <P>{t("admin.giftcards.creatingBody")}</P>
+        <H3>{t("admin.giftcards.balanceTitle")}</H3>
+        <P>{t("admin.giftcards.balanceBody")}</P>
+        <H3>{t("admin.giftcards.redeemingTitle")}</H3>
+        <P>{t("admin.giftcards.redeemingBody")}</P>
+        <H3>{t("admin.giftcards.usageTitle")}</H3>
+        <P>{t("admin.giftcards.usageBody")}</P>
+        <H3>{t("admin.giftcards.dashboardTitle")}</H3>
+        <P>{t("admin.giftcards.dashboardBody")}</P>
+      </GuideSection>
+
+      {/* 23. Reservation Widget */}
+      <GuideSection id="admin-widget" title={t("admin.widget.title")}>
+        <P>{t("admin.widget.intro")}</P>
+        <H3>{t("admin.widget.embedTitle")}</H3>
+        <P>{t("admin.widget.embedBody")}</P>
+        <H3>{t("admin.widget.settingsTitle")}</H3>
+        <P>{t("admin.widget.settingsBody")}</P>
+        <H3>{t("admin.widget.flowTitle")}</H3>
+        <P>{t("admin.widget.flowBody")}</P>
+        <H3>{t("admin.widget.spamTitle")}</H3>
+        <P>{t("admin.widget.spamBody")}</P>
       </GuideSection>
     </GuideLayout>
   );
