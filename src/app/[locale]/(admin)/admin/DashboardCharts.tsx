@@ -43,7 +43,7 @@ export default function DashboardCharts({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* 7-Day Revenue - Area Chart */}
       <div className="admin-card p-5">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-gray-600 mb-4">
           {t("reports.revenueOverTime")}
         </h3>
         {hasRevenue ? (
@@ -58,12 +58,12 @@ export default function DashboardCharts({
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                tick={{ fontSize: 11, fill: "#6b7280" }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                tick={{ fontSize: 11, fill: "#6b7280" }}
                 tickFormatter={(v) => `$${v}`}
                 axisLine={false}
                 tickLine={false}
@@ -82,7 +82,7 @@ export default function DashboardCharts({
             </AreaChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-[200px] flex items-center justify-center text-gray-400 text-sm">
+          <div className="h-[200px] flex items-center justify-center text-gray-500 text-sm">
             {t("reports.noDataForPeriod")}
           </div>
         )}
@@ -90,7 +90,7 @@ export default function DashboardCharts({
 
       {/* Orders by Hour - Bar Chart */}
       <div className="admin-card p-5">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-gray-600 mb-4">
           {t("reports.ordersByHour")}
         </h3>
         {hasOrders ? (
@@ -99,13 +99,13 @@ export default function DashboardCharts({
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 dataKey="hour"
-                tick={{ fontSize: 10, fill: "#9ca3af" }}
+                tick={{ fontSize: 10, fill: "#6b7280" }}
                 interval={1}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                tick={{ fontSize: 11, fill: "#6b7280" }}
                 allowDecimals={false}
                 axisLine={false}
                 tickLine={false}
@@ -122,7 +122,7 @@ export default function DashboardCharts({
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-[200px] flex items-center justify-center text-gray-400 text-sm">
+          <div className="h-[200px] flex items-center justify-center text-gray-500 text-sm">
             {t("reports.noDataForPeriod")}
           </div>
         )}
@@ -131,7 +131,7 @@ export default function DashboardCharts({
       {/* Top 5 Items - Horizontal Bar Chart */}
       {hasItems && (
         <div className="admin-card p-5 lg:col-span-2">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-4">
+          <h3 className="text-xs font-medium uppercase tracking-wider text-gray-600 mb-4">
             {t("reports.topItems")}
           </h3>
           <ResponsiveContainer width="100%" height={180}>
@@ -139,7 +139,7 @@ export default function DashboardCharts({
               <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
               <XAxis
                 type="number"
-                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                tick={{ fontSize: 11, fill: "#6b7280" }}
                 allowDecimals={false}
                 axisLine={false}
                 tickLine={false}

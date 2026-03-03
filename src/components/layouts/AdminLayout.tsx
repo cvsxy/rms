@@ -194,7 +194,7 @@ export default function AdminLayoutClient({
         <div className="md:hidden flex justify-end p-2">
           <button
             onClick={() => setSidebarOpen(false)}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-600 hover:bg-gray-100"
             aria-label="Close menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +206,7 @@ export default function AdminLayoutClient({
         {/* Sidebar header */}
         <div className="px-5 py-4 border-b border-gray-100">
           <h1 className="text-lg font-semibold text-indigo-600">RMS</h1>
-          <p className="text-xs text-gray-400 mt-0.5">{userName}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{userName}</p>
         </div>
 
         {/* Navigation */}
@@ -214,7 +214,7 @@ export default function AdminLayoutClient({
           {navGroups.map((group, gi) => (
             <div key={gi}>
               {group.label && (
-                <p className="text-[11px] uppercase tracking-widest text-gray-400 font-medium px-3 pt-5 pb-1.5">
+                <p className="text-[11px] uppercase tracking-widest text-gray-500 font-medium px-3 pt-5 pb-1.5">
                   {group.label}
                 </p>
               )}
@@ -243,7 +243,7 @@ export default function AdminLayoutClient({
         <div className="px-3 py-3 border-t border-gray-100">
           <a
             href={`/${locale}/admin/guide`}
-            className="w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-indigo-500 transition-colors flex items-center gap-2"
+            className="w-full text-left px-3 py-1.5 text-xs text-gray-500 hover:text-indigo-500 transition-colors flex items-center gap-2"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -252,14 +252,14 @@ export default function AdminLayoutClient({
           </a>
           <button
             onClick={toggleLocale}
-            className="w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="w-full text-left px-3 py-1.5 text-xs text-gray-500 hover:text-gray-600 transition-colors"
           >
             {locale === "es" ? "English" : "Espanol"}
           </button>
           <button
             onClick={handleLogout}
             disabled={loggingOut}
-            className="w-full text-left px-3 py-1.5 text-xs text-gray-400 hover:text-red-500 transition-colors"
+            className="w-full text-left px-3 py-1.5 text-xs text-gray-500 hover:text-red-500 transition-colors"
           >
             {t("auth.logout")}
           </button>

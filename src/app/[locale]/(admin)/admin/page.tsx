@@ -304,13 +304,13 @@ export default async function AdminDashboard() {
         <h1 className="text-xl font-semibold text-gray-900">
           {t(getGreetingKey())}
         </h1>
-        <p className="text-sm text-gray-400 mt-0.5 capitalize">{dateStr}</p>
+        <p className="text-sm text-gray-500 mt-0.5 capitalize">{dateStr}</p>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
         <div className="admin-card p-4 border-l-4 border-l-emerald-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.totalRevenue")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("reports.totalRevenue")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             ${todayRevenue.toFixed(2)}
           </p>
@@ -318,7 +318,7 @@ export default async function AdminDashboard() {
         </div>
 
         <div className="admin-card p-4 border-l-4 border-l-indigo-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.orderCount")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("reports.orderCount")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             {todayOrderCount}
           </p>
@@ -326,7 +326,7 @@ export default async function AdminDashboard() {
         </div>
 
         <div className="admin-card p-4 border-l-4 border-l-sky-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("reports.avgOrderValue")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("reports.avgOrderValue")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             ${avgOrderValue.toFixed(2)}
           </p>
@@ -334,18 +334,18 @@ export default async function AdminDashboard() {
         </div>
 
         <div className="admin-card p-4 border-l-4 border-l-amber-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.tipsToday")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.tipsToday")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             ${tipsTotal.toFixed(2)}
           </p>
         </div>
 
         <div className="admin-card p-4 border-l-4 border-l-purple-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.openTables")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.openTables")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             {activeTables}
           </p>
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-gray-500">
             {openOrders} {t("orders.open").toLowerCase()}
           </span>
         </div>
@@ -399,25 +399,25 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         {/* Void Rate */}
         <div className={`admin-card p-4 border-l-4 ${voidRate > 5 ? 'border-l-red-500' : voidRate > 3 ? 'border-l-amber-500' : 'border-l-emerald-500'}`}>
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.voidRate")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.voidRate")}</p>
           <p className={`text-2xl font-semibold mt-1 ${voidRate > 5 ? 'text-red-600' : voidRate > 3 ? 'text-amber-600' : 'text-emerald-600'}`}>
             {voidRate.toFixed(1)}%
           </p>
-          <span className="text-xs text-gray-400">{todayVoidedItems} / {todayTotalItems} {t("admin.items")}</span>
+          <span className="text-xs text-gray-500">{todayVoidedItems} / {todayTotalItems} {t("admin.items")}</span>
         </div>
 
         {/* Table Turnover */}
         <div className="admin-card p-4 border-l-4 border-l-sky-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.tableTurnover")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.tableTurnover")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             {closedWithPayment.length}
           </p>
-          <span className="text-xs text-gray-400">{t("admin.avgCoverTime", { minutes: avgCoverMinutes })}</span>
+          <span className="text-xs text-gray-500">{t("admin.avgCoverTime", { minutes: avgCoverMinutes })}</span>
         </div>
 
         {/* Payment Split */}
         <div className="admin-card p-4 border-l-4 border-l-violet-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.paymentSplit")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.paymentSplit")}</p>
           <div className="flex items-center gap-2 mt-2">
             <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
               <div className="bg-emerald-500 h-full rounded-full transition-all" style={{ width: `${cashPercent}%` }} />
@@ -431,11 +431,11 @@ export default async function AdminDashboard() {
 
         {/* Peak Hour */}
         <div className="admin-card p-4 border-l-4 border-l-rose-500">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">{t("admin.peakHour")}</p>
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{t("admin.peakHour")}</p>
           <p className="text-2xl font-semibold text-gray-900 mt-1">
             {peakHour?.hour || "--"}
           </p>
-          <span className="text-xs text-gray-400">{peakHour?.orders || 0} {t("reports.orderCount").toLowerCase()}</span>
+          <span className="text-xs text-gray-500">{peakHour?.orders || 0} {t("reports.orderCount").toLowerCase()}</span>
         </div>
       </div>
 
@@ -468,7 +468,7 @@ export default async function AdminDashboard() {
                       <p className="text-sm font-medium text-gray-900">
                         {t("tables.tableNumber", { number: order.tableNumber })}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-gray-500">
                         {order.serverName} &middot; {order.time}
                       </p>
                     </div>
@@ -487,7 +487,7 @@ export default async function AdminDashboard() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-400 text-center py-8">
+            <p className="text-sm text-gray-500 text-center py-8">
               {t("orders.noOrdersFound")}
             </p>
           )}
@@ -511,7 +511,7 @@ export default async function AdminDashboard() {
                     <span className="text-sm font-medium text-gray-900">{server.name}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-500">
                       {server.orders} {t("reports.orderCount").toLowerCase()}
                     </span>
                     <span className="text-sm font-semibold text-gray-900 tabular-nums">
@@ -522,7 +522,7 @@ export default async function AdminDashboard() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-400 text-center py-8">
+            <p className="text-sm text-gray-500 text-center py-8">
               {t("reports.noDataForPeriod")}
             </p>
           )}

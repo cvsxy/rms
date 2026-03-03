@@ -52,6 +52,8 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 | `/es/admin/customers` | Customer CRM directory |
 | `/es/admin/loyalty` | Loyalty program settings + rewards + members |
 | `/es/admin/gift-cards` | Gift card management |
+| `/es/admin/widget` | Reservation widget settings + embed code |
+| `/es/reserve` | Public reservation booking widget (no auth, iframe-embeddable) |
 
 ## Design System
 - **Brand accent:** Indigo-600 (`#4f46e5`) for primary actions, active states, focus rings
@@ -232,11 +234,11 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 - [x] 6 new i18n keys (voidRate, tableTurnover, avgCoverTime, paymentSplit, peakHour, items)
 
 ### Phase 12: In-App User Guides — Bilingual - COMPLETE
-- [x] Server guide at `/guide` (8 sections)
+- [x] Server guide at `/guide` (8 sections + Phase 14 subsections)
   - Getting Started, Tables, Taking Orders, Managing Orders, Bills & Payment, Notifications, My Orders, Tips & Tricks
-- [x] Admin guide at `/admin/guide` (18 sections — includes all server content + 10 admin sections)
-  - Dashboard, Managing Servers, Managing the Menu, Managing Tables, Inventory, Reports, Live Operations, Discounts, Audit Log, Kitchen & Bar Displays
-- [x] Dedicated guide message files (`guide-en.json`, `guide-es.json`) with ~170 keys each
+- [x] Admin guide at `/admin/guide` (23 sections — includes all server content + 15 admin sections)
+  - Dashboard, Managing Servers, Managing the Menu, Managing Tables, Inventory, Reports, Live Operations, Discounts, Audit Log, Kitchen & Bar Displays, Reservations, Customers, Loyalty, Gift Cards, Widget
+- [x] Dedicated guide message files (`guide-en.json`, `guide-es.json`) with ~250 keys each
   - Merged into main messages via `i18n/request.ts` spread pattern
   - Accessed via `useTranslations('guide')` namespace
 - [x] Shared `ServerGuideSections` component used by both pages (zero content duplication)
@@ -328,6 +330,43 @@ Web-based restaurant management system for restaurants in Mexico. Servers use iP
 - [x] Mobile responsiveness pass: responsive column hiding on all admin tables, 44px min touch targets, stacking grids on mobile
 - [x] ~155 new i18n keys in both EN and ES (reservations, customers, loyalty, giftCards, courses namespaces)
 
+### Phase 15: Public Reservation Widget - COMPLETE
+- [x] Iframe-embeddable reservation booking widget
+  - Public page at `/[locale]/reserve` in `(public)` route group (bypasses auth)
+  - 3-step booking flow: date + party size → time slot selection → guest info
+  - Fetches availability from `/api/reservations/availability`
+  - Minimal layout (`reserve/layout.tsx`) for clean iframe embedding
+- [x] Public reservation API at `/api/reservations/public`
+  - Unauthenticated POST endpoint for website submissions
+  - In-memory rate limiting (10 requests per 5 minutes per IP)
+  - Honeypot spam protection (`website` field — silently accepts if filled)
+  - Checks `widget_enabled` setting, re-checks slot availability before booking
+  - Auto-links or creates Customer by phone, sets `source: "WEBSITE"`, `status: "PENDING"`
+- [x] Admin widget settings page (`/admin/widget`)
+  - Embed code generator with copy-to-clipboard
+  - Live iframe preview of the widget
+  - Settings: `widget_enabled` toggle, `widget_max_party_size` (1-20), `widget_advance_days` (1-90)
+  - Saves to RestaurantSetting via `PUT /api/settings`
+- [x] iframe-to-parent communication
+  - `postMessage` API for booking confirmation events
+  - `ResizeObserver` for automatic iframe height synchronization
+- [x] Admin sidebar: "Widget" nav item with code icon added to Customers group
+- [x] ~46 new i18n keys in both EN and ES (widget + widgetSettings namespaces)
+
+### Phase 15b: Guide Updates for Phase 14 Features - COMPLETE
+- [x] Server guide updated with new subsections
+  - Tables: reservation indicators on table grid
+  - Taking Orders: course assignment (C1-C4)
+  - Managing Orders: course firing, linking customer info
+  - Bills & Payment: link customer, loyalty points, gift card redemption
+- [x] Admin guide expanded with 5 new sections (sections 19-23)
+  - Reservations: calendar, waitlist, status workflows, seating
+  - Customers & CRM: directory, tags, phone lookup, order history
+  - Loyalty Program: program config, rewards, tiers, member management
+  - Gift Cards: creation, codes, partial redemption, usage history
+  - Reservation Widget: embed setup, settings, spam protection
+- [x] ~80 new i18n keys in both guide-en.json and guide-es.json
+
 ## Database Schema (28 models)
 User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderItem, OrderItemModifier, Payment, PushSubscription, Ingredient, MenuItemIngredient, RestaurantSetting, Discount, OrderDiscount, AuditLog, DailyClose, Customer, Reservation, WaitlistEntry, OrderCourse, LoyaltyProgram, LoyaltyMember, LoyaltyTransaction, LoyaltyReward, GiftCard, GiftCardUsage
 
@@ -348,8 +387,8 @@ User, Session, MenuCategory, MenuItem, Modifier, RestaurantTable, Order, OrderIt
 - `private-server-{userId}` — each server's notification channel
 
 ## i18n Architecture
-- Main messages: `src/messages/en.json` + `src/messages/es.json` (~525 keys each)
-- Guide messages: `src/messages/guide-en.json` + `src/messages/guide-es.json` (~170 keys each)
+- Main messages: `src/messages/en.json` + `src/messages/es.json` (~570 keys each)
+- Guide messages: `src/messages/guide-en.json` + `src/messages/guide-es.json` (~250 keys each)
 - Merged at load time in `src/i18n/request.ts` via spread: `{ ...main, ...guide }`
 - Guide content accessed via `useTranslations('guide')` namespace
 
